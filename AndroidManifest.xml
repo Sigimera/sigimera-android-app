@@ -23,9 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <uses-library android:name="com.google.android.maps" />
+        
         <activity android:name=".CrisesListActivity" android:label="@string/title_activity_crises_list" />
         <activity android:name=".LoginActivity" android:label="@string/title_activity_login"/>
-        
+        <activity android:name=".CrisisActivity" android:label="@string/title_activity_crisis"/>
     </application>        
 
 </manifest>
