@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.sigimera.app.sigimera.Config;
 
 public class CrisesController {
@@ -49,5 +50,29 @@ public class CrisesController {
 			httpclient.getConnectionManager().shutdown();
 		}
 		return null;
+	}
+	
+	public String getShortTitle(JSONObject crisis) {
+		String title = "";
+		try {
+			title += crisis.getString("crisis_alertLevel");
+			title += " ";
+			title += crisis.getJSONArray("dc_subject").get(0);
+			title += " alert ";
+			
+			if ( crisis.has("gn_parentCountry") && crisis.getJSONArray("gn_parentCountry").length() > 0 ){
+				title += " in ";
+				title += capitalize(crisis.getJSONArray("gn_parentCountry").get(0).toString());
+			}			
+			return title;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private String capitalize(String s) {
+		if (s.length() == 0) return s;
+	    	return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}
 }

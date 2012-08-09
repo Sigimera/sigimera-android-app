@@ -28,8 +28,8 @@ public class CrisesListActivity extends Activity {
 
 		String auth_token = getIntent().getStringExtra("auth_token");
 
-		JSONArray crises = CrisesController.getInstance().getCrises(auth_token,
-				1);
+		CrisesController crisisControler = CrisesController.getInstance();
+		JSONArray crises = crisisControler.getCrises(auth_token, 1);
 
 		ArrayList<HashMap<String, String>> buttonList = new ArrayList<HashMap<String, String>>();
 
@@ -40,7 +40,7 @@ public class CrisesListActivity extends Activity {
 				JSONObject crisis = (JSONObject) crises.get(count);
 
 				map = new HashMap<String, String>();
-				map.put("top", crisis.getString("dc_title"));
+				map.put("top", crisisControler.getShortTitle(crisis));
 
 				String crisis_type = crisis.getJSONArray("dc_subject")
 						.getString(0);
@@ -52,7 +52,9 @@ public class CrisesListActivity extends Activity {
 					map.put("icon", R.drawable.cyclone + "");
 				else if (crisis_type.contains("volcano"))
 					map.put("icon", R.drawable.volcano + "");
-
+				
+				map.put("bottom", crisis.getString("dc_date"));
+				
 				buttonList.add(map);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -60,8 +62,8 @@ public class CrisesListActivity extends Activity {
 		}
 
 		SimpleAdapter adapterMainList = new SimpleAdapter(this, buttonList,
-				R.layout.list_entry, new String[] { "icon", "top" }, new int[] {
-						R.id.icon, R.id.topText });
+				R.layout.list_entry, new String[] { "icon", "top", "bottom" }, new int[] {
+						R.id.icon, R.id.topText, R.id.bottomText });
 		list.setAdapter(adapterMainList);
 	}
 
