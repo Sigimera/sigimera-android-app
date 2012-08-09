@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Sigimera</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="edit_message">Enter a message</string>
+    <string name="menu_settings">Settings</string>    
        	
     <string name="email_text">Enter your e-mail</string>
     <string name="password_text">Password</string>
-    <string name="login_button">Login</string>    
+    <string name="login_button">Login</string>
+    
+    <!-- Activities -->
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_crises_list">Crises List</string>
 </resources>

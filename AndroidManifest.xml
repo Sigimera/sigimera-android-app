@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sigimera.app.sigimera"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0.0" 
+    android:installLocation="auto">
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -22,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CrisesListActivity" android:label="@string/title_activity_crises_list"/>
+        <activity android:name=".LoginActivity" android:label="@string/title_activity_login"/>
+        
     </application>        
 
 </manifest>

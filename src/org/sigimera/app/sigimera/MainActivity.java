@@ -1,37 +1,16 @@
 package org.sigimera.app.sigimera;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.sigimera.app.sigimera.controller.CrisesController;
 import org.sigimera.app.sigimera.controller.SessionHandler;
 import org.sigimera.app.sigimera.exception.AuthenticationErrorException;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends Activity {
-
-	private SessionHandler session_handler;
-		
-	private OnItemClickListener listClickListener = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> list, View view, int position, long id) {
-			//TODO: show crises
-			System.out.println("CLICKED ON " + position);			
-		}
-	};	
+	private SessionHandler session_handler;		
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,52 +18,16 @@ public class MainActivity extends Activity {
         
     	this.session_handler = SessionHandler.getInstance(getSessionSettings());
 		try {
-			String auth_token = this.session_handler.getAuthenticationToken();
-			JSONArray crises = CrisesController.getInstance().getCrises(auth_token, 1);
+			String auth_token = this.session_handler.getAuthenticationToken();			
 			
-    		// 1. Get Crises List
-    		// 1a. If crises list null set auth_token null and render R.layout.login
-    		// 1b. If not null build the crises list in the activity_main
-    		setContentView(R.layout.crises_list);
-    		
-    		ListView list = (ListView) findViewById(R.id.crises_list);
-    		list.setOnItemClickListener(this.listClickListener);
-    		
-    		ArrayList<HashMap<String, String>> buttonList = new ArrayList<HashMap<String, String>>();
-    		
-    		HashMap<String, String> map = new HashMap<String, String>();
-    		
-    		for ( int count = 0; count < crises.length(); count++ ) {
-				try {
-					JSONObject crisis = (JSONObject) crises.get(count);
-					
-					map = new HashMap<String, String>();		
-					map.put("top", crisis.getString("dc_title"));
-					
-					String crisis_type = crisis.getJSONArray("dc_subject").getString(0);
-					if ( crisis_type.contains("flood") )
-						map.put("icon", R.drawable.flood + "");
-					else if ( crisis_type.contains("earthquake") )
-						map.put("icon", R.drawable.earthquake + "");
-					else if ( crisis_type.contains("cyclone") )
-						map.put("icon", R.drawable.cyclone + "");
-					else if ( crisis_type.contains("volcano") )
-						map.put("icon", R.drawable.volcano + "");
-					
-					
-					buttonList.add(map);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-    		
-    		SimpleAdapter adapterMainList = new SimpleAdapter(this, buttonList, 
-    				R.layout.list_entry, new String[]{ "icon", "top" },
-    				new int[] { R.id.icon, R.id.topText });
-    		list.setAdapter(adapterMainList);
-    		
+			Intent listIntent = new Intent(MainActivity.this, CrisesListActivity.class);
+			listIntent.putExtra("auth_token", auth_token);
+			this.startActivity(listIntent);			
 		} catch (AuthenticationErrorException e) {
-    		setContentView(R.layout.login);
+			Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+			this.startActivity(loginIntent);
+		} finally {
+			this.finish();
 		}
     }
 
@@ -92,13 +35,7 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
-    }
-    
-    public void login(View view) {
-    	EditText emailView = (EditText)findViewById(R.id.email_input_field);
-    	EditText passwordView = (EditText)findViewById(R.id.password_input_field);
-    	this.session_handler.login(emailView.getText().toString(), passwordView.getText().toString());
-    }
+    }        
     
     public SharedPreferences getSessionSettings() {
     	String PREFS_NAME = "session_handler_preferences";
