@@ -6,7 +6,7 @@
 	<com.google.android.maps.MapView 
        	android:id="@+id/mapView"
        	android:layout_width="fill_parent"
-       	android:layout_height="200dp"
+       	android:layout_height="150dp"
        	android:enabled="true"
        	android:clickable="true"
        	android:apiKey="03g51D-zCFK-uOq5ZjLC22B1TI90S0E-AmE7gZQ"     
@@ -18,7 +18,7 @@
 		android:id="@+id/crisisInfoList"
     	android:orientation="vertical"
     	android:layout_width="fill_parent"
-    	android:paddingTop="205dp"
+    	android:paddingTop="155dp"
     	android:layout_height="wrap_content"
     />
  

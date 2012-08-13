@@ -8,6 +8,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.model.map.CollectionOverlay;
 
 import android.app.ProgressDialog;
@@ -30,6 +31,7 @@ public class CrisisActivity extends MapActivity{
 	private List<Overlay> mapOverlays;
 	private Drawable mapIcon;
 	private CollectionOverlay collectionOverlay;
+	private CrisesController crisisController = CrisesController.getInstance(); 
 	
 	private static final String BOTTOM = "bottom";
 	private static final String TOP = "top";
@@ -98,11 +100,11 @@ public class CrisisActivity extends MapActivity{
 						
 						OverlayItem overlayitem = new OverlayItem(geo, country , "");
 						collectionOverlay.addOverlay(overlayitem);
+						guiHandler.post(updateCollection);
 					} catch (JSONException e) {
 						mapControl.setCenter(new GeoPoint(0, 0));
 					}        			        			        			        		
-        		} finally {
-        			guiHandler.post(updateCollection);
+        		} finally {        			
         			progressDialog.dismiss();
         		}
         	}
@@ -117,29 +119,40 @@ public class CrisisActivity extends MapActivity{
 		String alertLevel = null;
 		String severity = null;
 		String description = null;
-		try {			
+		JSONArray country = null;
+		try {		
 			alertLevel = crisis.getString("crisis_alertLevel");
 			severity = crisis.getString("crisis_severity");
-			description = crisis.getString("dc_description");			
+			description = crisis.getString("dc_description");
+			country = crisis.getJSONArray("gn_parentCountry");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		
+		if ( description != null )
+			collectionList.add(getListEntry(description.substring(0, 60) + " ...", "Description", 
+					String.valueOf(R.drawable.glyphicons_030_pencil_white)));
 		if ( alertLevel != null )
-			collectionList.add(getListEntry(alertLevel, "Alert Level", String.valueOf(R.drawable.cyclone)));
+			collectionList.add(getListEntry(alertLevel, "Alert Level", 
+					String.valueOf(R.drawable.glyphicons_196_circle_exclamation_mark_white)));
 		if ( severity != null )
-			collectionList.add(getListEntry(severity, "Severity", String.valueOf(R.drawable.earthquake)));
-			
+			collectionList.add(getListEntry(CrisesController.getInstance().capitalize(severity), "Severity", 
+					String.valueOf(R.drawable.glyphicons_079_signal_white)));
+		if ( country != null && country.length() > 0 ) {
+			String countryConcat = "";
+			for ( int i = 0; i < country.length(); i++ ) {
+				try {					
+					countryConcat += crisisController.capitalize(String.valueOf(country.get(i)));
+					if ( i != 0 )
+						countryConcat += ", ";
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}			
+			}
+			collectionList.add(getListEntry(countryConcat, "Country", 
+					String.valueOf(R.drawable.glyphicons_266_flag_white)));
+		}
 		
-//		map.put(ICON, R.drawable. + "");
-//		String divebase = entry.getDiveBase();
-//		if ( divebase == null || divebase.equals("") )
-//			divebase = "Collection: " + entry.getID();
-//		map.put(TOP, divebase);
-//		map.put(BOTTOM, entry.getCountry() + " (" + entry.getStartDate() + " - " + entry.getStopDate() + ")");
-//		map.put(ARROW, R.drawable.right_arrow_icon + "");
-//		collectionList.add(map);	
 //				
 //		try {
 //			double latDouble = new Double(entry.getLatitude());
