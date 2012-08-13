@@ -12,5 +12,5 @@
     <string name="title_activity_main">Crises</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_crises_list">Crises List</string>
-    <string name="title_activity_crisis">Single Crisis Info</string>
+    <string name="title_activity_crisis">Crisis Info</string>
 </resources>

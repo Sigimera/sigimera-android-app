@@ -2,4 +2,5 @@
 
     <style name="AppTheme" parent="android:Theme.Light" />
     <color name="green">#00FF00</color>
+    <color name="gray">#6C6C6C</color>
 </resources>
