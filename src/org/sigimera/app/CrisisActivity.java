@@ -1,6 +1,5 @@
 package org.sigimera.app;
 
-import java.io.File;
 import java.util.List;
 
 import org.json.JSONException;
@@ -92,7 +91,7 @@ public class CrisisActivity extends MapActivity{
 	}
 	
 	private void updateGUI() {
-		// TODO Auto-generated method stub	
+		this.mapOverlays.add(this.collectionOverlay);
 	}
 
 	@Override

@@ -23,9 +23,9 @@ import android.content.SharedPreferences;
 
 public class SessionHandler {
 	private static SessionHandler instance = null;
-
-	private static final String HOST = Config.WWW_HOST + "/tokens.json";
+	
 	private SharedPreferences settings;
+	private final String HOST = Config.getInstance().WWW_HOST + "/tokens.json";
 	
 	private SessionHandler(SharedPreferences _settings) {
 		this.settings = _settings;
@@ -37,7 +37,7 @@ public class SessionHandler {
 		return instance;
 	}
 	
-	public boolean login(String _email, String _password) {
+	public boolean login(String _email, String _password) {	
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost request = new HttpPost(HOST);
 		
