@@ -11,8 +11,8 @@ public class Config {
 	
 	public static final String GCM_PROJECT_ID = "TODO_CHANGE_THIS_TO_GCM_PROJECT_ID";
 			
-	public String WWW_HOST = "http://172.16.1.28:3000/api/v1";
-	public String API_HOST = "http://172.16.1.28:9292/v1";
+	public String WWW_HOST = "http://192.168.1.6:3000/api/v1";
+	public String API_HOST = "http://192.168.1.6:9292/v1";
 
 	/**
 	 * Singleton pattern 
