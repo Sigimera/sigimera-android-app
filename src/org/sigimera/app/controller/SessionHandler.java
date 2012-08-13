@@ -1,4 +1,4 @@
-package org.sigimera.app.sigimera.controller;
+package org.sigimera.app.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,8 +16,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.sigimera.Config;
-import org.sigimera.app.sigimera.exception.AuthenticationErrorException;
+import org.sigimera.app.exception.AuthenticationErrorException;
+import org.sigimera.app.util.Config;
 
 import android.content.SharedPreferences;
 

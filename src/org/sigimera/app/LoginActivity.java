@@ -1,7 +1,7 @@
-package org.sigimera.app.sigimera;
+package org.sigimera.app;
 
-import org.sigimera.app.sigimera.controller.SessionHandler;
-import org.sigimera.app.sigimera.exception.AuthenticationErrorException;
+import org.sigimera.app.controller.SessionHandler;
+import org.sigimera.app.exception.AuthenticationErrorException;
 
 import android.app.Activity;
 import android.content.Context;

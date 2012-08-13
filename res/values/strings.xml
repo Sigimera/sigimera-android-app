@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Sigimera</string>
+    <string name="app_name">Sigimera - Crises</string>
+    <string name="logo_description">Sigimera Logo</string>
+    <string name="crisis_type_logo_description">Sigimera Logo</string>
     <string name="menu_settings">Settings</string>    
        	
     <string name="email_text">Enter your e-mail</string>
@@ -7,8 +9,8 @@
     <string name="login_button">Login</string>
     
     <!-- Activities -->
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Crises</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_crises_list">Crises List</string>
-    <string name="title_activity_crisis">Crises Info</string>
+    <string name="title_activity_crisis">Single Crisis Info</string>
 </resources>

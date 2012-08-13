@@ -1,17 +1,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.sigimera.app.sigimera"
+    package="org.sigimera.app"
+    android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="1.0.0" 
-    android:installLocation="auto">
+    android:versionName="1.0.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
-    
-    <uses-permission android:name="android.permission.INTERNET"/>
+        android:targetSdkVersion="16" />
+
+    <permission
+        android:name="org.sigimera.app.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="org.sigimera.app.permission.C2D_MESSAGE" />
+
+    <!-- App receives GCM messages. -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!-- GCM connects to Google Services. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/sigimera_logo"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault" >
         <activity
@@ -23,11 +36,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <uses-library android:name="com.google.android.maps" />
+
+        <activity
+            android:name=".CrisesListActivity"
+            android:label="@string/title_activity_crises_list" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".CrisisActivity"
+            android:label="@string/title_activity_crisis" />
+
+        <service android:name=".controller.GCMIntentService" />
         
-        <activity android:name=".CrisesListActivity" android:label="@string/title_activity_crises_list" />
-        <activity android:name=".LoginActivity" android:label="@string/title_activity_login"/>
-        <activity android:name=".CrisisActivity" android:label="@string/title_activity_crisis"/>
-    </application>        
+        <receiver
+            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="org.sigimera.app.sigimera" />
+            </intent-filter>
+        </receiver>
+    </application>
 
 </manifest>

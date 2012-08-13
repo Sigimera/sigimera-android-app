@@ -1,4 +1,4 @@
-package org.sigimera.app.sigimera.model.map;
+package org.sigimera.app.model.map;
 
 import java.util.ArrayList;
 

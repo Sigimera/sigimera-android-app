@@ -11,7 +11,8 @@
         android:adjustViewBounds="true"
         android:layout_height="fill_parent"
         android:layout_margin="6dip"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/sigimera_logo"
+        android:contentDescription="@string/crisis_type_logo_description" />
     
      <LinearLayout
         android:orientation="vertical"

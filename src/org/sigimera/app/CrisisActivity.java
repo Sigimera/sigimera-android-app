@@ -1,11 +1,11 @@
-package org.sigimera.app.sigimera;
+package org.sigimera.app;
 
 import java.io.File;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.sigimera.model.map.CollectionOverlay;
+import org.sigimera.app.model.map.CollectionOverlay;
 
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
@@ -30,7 +30,6 @@ public class CrisisActivity extends MapActivity{
 	
 	private final Handler guiHandler = new Handler();
 	private final Runnable updateCollection = new Runnable() {
-		@Override
 		public void run() {
 			 updateGUI();
 		}	
