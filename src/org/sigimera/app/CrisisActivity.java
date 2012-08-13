@@ -2,6 +2,7 @@ package org.sigimera.app;
 
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.model.map.CollectionOverlay;
@@ -41,6 +42,15 @@ public class CrisisActivity extends MapActivity{
 		
 		try {
 			crisis = new JSONObject(getIntent().getStringExtra("crisis"));
+			String crisis_type = crisis.getJSONArray("dc_subject").getString(0);
+			if (crisis_type.contains("flood"))
+				this.mapIcon = getResources().getDrawable(R.drawable.flood);
+			else if (crisis_type.contains("earthquake"))
+				this.mapIcon = getResources().getDrawable(R.drawable.earthquake);
+			else if (crisis_type.contains("cyclone"))
+				this.mapIcon = getResources().getDrawable(R.drawable.cyclone);
+			else if (crisis_type.contains("volcano"))
+				this.mapIcon = getResources().getDrawable(R.drawable.volcano);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,7 +59,7 @@ public class CrisisActivity extends MapActivity{
 		final MapView mapView = (MapView) findViewById(R.id.mapView);
         mapView.setSatellite(true);
         mapOverlays = mapView.getOverlays();
-        
+                
         this.mapIcon = getResources().getDrawable(R.drawable.earthquake);
         this.collectionOverlay = new CollectionOverlay(mapIcon);
         
