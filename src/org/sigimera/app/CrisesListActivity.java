@@ -70,33 +70,38 @@ public class CrisesListActivity extends Activity {
 	private void showCrises() {
 		ArrayList<HashMap<String, String>> buttonList = new ArrayList<HashMap<String, String>>();
 
-		HashMap<String, String> map = new HashMap<String, String>();
-
-		for ( int count = 0; count < crises.length(); count++ ) {
-			try {
-				JSONObject crisis = (JSONObject) crises.get(count);
-
-				map = new HashMap<String, String>();
-				map.put("top", crisisControler.getShortTitle(crisis));
-
-				String crisis_type = crisis.getJSONArray("dc_subject")
-						.getString(0);
-				if (crisis_type.contains("flood"))
-					map.put("icon", R.drawable.flood + "");
-				else if (crisis_type.contains("earthquake"))
-					map.put("icon", R.drawable.earthquake + "");
-				else if (crisis_type.contains("cyclone"))
-					map.put("icon", R.drawable.cyclone + "");
-				else if (crisis_type.contains("volcano"))
-					map.put("icon", R.drawable.volcano + "");
-
-				map.put("bottom", crisis.getString("dc_date"));
-
-				buttonList.add(map);
-			} catch (JSONException e) {
-				e.printStackTrace();
+		HashMap<String, String> map = new HashMap<String, String>();		
+		
+		try {
+			for ( int count = 0; count < crises.length(); count++ ) {
+				try {
+					JSONObject crisis = (JSONObject) crises.get(count);
+	
+					map = new HashMap<String, String>();
+					map.put("top", crisisControler.getShortTitle(crisis));
+	
+					String crisis_type = crisis.getJSONArray("dc_subject")
+							.getString(0);
+					if (crisis_type.contains("flood"))
+						map.put("icon", R.drawable.flood + "");
+					else if (crisis_type.contains("earthquake"))
+						map.put("icon", R.drawable.earthquake + "");
+					else if (crisis_type.contains("cyclone"))
+						map.put("icon", R.drawable.cyclone + "");
+					else if (crisis_type.contains("volcano"))
+						map.put("icon", R.drawable.volcano + "");
+	
+					map.put("bottom", crisis.getString("dc_date"));
+	
+					buttonList.add(map);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
-		}
+		} catch (NullPointerException e) {
+			Intent loginIntent = new Intent(CrisesListActivity.this, LoginActivity.class);
+			this.startActivity(loginIntent);				
+		}					
 
 		SimpleAdapter adapterMainList = new SimpleAdapter(this, buttonList,
 				R.layout.list_entry, new String[] { "icon", "top", "bottom" }, new int[] {
