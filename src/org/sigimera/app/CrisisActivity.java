@@ -62,6 +62,7 @@ public class CrisisActivity extends MapActivity {
 	private String description = null;
 	private JSONArray country = null;
 	private String countryConcat = "";
+	private String affectedPeople = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -130,15 +131,19 @@ public class CrisisActivity extends MapActivity {
 			severity = crisis.getString("crisis_severity");
 			description = crisis.getString("dc_description");
 			country = crisis.getJSONArray("gn_parentCountry");
+			affectedPeople = crisis.getString("crisis_population");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (description != null)
+		if ( description != null )
 			collectionList.add(getListEntry(description.substring(0, 80)
 					+ " ...", "Description",
 					String.valueOf(R.drawable.glyphicons_030_pencil_white)));
-		if (alertLevel != null)
+		if ( affectedPeople != null )
+			collectionList.add(getListEntry(affectedPeople, "Affected people",
+					String.valueOf(R.drawable.glyphicons_024_parents_white)));
+		if (alertLevel != null )
 			collectionList
 					.add(getListEntry(
 							alertLevel,
@@ -217,18 +222,21 @@ public class CrisisActivity extends MapActivity {
 				long id) {
 			String text = "";
 			switch (position) {
-			case 0:
-				text = description;
-				break;
-			case 1:
-				text = "Alert level: " + alertLevel;
-				break;
-			case 2:
-				text = crisisController.capitalize(severity);
-				break;
-			case 3:
-				text = "Country: " + countryConcat;
-				break;
+				case 0:
+					text = description;
+					break;
+				case 1:
+					text = affectedPeople;
+					break;
+				case 2:
+					text = "Alert level: " + alertLevel;
+					break;
+				case 3:
+					text = crisisController.capitalize(severity);
+					break;
+				case 4:
+					text = "Country: " + countryConcat;
+					break;
 			}
 
 			new Notification(getApplicationContext(), text, Toast.LENGTH_SHORT);
