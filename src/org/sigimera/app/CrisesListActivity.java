@@ -34,7 +34,6 @@ public class CrisesListActivity extends Activity {
 
 	private final Handler guiHandler = new Handler();
 	private final Runnable updateCrises = new Runnable() {
-		@Override
 		public void run() {
 			 showCrises();
 		}
@@ -117,7 +116,6 @@ public class CrisesListActivity extends Activity {
 	}
 			
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
-		@Override
 		public void onItemClick(AdapterView<?> list, View view, int position,
 				long id) {
 			showClickedCrisis(position);					

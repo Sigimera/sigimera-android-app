@@ -9,10 +9,10 @@ public class Config {
 	 */
 	public static final String LOG_TAG = "SigimeraAndroidApp";
 	
-	public static final String GCM_PROJECT_ID = "TODO_CHANGE_THIS_TO_GCM_PROJECT_ID";
+	public static final String GCM_PROJECT_ID = "TODO";
 			
-	public String WWW_HOST = "http://172.16.1.28:3000/api/v1";
-	public String API_HOST = "http://172.16.1.28:9292/v1";
+	private final String WWW_HOST = "http://172.16.1.28:3000/api/v1";
+	private final String API_HOST = "http://172.16.1.28:9292/v1";
 
 	/**
 	 * Singleton pattern 
@@ -23,7 +23,7 @@ public class Config {
 		if ( instance == null ) instance = new Config();
 		return instance;
 	}
-	
+
 	private Config() {
 //		try {
 //			settings = new Properties();
@@ -39,5 +39,13 @@ public class Config {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+	}
+
+	public String getAPIHost() {
+		return this.API_HOST;
+	}
+
+	public String getWWWHost() {
+		return this.WWW_HOST;
 	}
 }

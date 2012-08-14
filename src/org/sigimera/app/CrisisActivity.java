@@ -217,7 +217,6 @@ public class CrisisActivity extends MapActivity {
 	}
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
-		@Override
 		public void onItemClick(AdapterView<?> list, View view, int position,
 				long id) {
 			String text = "";

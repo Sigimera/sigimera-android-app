@@ -25,7 +25,7 @@ public class SessionHandler {
 	private static SessionHandler instance = null;
 	
 	private SharedPreferences settings;
-	private final String HOST = Config.getInstance().WWW_HOST + "/tokens.json";
+	private final String HOST = Config.getInstance().getWWWHost() + "/tokens.json";
 	
 	private SessionHandler(SharedPreferences _settings) {
 		this.settings = _settings;

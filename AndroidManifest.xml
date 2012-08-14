@@ -51,7 +51,7 @@
             android:name=".CrisisActivity"
             android:label="@string/title_activity_crisis" />
 
-        <service android:name=".controller.GCMIntentService" />
+        <service android:name=".GCMIntentService" />
         
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
