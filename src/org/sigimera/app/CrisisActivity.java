@@ -220,7 +220,6 @@ public class CrisisActivity extends MapActivity {
 	}
 	
 	private OnClickListener mapClickListener = new OnClickListener() {
-		@Override
 		public void onClick(View arg0) {
 			Intent mapIntent = new Intent(CrisisActivity.this, FullMapActivity.class);
 			startActivity(mapIntent);
