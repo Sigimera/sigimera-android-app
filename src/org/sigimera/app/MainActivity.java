@@ -1,5 +1,6 @@
 package org.sigimera.app;
 
+import org.sigimera.app.controller.ApplicationController;
 import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
 import org.sigimera.app.util.Config;
@@ -22,7 +23,8 @@ public class MainActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);			
+		setContentView(R.layout.activity_main);
+		ApplicationController.getInstance().setApplicationContext(getApplicationContext());
 		
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -37,14 +39,14 @@ public class MainActivity extends Activity {
 				/**
 				 * BEGIN: Google Cloud Messaging
 				 */
-				try {
-					GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
-					final String regId = GCMRegistrar.getRegistrationId(this);
-					if (regId.equals("")) GCMRegistrar.register(this, Config.GCM_PROJECT_ID);
-					else GCMRegistrar.unregister(this);
-					System.out.println("REQ-ID: " + regId);
-				} catch (Exception e) {
-					Log.v(Config.LOG_TAG, "Device meets not the GCM requirements. Exception: " + e);
+				if ( Config.GCM_PROJECT_ID != null ) {
+					try {
+						GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
+						final String regId = GCMRegistrar.getRegistrationId(this);
+						if (regId.equals("")) GCMRegistrar.register(this, Config.GCM_PROJECT_ID);
+					} catch (Exception e) {
+						Log.v(Config.LOG_TAG, "Device meets not the GCM requirements. Exception: " + e);
+					}
 				}
 				/**
 				 * END: Google Cloud Messaging

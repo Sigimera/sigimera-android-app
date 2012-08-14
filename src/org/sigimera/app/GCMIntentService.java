@@ -3,7 +3,6 @@ package org.sigimera.app;
 
 import java.io.IOException;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -15,34 +14,50 @@ import org.sigimera.app.util.Config;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 	private static final String HOST = Config.getInstance().getAPIHost() + "/gcm";
-
+	private final Handler mainThreadHandler;
+	
+	public GCMIntentService() {
+		super(GCMIntentService.class.getName());
+		this.mainThreadHandler = new Handler();
+	}
+	
 	@Override
 	protected void onError(Context arg0, String arg1) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void onMessage(Context _context, Intent _message) {
-		// TODO Auto-generated method stub
-		String message_type = _message.getStringExtra("message_type");
-		System.out.println("Crisis ID received '" + _message.getStringExtra("crisis_id") + "' with message type '" + message_type + '!');
+		final Intent msg = _message;
+		this.mainThreadHandler.post(new Runnable() {
+            public void run() {
+            	StringBuffer message = new StringBuffer();
+            	message.append(msg.getStringExtra("sig_message_type"));
+            	message.append(" :: ");
+            	message.append(msg.getStringExtra("crisis_id") );
+                Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
+                /**
+                 * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
+                 */
+            }
+        });
 	}
 
 	@Override
 	protected void onRegistered(Context _context, String _regID) {
+		HttpClient httpclient = new DefaultHttpClient();
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
-			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID);
-			HttpResponse result = httpclient.execute(request);
-			System.out.println("Headers: " + result.getStatusLine().getStatusCode());
+			httpclient.execute(request);
 		} catch (AuthenticationErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,18 +67,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			httpclient.getConnectionManager().shutdown();
 		}
 	}
 
 	@Override
 	protected void onUnregistered(Context _context, String _regID) {
+		HttpClient httpclient = new DefaultHttpClient();
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
-			HttpClient httpclient = new DefaultHttpClient();
 			HttpDelete request = new HttpDelete(HOST + "/"+_regID+"?auth_token="+authToken);
-			HttpResponse result = httpclient.execute(request);
-			System.out.println("Headers: " + result.getStatusLine().getStatusCode());
+			httpclient.execute(request);
 		} catch (AuthenticationErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,6 +89,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			httpclient.getConnectionManager().shutdown();
 		}
 	}
 

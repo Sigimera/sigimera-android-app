@@ -9,7 +9,7 @@ public class Config {
 	 */
 	public static final String LOG_TAG = "SigimeraAndroidApp";
 	
-	public static final String GCM_PROJECT_ID = "TODO";
+	public static final String GCM_PROJECT_ID = null;
 			
 	private final String WWW_HOST = "http://172.16.1.28:3000/api/v1";
 	private final String API_HOST = "http://172.16.1.28:9292/v1";
