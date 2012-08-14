@@ -10,10 +10,9 @@ public class FullMapActivity extends MapActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.crisis);
+		setContentView(R.layout.full_map);
 	}
 	
 	@Override
 	protected boolean isRouteDisplayed() { return false;}
-
 }

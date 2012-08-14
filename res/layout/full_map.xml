@@ -4,7 +4,7 @@
     	android:layout_height="fill_parent">
     	    
 	<com.google.android.maps.MapView 
-	       	android:id="@+id/map_view"
+	       	android:id="@+id/full_map_view"
 	       	android:layout_width="fill_parent"
 	       	android:layout_height="fill_parent"
 	       	android:enabled="true"
