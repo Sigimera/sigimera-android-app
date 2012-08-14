@@ -7,11 +7,11 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.controller.Common;
 import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.model.map.CollectionOverlay;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,18 +84,15 @@ public class CrisisActivity extends MapActivity {
 								"crisis"));
 						String crisis_type = crisis.getJSONArray("dc_subject")
 								.getString(0);
+						System.out.println(crisis_type);
 						if (crisis_type.contains("flood"))
-							mapIcon = getResources().getDrawable(
-									R.drawable.flood);
+							mapIcon = getResources().getDrawable(R.drawable.flood);
 						else if (crisis_type.contains("earthquake"))
-							mapIcon = getResources().getDrawable(
-									R.drawable.earthquake);
+							mapIcon = getResources().getDrawable(R.drawable.earthquake);
 						else if (crisis_type.contains("cyclone"))
-							mapIcon = getResources().getDrawable(
-									R.drawable.cyclone);
+							mapIcon = getResources().getDrawable(R.drawable.cyclone);
 						else if (crisis_type.contains("volcano"))
-							mapIcon = getResources().getDrawable(
-									R.drawable.volcano);
+							mapIcon = getResources().getDrawable(R.drawable.volcano);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -105,7 +102,6 @@ public class CrisisActivity extends MapActivity {
 					mapView.setSatellite(true);
 					mapOverlays = mapView.getOverlays();
 
-					mapIcon = getResources().getDrawable(R.drawable.earthquake);
 					collectionOverlay = new CollectionOverlay(mapIcon);
 
 					mapControl = mapView.getController();
@@ -243,29 +239,19 @@ public class CrisisActivity extends MapActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_SHARE:
-			shareCrisis();
+		case MENU_SHARE:			
+			try {	
+				this.startActivity(Common.shareCrisis(crisis.getString("_id")));
+			} catch (JSONException e) {
+				new Notification(getApplicationContext(), "Failed to read the crisis ID", Toast.LENGTH_SHORT);
+			}			
 			return true;
-		case MENU_ABOUT:			
+		case MENU_ABOUT:
+			new Notification(getApplicationContext(), "TODO: provide content for about window", Toast.LENGTH_SHORT);
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * Share the crisis with your friend and/or the world.
-	 */
-	private void shareCrisis() {		
-		try {
-			Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-			shareIntent.setType("text/plain");
-			String crisisURL = "http://www.sigimera.org/crises/" + crisis.getString("_id");
-			shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, crisisURL);
-			this.startActivity(shareIntent);
-		} catch (JSONException e) {
-			new Notification(getApplicationContext(), "Something", Toast.LENGTH_SHORT);
-		}  		
-	}
+	}	
 
 	@Override
 	protected boolean isRouteDisplayed() {

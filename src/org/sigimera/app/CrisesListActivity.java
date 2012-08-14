@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.controller.Common;
 import org.sigimera.app.controller.CrisesController;
 
 import android.app.Activity;
@@ -14,10 +15,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class CrisesListActivity extends Activity {
@@ -40,6 +47,7 @@ public class CrisesListActivity extends Activity {
 
 		list = (ListView) findViewById(R.id.crises_list);
 		list.setOnItemClickListener(this.listClickListener);
+		registerForContextMenu(list);
 
 		final ProgressDialog progressDialog = ProgressDialog.show(CrisesListActivity.this, null, "Searching for latest crises...", false);
         
@@ -104,17 +112,46 @@ public class CrisesListActivity extends Activity {
 			crisisIntent.putExtra("crisis", crisis.toString());
 			this.startActivity(crisisIntent);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new Notification(getApplicationContext(), "Failed to read the clicked crisis!", Toast.LENGTH_SHORT);
 		}		
 	}
-
+			
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> list, View view, int position,
 				long id) {
 			showClickedCrisis(position);					
-			System.out.println("CLICKED ON " + position);
 		}
 	};
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	                                ContextMenuInfo menuInfo) {
+	    super.onCreateContextMenu(menu, v, menuInfo);
+	    menu.setHeaderTitle("Options");
+	    menu.setHeaderIcon(R.drawable.sigimera_logo);	    
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.list_menu, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    // Handle item selection
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    switch (item.getItemId()) {
+	        case R.id.open:
+	        	showClickedCrisis(info.position);
+	            return true;
+	        case R.id.share:
+				try {
+					this.startActivity(Common.shareCrisis(((JSONObject) crises.get(info.position)).getString("_id")));
+				} catch (JSONException e) {
+					new Notification(getApplicationContext(), "Failed to get the crisis", Toast.LENGTH_SHORT);
+				}
+	            return true;
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
+	}
+
 }
