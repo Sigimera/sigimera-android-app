@@ -39,8 +39,7 @@ public class MainActivity extends Activity {
 				this.finish();
 			}
 		} else {
-			Toast toast = Toast.makeText(getApplicationContext(), "No internet connection!", Toast.LENGTH_LONG);
-			toast.show();
+			new Notification(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG);
 		}
 	}
 

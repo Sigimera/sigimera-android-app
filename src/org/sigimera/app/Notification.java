@@ -1,6 +1,7 @@
 package org.sigimera.app;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.Toast;
 /**
  * Show a toast message.
@@ -10,7 +11,7 @@ import android.widget.Toast;
 public class Notification extends Toast {
 
 	/**
-	 * Create a new notification as toast message.
+	 * Show a new notification as toast message.
 	 * 
 	 * @param context The application context ()
 	 * @param message The message that should be displayed
@@ -18,6 +19,8 @@ public class Notification extends Toast {
 	 */
 	public Notification(Context context, String message, int duration) {
 		super(context);
-		Toast.makeText(context, message, duration).show();
+		Toast toast = Toast.makeText(context, message, duration);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
 	}	
 }

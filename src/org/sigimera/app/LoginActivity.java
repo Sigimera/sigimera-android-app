@@ -4,11 +4,9 @@ import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,14 +33,8 @@ public class LoginActivity extends Activity {
     		Intent listIntent = new Intent(LoginActivity.this, CrisesListActivity.class);
     		listIntent.putExtra("auth_token", this.session_handler.getAuthenticationToken());
     		this.startActivity(listIntent);
-    	} else {
-    		Context context = getApplicationContext();
-    		CharSequence text = "Email or password were incorrect!";    		
-    		int duration = Toast.LENGTH_SHORT;
-
-    		Toast toast = Toast.makeText(context, text, duration);
-    		toast.setGravity(Gravity.CENTER, 0, 0);
-    		toast.show();
+    	} else {    		
+    		new Notification(getApplicationContext(), "Email or password were incorrect!", Toast.LENGTH_SHORT);
     	}
     }
     

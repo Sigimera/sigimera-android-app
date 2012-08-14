@@ -86,13 +86,17 @@ public class CrisisActivity extends MapActivity {
 								.getString(0);
 						System.out.println(crisis_type);
 						if (crisis_type.contains("flood"))
-							mapIcon = getResources().getDrawable(R.drawable.flood);
+							mapIcon = getResources().getDrawable(
+									R.drawable.flood);
 						else if (crisis_type.contains("earthquake"))
-							mapIcon = getResources().getDrawable(R.drawable.earthquake);
+							mapIcon = getResources().getDrawable(
+									R.drawable.earthquake);
 						else if (crisis_type.contains("cyclone"))
-							mapIcon = getResources().getDrawable(R.drawable.cyclone);
+							mapIcon = getResources().getDrawable(
+									R.drawable.cyclone);
 						else if (crisis_type.contains("volcano"))
-							mapIcon = getResources().getDrawable(R.drawable.volcano);
+							mapIcon = getResources().getDrawable(
+									R.drawable.volcano);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -188,9 +192,14 @@ public class CrisisActivity extends MapActivity {
 	/**
 	 * Creating the list entry which needs to be added to the list.
 	 * 
-	 * @param top The text which should be showed on top of the list entry
-	 * @param bottom The text which should be showed at the bottom of the list entry
-	 * @param icon The icon should be in format: String.valueOf(R.drawable.MyIcon)
+	 * @param top
+	 *            The text which should be showed on top of the list entry
+	 * @param bottom
+	 *            The text which should be showed at the bottom of the list
+	 *            entry
+	 * @param icon
+	 *            The icon should be in format:
+	 *            String.valueOf(R.drawable.MyIcon)
 	 * @return The map having an icon, top and bottom text. (list entry)
 	 */
 	private HashMap<String, String> getListEntry(String top, String bottom,
@@ -222,9 +231,7 @@ public class CrisisActivity extends MapActivity {
 				break;
 			}
 
-			Toast toast = Toast.makeText(getApplicationContext(), text,
-					Toast.LENGTH_LONG);
-			toast.show();
+			new Notification(getApplicationContext(), text, Toast.LENGTH_SHORT);
 		}
 	};
 
@@ -239,19 +246,22 @@ public class CrisisActivity extends MapActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_SHARE:			
-			try {	
+		case MENU_SHARE:
+			try {
 				this.startActivity(Common.shareCrisis(crisis.getString("_id")));
 			} catch (JSONException e) {
-				new Notification(getApplicationContext(), "Failed to read the crisis ID", Toast.LENGTH_SHORT);
-			}			
+				new Notification(getApplicationContext(),
+						"Failed to read the crisis ID", Toast.LENGTH_SHORT);
+			}
 			return true;
 		case MENU_ABOUT:
-			new Notification(getApplicationContext(), "TODO: provide content for about window", Toast.LENGTH_SHORT);
+			new Notification(getApplicationContext(),
+					"TODO: provide content for about window",
+					Toast.LENGTH_SHORT);
 			return true;
 		}
 		return false;
-	}	
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
