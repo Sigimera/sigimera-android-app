@@ -30,12 +30,12 @@ import com.google.android.gcm.GCMBaseIntentService;
 public class GCMIntentService extends GCMBaseIntentService {
 	private static final String HOST = Config.getInstance().getAPIHost() + "/gcm";
 	private final Handler mainThreadHandler;
-	
+
 	public GCMIntentService() {
 		super(GCMIntentService.class.getName());
 		this.mainThreadHandler = new Handler();
 	}
-	
+
 	@Override
 	protected void onError(Context arg0, String arg1) {
 		// TODO Auto-generated method stub
@@ -53,12 +53,18 @@ public class GCMIntentService extends GCMBaseIntentService {
             		message.append(" :: ");
             		message.append(msg.getStringExtra("crisis_id") );
             		Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
+                    /**
+                     * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
+                     */
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
-     
+            		/**
+            		 * Notifier user via notification...
+            		 */
+            	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {
+            		/**
+            		 * Open single crisis activity
+            		 */
             	}
-                /**
-                 * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
-                 */
             }
         });
 	}
@@ -71,7 +77,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
 			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID+"&device_name="+android.os.Build.MODEL.replace(" ", "+"));
 			HttpResponse response = httpclient.execute(request);
-			
+
 			final String message;
 			if ( response.getStatusLine().getStatusCode() == 201 ) message = "Successfully subscribed!";
 			else {
