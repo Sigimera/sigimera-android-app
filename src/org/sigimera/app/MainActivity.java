@@ -1,8 +1,12 @@
 package org.sigimera.app;
 
+import org.json.JSONArray;
 import org.sigimera.app.controller.ApplicationController;
+import org.sigimera.app.controller.CrisesController;
+import org.sigimera.app.controller.LocationController;
 import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
+import org.sigimera.app.model.SigimeraConstants;
 import org.sigimera.app.util.Config;
 
 import com.google.android.gcm.GCMRegistrar;
@@ -30,14 +34,23 @@ public class MainActivity extends Activity {
 		
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if ( activeNetwork != null && activeNetwork.isConnected() ) {
+		if ( activeNetwork != null && activeNetwork.isConnected() ) {						
+			
 			this.session_handler = SessionHandler.getInstance(getSessionSettings());
 			try {
 				String auth_token = this.session_handler.getAuthenticationToken();
 	
-				Intent listIntent = new Intent(MainActivity.this,
-						CrisesListActivity.class);
-				listIntent.putExtra("auth_token", auth_token);
+				//TODO: extract this block in a separate method
+				JSONArray nearCrises = CrisesController.getInstance().getNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
+	    		if ( nearCrises != null &&  nearCrises.length() > 0 ){
+	    			//TODO: show context menu with the near crises
+	    			Log.i(SigimeraConstants.LOG_TAG_SIGIMERA_APP, nearCrises.toString());
+	    			new Notification(getApplicationContext(), "Found " + nearCrises.length() + "crises near you.\n TODO: show near crises", Toast.LENGTH_LONG);
+	    		} else {
+	    			Intent listIntent = new Intent(MainActivity.this, CrisesListActivity.class);
+					listIntent.putExtra("auth_token", auth_token);
+					this.startActivity(listIntent);
+	    		}
 				/**
 				 * BEGIN: Google Cloud Messaging
 				 */
@@ -47,13 +60,13 @@ public class MainActivity extends Activity {
 						final String regId = GCMRegistrar.getRegistrationId(this);
 						if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
 					} catch (Exception e) {
-						Log.v(Config.LOG_TAG, "Device meets not the GCM requirements. Exception: " + e);
+						Log.v(SigimeraConstants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
 					}
 				}
 				/**
 				 * END: Google Cloud Messaging
 				 */
-				this.startActivity(listIntent);
+				
 			} catch (AuthenticationErrorException e) {
 				Intent loginIntent = new Intent(MainActivity.this,
 						LoginActivity.class);
