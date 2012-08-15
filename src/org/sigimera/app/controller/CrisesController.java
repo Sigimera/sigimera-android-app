@@ -17,7 +17,7 @@ import org.sigimera.app.util.Config;
 public class CrisesController {
 	private static CrisesController instance = null;
 	
-	private final String HOST = Config.getInstance().getAPIHost() + "/crises.json?output=short&auth_token=";
+	private final String HOST = Config.API_HOST+"/crises.json?output=short&auth_token=";
 	
 	private CrisesController() {}
 	
@@ -27,6 +27,13 @@ public class CrisesController {
 		return instance;
 	}
 	
+	/**
+	 * Retrieve a crisis page with X crisis.
+	 * 
+	 * @param _auth_token The authentication token as retrieved after successful login
+	 * @param _page The page to retrieve, starting from page 1 (one)
+	 * @return
+	 */
 	public JSONArray getCrises(String _auth_token, int _page) {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet request = new HttpGet(HOST + _auth_token + "&page=" + _page);
@@ -52,6 +59,11 @@ public class CrisesController {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param crisis The single crisis JSON object as received from the Sigimera REST API
+	 * @return The shortened title that is human-readable
+	 */
 	public String getShortTitle(JSONObject crisis) {
 		String title = "";
 		try {

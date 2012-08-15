@@ -13,20 +13,23 @@ import org.sigimera.app.controller.ApplicationController;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-public class Config {			
+public class Config {	
 	/**
 	 * <b>ATTENTION:</b> Change this only if you know what you are doing.
 	 */
 	public static final String LOG_TAG = "SigimeraAndroidApp";
 	
+	/**
+	 * The Sigimera Google Cloud Messaging project ID
+	 */
 	public static final String GCM_PROJECT_ID = null;
-			
+	
+	/**
+	 * The Sigimera Endpoints
+	 */
 	private String WWW_HOST = null;
 	private String API_HOST = null;
 		
-	/**
-	 * Singleton pattern 
-	 */
 	private static Config instance = null;
 	
 	public static Config getInstance() {
