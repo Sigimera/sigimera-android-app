@@ -83,8 +83,7 @@ public class CrisisActivity extends MapActivity {
 					try {
 						crisis = new JSONObject(getIntent().getStringExtra(
 								"crisis"));
-						String crisis_type = crisis.getJSONArray("dc_subject")
-								.getString(0);
+						String crisis_type = crisis.getString("subject");
 						System.out.println(crisis_type);
 						if (crisis_type.contains("flood"))
 							mapIcon = getResources().getDrawable(
