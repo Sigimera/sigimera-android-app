@@ -11,6 +11,9 @@ Installation
 1. Solution: The Sigimera Android App can be installed directly from the source code (use for this the .apk package).
 2. Solution: You can also install the latest version from the Google Play store (starting from version 1.0.0)
 
+In order to compile and run this app from the sourcecode you have to copy the
+configuration file _config.xml-example_ to _/res/raw/config.xml_
+
 
 Contact
 -------

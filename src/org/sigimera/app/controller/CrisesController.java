@@ -17,7 +17,7 @@ import org.sigimera.app.util.Config;
 public class CrisesController {
 	private static CrisesController instance = null;
 	
-	private final String HOST = Config.API_HOST+"/crises.json?output=short&auth_token=";
+	private final String HOST = Config.getInstance().getAPIHost()+"/crises.json?output=short&auth_token=";
 	
 	private CrisesController() {}
 	

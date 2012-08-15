@@ -41,11 +41,11 @@ public class MainActivity extends Activity {
 				/**
 				 * BEGIN: Google Cloud Messaging
 				 */
-				if ( Config.GCM_PROJECT_ID != null ) {
+				if ( Config.getInstance().getGcmProjectId() != null ) {
 					try {
 						GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
 						final String regId = GCMRegistrar.getRegistrationId(this);
-						if (regId.equals("")) GCMRegistrar.register(this, Config.GCM_PROJECT_ID);
+						if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
 					} catch (Exception e) {
 						Log.v(Config.LOG_TAG, "Device meets not the GCM requirements. Exception: " + e);
 					}

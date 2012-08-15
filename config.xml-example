@@ -1,0 +1,5 @@
+<config>
+    <gcm-project-id>TODO_CHANGE_THIS_TO_GOOGLE_PROJECT_ID</gcm-project-id>
+    <www-host>http://www.sigimera.org/api/v1</www-host>
+    <api-host>http://api.sigimera.org/v1</api-host>
+</config>

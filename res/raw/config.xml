@@ -1,4 +1,0 @@
-<config>
-    <www-host>http://www.sigimera.org:3000/api/v1</www-host>
-    <api-host>http://www.sigimera.org:9292/v1</api-host>
-</config>

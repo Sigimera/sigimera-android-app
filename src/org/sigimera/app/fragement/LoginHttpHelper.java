@@ -24,7 +24,7 @@ import android.os.AsyncTask;
 
 public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 
-	private final String HOST = Config.WWW_HOST+"/tokens.json";
+	private final String HOST = Config.getInstance().getWWWHost()+"/tokens.json";
 	
 	@Override
 	protected Boolean doInBackground(String... params) {

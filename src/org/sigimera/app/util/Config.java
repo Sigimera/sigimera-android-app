@@ -20,15 +20,15 @@ public class Config {
 	public static final String LOG_TAG = "SigimeraAndroidApp";
 	
 	/**
-	 * The Sigimera Google Cloud Messaging project ID
-	 */
-	public static final String GCM_PROJECT_ID = null;
-	
-	/**
 	 * The Sigimera Endpoints
 	 */
-	private String WWW_HOST = null;
-	private String API_HOST = null;
+	private String www_host = null;
+	private String api_host = null;
+	
+	/**
+	 * The Sigimera Google Cloud Messaging project ID
+	 */
+	private String gcm_project_id = null;
 		
 	private static Config instance = null;
 	
@@ -45,8 +45,9 @@ public class Config {
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			Node config_node = (Node) xpath.evaluate("//config", inputSource, XPathConstants.NODE);
 			
-			API_HOST = xpath.evaluate("api-host/text()", config_node);			
-			WWW_HOST = xpath.evaluate("www-host/text()", config_node);
+			api_host = xpath.evaluate("api-host/text()", config_node);			
+			www_host = xpath.evaluate("www-host/text()", config_node);
+			gcm_project_id = xpath.evaluate("gcm-project-id/text()", config_node);
 			inputStream.close();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -58,10 +59,14 @@ public class Config {
 	}
 	
 	public String getAPIHost() {
-		return this.API_HOST;
+		return this.api_host;
 	}
 
 	public String getWWWHost() {
-		return this.WWW_HOST;
+		return this.www_host;
+	}
+	
+	public String getGcmProjectId() {
+		return this.gcm_project_id;
 	}
 }

@@ -28,7 +28,7 @@ import com.google.android.gcm.GCMBaseIntentService;
  * This Intent is called when the GCM executing process has finished.
  */
 public class GCMIntentService extends GCMBaseIntentService {
-	private static final String HOST = Config.API_HOST + "/gcm";
+	private static final String HOST = Config.getInstance().getAPIHost() + "/gcm";
 	private final Handler mainThreadHandler;
 	
 	public GCMIntentService() {
