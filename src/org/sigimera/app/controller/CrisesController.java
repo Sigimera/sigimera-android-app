@@ -12,7 +12,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.model.SigimeraConstants;
 import org.sigimera.app.util.Config;
+
+import android.location.Location;
+import android.util.Log;
 
 public class CrisesController {
 	private static CrisesController instance = null;
@@ -38,6 +42,35 @@ public class CrisesController {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet request = new HttpGet(HOST + _auth_token + "&page=" + _page);
 		try {
+			Log.i(SigimeraConstants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
+			HttpResponse result = httpclient.execute(request);
+			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
+			return json_response;
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			httpclient.getConnectionManager().shutdown();
+		}
+		return null;
+	}
+	
+	public JSONArray getNearCrises(String _auth_token, int _page, Location _location) {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpGet request = new HttpGet(HOST + _auth_token + "&page=" + _page 
+				+ "&lat=" + _location.getLatitude() + "&lon=" + _location.getLongitude() 
+				+ "&radius=" + SigimeraConstants.LOCATION_RADIUS);
+		try {
+			Log.i(SigimeraConstants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
 			HttpResponse result = httpclient.execute(request);
 			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
 			return json_response;
