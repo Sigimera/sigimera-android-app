@@ -6,6 +6,8 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.controller.ApplicationController;
+import org.sigimera.app.controller.Cache;
 import org.sigimera.app.controller.Common;
 import org.sigimera.app.controller.CrisesController;
 
@@ -76,12 +78,14 @@ public class CrisesListActivity extends Activity {
 			for ( int count = 0; count < crises.length(); count++ ) {
 				try {
 					JSONObject crisis = (JSONObject) crises.get(count);
+					Cache cache = ApplicationController.getInstance().getCache();
+					cache.addCrisis(crisis);
+					System.out.println("Cache number of crises: " + cache.getCrisesNumber());
 	
 					map = new HashMap<String, String>();
 					map.put("top", crisisControler.getShortTitle(crisis));
 	
-					String crisis_type = crisis.getJSONArray("dc_subject")
-							.getString(0);
+					String crisis_type = crisis.getString("subject");
 					if (crisis_type.contains("flood"))
 						map.put("icon", R.drawable.flood + "");
 					else if (crisis_type.contains("earthquake"))

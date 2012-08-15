@@ -102,7 +102,7 @@ public class CrisesController {
 		try {
 			title += crisis.getString("crisis_alertLevel");
 			title += " ";
-			title += crisis.getJSONArray("dc_subject").get(0);
+			title += crisis.getString("subject");
 			title += " alert ";
 			
 			if ( crisis.has("gn_parentCountry") && crisis.getJSONArray("gn_parentCountry").length() > 0 ){
