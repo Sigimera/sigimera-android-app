@@ -24,7 +24,9 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		ApplicationController.getInstance().setApplicationContext(getApplicationContext());
+		ApplicationController appController = ApplicationController.getInstance();
+		appController.setApplicationContext(getApplicationContext());
+		appController.setSharedPreferences(getSessionSettings());
 		
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
