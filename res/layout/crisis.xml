@@ -2,18 +2,17 @@
 	    android:smoothScrollbar="true"  
     	android:layout_width="fill_parent" 
     	android:layout_height="fill_parent">
- 
+	
 	<com.google.android.maps.MapView 
        	android:id="@+id/map_view"
        	android:layout_width="fill_parent"
        	android:layout_height="150dp"
-       	android:enabled="true"
        	android:clickable="true"
        	android:apiKey="03g51D-zCFK-uOq5ZjLC22B1TI90S0E-AmE7gZQ"     
     />
     <!-- The following key is for the signed application! The key above is the debugging key -->
     <!-- android:apiKey="03g51D-zCFK-uOq5ZjLC22B1TI90S0E-AmE7gZQ"-->
-        
+	
 	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/crisis_info_list"
     	android:orientation="vertical"
@@ -21,5 +20,5 @@
     	android:paddingTop="155dp"
     	android:layout_height="wrap_content"
     />
- 
+
 </RelativeLayout>
