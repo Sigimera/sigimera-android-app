@@ -12,7 +12,6 @@ import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.model.map.CollectionOverlay;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +19,6 @@ import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -105,10 +103,8 @@ public class CrisisActivity extends MapActivity {
 						e.printStackTrace();
 					}
 
-					final MapView mapView = (MapView) findViewById(R.id.map_view);
+					final MapView mapView = (MapView) findViewById(R.id.map_view);					
 					mapView.setSatellite(true);
-					mapView.setClickable(true);
-					mapView.setOnClickListener(mapClickListener);
 					mapOverlays = mapView.getOverlays();
 
 					collectionOverlay = new CollectionOverlay(mapIcon);
@@ -219,12 +215,6 @@ public class CrisisActivity extends MapActivity {
 		return map;
 	}
 	
-	private OnClickListener mapClickListener = new OnClickListener() {
-		public void onClick(View arg0) {
-			Intent mapIntent = new Intent(CrisisActivity.this, FullMapActivity.class);
-			startActivity(mapIntent);
-		}		
-	};
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> list, View view, int position,

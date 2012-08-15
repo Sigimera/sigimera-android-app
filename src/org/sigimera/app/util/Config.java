@@ -1,8 +1,18 @@
 package org.sigimera.app.util;
 
-/**
- * TODO: Out-source the configuration values to an external configuration file.
- */
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.sigimera.app.R;
+import org.sigimera.app.controller.ApplicationController;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
 public class Config {			
 	/**
 	 * <b>ATTENTION:</b> Change this only if you know what you are doing.
@@ -11,9 +21,9 @@ public class Config {
 	
 	public static final String GCM_PROJECT_ID = null;
 			
-	private final String WWW_HOST = "http://172.16.1.28:3000/api/v1";
-	private final String API_HOST = "http://172.16.1.28:9292/v1";
-
+	private String WWW_HOST = null;
+	private String API_HOST = null;
+		
 	/**
 	 * Singleton pattern 
 	 */
@@ -25,22 +35,25 @@ public class Config {
 	}
 
 	private Config() {
-//		try {
-//			settings = new Properties();
-//			FileInputStream fis = new FileInputStream("values/settings.xml");
-//			settings.loadFromXML(fis);
-//			
-//			WWW_HOST = settings.getProperty("www.host");
-//			API_HOST = settings.getProperty("api.host");
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		InputStream inputStream = ApplicationController.getInstance().getApplicationContext().getResources().openRawResource(R.raw.config);
+		InputSource inputSource = new InputSource(inputStream);
+				
+		try {
+			XPath xpath = XPathFactory.newInstance().newXPath();
+			Node config_node = (Node) xpath.evaluate("//config", inputSource, XPathConstants.NODE);
+			
+			API_HOST = xpath.evaluate("api-host/text()", config_node);			
+			WWW_HOST = xpath.evaluate("www-host/text()", config_node);
+			inputStream.close();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
+	
 	public String getAPIHost() {
 		return this.API_HOST;
 	}
