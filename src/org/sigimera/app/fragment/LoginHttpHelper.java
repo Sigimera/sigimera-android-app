@@ -1,4 +1,4 @@
-package org.sigimera.app.fragement;
+package org.sigimera.app.fragment;
 
 import java.io.BufferedReader;
 import java.io.IOException;

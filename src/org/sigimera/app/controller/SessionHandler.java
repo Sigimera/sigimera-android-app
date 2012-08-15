@@ -3,7 +3,7 @@ package org.sigimera.app.controller;
 import java.util.concurrent.ExecutionException;
 
 import org.sigimera.app.exception.AuthenticationErrorException;
-import org.sigimera.app.fragement.LoginHttpHelper;
+import org.sigimera.app.fragment.LoginHttpHelper;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;

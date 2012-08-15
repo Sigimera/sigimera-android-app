@@ -46,11 +46,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 		final Intent msg = _message;
 		this.mainThreadHandler.post(new Runnable() {
             public void run() {
-            	StringBuffer message = new StringBuffer();
-            	message.append(msg.getStringExtra("sig_message_type"));
-            	message.append(" :: ");
-            	message.append(msg.getStringExtra("crisis_id") );
-                Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
+            	final String type = msg.getStringExtra("sig_message_type");
+            	if ( type.equalsIgnoreCase("NEW_CRISIS") ) {
+            		StringBuffer message = new StringBuffer();
+            		message.append(msg.getStringExtra("sig_message_type"));
+            		message.append(" :: ");
+            		message.append(msg.getStringExtra("crisis_id") );
+            		Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
+            	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
+     
+            	}
                 /**
                  * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
                  */
