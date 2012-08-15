@@ -13,12 +13,10 @@ import org.sigimera.app.controller.ApplicationController;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-public class Config {	
-	/**
-	 * <b>ATTENTION:</b> Change this only if you know what you are doing.
-	 */
-	public static final String LOG_TAG = "SigimeraAndroidApp";
-	
+/**
+ * <b>ATTENTION:</b> Change this only if you know what you are doing.
+ */
+public class Config {		
 	/**
 	 * The Sigimera Endpoints
 	 */
