@@ -68,11 +68,15 @@ public class Cache extends SQLiteOpenHelper {
 				}
 			}
 			SQLiteDatabase db = getWritableDatabase();
-			db.beginTransaction();
 			db.insert("crises", null, values);
-			db.endTransaction();
+			db.close();
 		}
 		return true;
+	}
+	
+	public void getLatestCrises(int _number, int _page) {
+		SQLiteDatabase db = getReadableDatabase();
+//		db.query(TABLE_CRISES, columns, selection, selectionArgs, groupBy, having, orderBy)
 	}
 	
 	public long getCrisesNumber() {
@@ -95,7 +99,6 @@ public class Cache extends SQLiteOpenHelper {
 		else
 			returnValue = false;
 		db.endTransaction();
-		db.close();
 		return returnValue;
 	}
 	
@@ -129,5 +132,7 @@ public class Cache extends SQLiteOpenHelper {
 			e.printStackTrace();
 		}
 	}
+
+	public void onExit() { this.close(); }
 
 }

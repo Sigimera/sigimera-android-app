@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.controller.ApplicationController;
+import org.sigimera.app.controller.Cache;
 import org.sigimera.app.controller.Common;
 import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.model.Constants;
@@ -82,13 +83,14 @@ public class CrisesListFragment extends ListFragment {
 		ArrayList<HashMap<String, String>> buttonList = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> map = new HashMap<String, String>();		
 		
+		Cache cache = null;
 		try {
 			for ( int count = 0; count < crises.length(); count++ ) {
 				try {
+					cache = ApplicationController.getInstance().getCache();
 					JSONObject crisis = (JSONObject) crises.get(count);
-//					Cache cache = ApplicationController.getInstance().getCache();
-//					cache.addCrisis(crisis);
-//					System.out.println("Cache number of crises: " + cache.getCrisesNumber());
+					cache.addCrisis(crisis);
+					System.out.println("Cache number of crises: " + cache.getCrisesNumber());
 	
 					map = new HashMap<String, String>();
 					map.put("top", crisisControler.getShortTitle(crisis));
@@ -113,9 +115,12 @@ public class CrisesListFragment extends ListFragment {
 		} catch (NullPointerException e) {
 			//TODO: Auto-generated catch block
 			e.printStackTrace();
-		}					
+		} finally {
+			if ( null != cache )
+				cache.onExit();
+		}
 		
-		SimpleAdapter adapterMainList = new SimpleAdapter(context, buttonList,
+		SimpleAdapter adapterMainList = new SimpleAdapter(context, buttonList,			
 				R.layout.list_entry, new String[] { "icon", "top", "bottom" }, new int[] {
 						R.id.icon, R.id.topText, R.id.bottomText });		
 		setListAdapter(adapterMainList);
@@ -153,7 +158,6 @@ public class CrisesListFragment extends ListFragment {
 	}
 	
 	OnItemClickListener clickListener = new OnItemClickListener() {
-		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			crisesListListener.onCrisesListItemClicked(arg0, arg1, arg2, arg3);

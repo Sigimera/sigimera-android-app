@@ -107,7 +107,6 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 		}
 	}
 
-	@Override
 	public void onLoginClicked() {		
 		EditText emailView = (EditText) findViewById(R.id.email_input_field);
 		EditText passwordView = (EditText) findViewById(R.id.password_input_field);
@@ -133,7 +132,6 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 		}
 	}
 
-	@Override
 	public void onCrisesListItemClicked(AdapterView<?> adapterView, View view, int position, long arg3) {		
 		try {			
 			String[] titles = { "Last Crises", "Crisis Info" };
