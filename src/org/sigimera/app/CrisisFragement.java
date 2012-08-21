@@ -55,6 +55,8 @@ public class CrisisFragement extends ListFragment {
 
 	private static final int MENU_SHARE = 0x0010;
 	private static final int MENU_ABOUT = 0x0020;
+	private static final int MENU_ADD = 0x0030;
+	private static final int MENU_COMMENT = 0x0040;
 	
 	private static final DecimalFormat format = new DecimalFormat("##.0000");
 	
@@ -208,6 +210,8 @@ public class CrisisFragement extends ListFragment {
 		super.onCreateOptionsMenu(menu, inflater);
 		menu.add(0, MENU_SHARE, 20, "Share crisis").setIcon(R.drawable.glyphicons_326_share);
 		menu.add(0, MENU_ABOUT, 30, "About").setIcon(R.drawable.about_icon);
+		menu.add(0, MENU_ADD, 30, "Add").setIcon(R.drawable.glyphicons_190_circle_plus);
+		menu.add(0, MENU_COMMENT, 40, "Comment").setIcon(R.drawable.glyphicons_309_comments);
 	}
 	
 	@Override
