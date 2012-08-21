@@ -19,27 +19,16 @@
  */
 package org.sigimera.app.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.helper.crises.CrisesHttpHelper;
 import org.sigimera.app.helper.crises.NearCrisesHttpHelper;
-import org.sigimera.app.model.Constants;
-import org.sigimera.app.util.Config;
 
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * @author Corneliu-Valentin Stanciu, Alex Oberhauser
