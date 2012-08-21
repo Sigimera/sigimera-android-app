@@ -19,6 +19,7 @@
  */
 package org.sigimera.app;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -52,22 +53,23 @@ public class CrisisFragement extends ListFragment {
 	private Activity activity;
 	private CrisesController crisisController = CrisesController.getInstance();
 
-	private static final String BOTTOM = "bottom";
-	private static final String TOP = "top";
-	private static final String ICON = "icon";
-	private static final String ARROW = "rightArrow";
-
 	private static final int MENU_SHARE = 0x0010;
 	private static final int MENU_ABOUT = 0x0020;
-
-	private JSONObject crisis;
-
+	
+	private static final DecimalFormat format = new DecimalFormat("##.0000");
+	
 	private String alertLevel = null;
 	private String severity = null;
-	private String description = null;
-	private JSONArray country = null;
+	private String description = null;	
 	private String countryConcat = "";
 	private String affectedPeople = null;
+	private String crisisType = null;
+	private JSONObject crisis = null;
+	private JSONArray country = null;
+	private JSONArray coordinates = null;
+	
+	private Double latitude;
+	private Double longitude;
 	
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -96,13 +98,25 @@ public class CrisisFragement extends ListFragment {
 			description = crisis.getString("dc_description");
 			country = crisis.getJSONArray("gn_parentCountry");
 			affectedPeople = crisis.getString("crisis_population");
+			coordinates = crisis.getJSONArray("foaf_based_near");
+			crisisType = crisis.getString("subject");
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//TODO: show as bottom text the GPS coordinates
-		collectionList.add(getListEntry("Map", "See crisis on map", 
-				String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
+		if ( coordinates != null && coordinates.length() > 1 )
+			try {
+				latitude = Double.valueOf(coordinates.get(1).toString());
+				longitude = Double.valueOf(coordinates.get(0).toString());
+				
+				collectionList.add(getListEntry("See crisis on map", 
+						"Lat:" + format.format(latitude) + " -- Long:" + format.format(longitude), 
+						String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		if (description != null)
 			collectionList.add(getListEntry(description.substring(0, 80) + " ...", 
@@ -124,6 +138,7 @@ public class CrisisFragement extends ListFragment {
 					if (i != 0)
 						countryConcat += ", ";
 				} catch (JSONException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -133,8 +148,8 @@ public class CrisisFragement extends ListFragment {
 
 		// Add list to the view
 		SimpleAdapter adapterCollectionList = new SimpleAdapter(this.activity,
-				collectionList, R.layout.list_entry, new String[] { ICON, TOP,
-						BOTTOM, ARROW }, new int[] { R.id.icon, R.id.topText,
+				collectionList, R.layout.list_entry, new String[] { Constants.ICON, Constants.TOP,
+						Constants.BOTTOM, Constants.ARROW }, new int[] { R.id.icon, R.id.topText,
 						R.id.bottomText });
 		setListAdapter(adapterCollectionList);
 	}
@@ -149,9 +164,9 @@ public class CrisisFragement extends ListFragment {
 	 */
 	private HashMap<String, String> getListEntry(String top, String bottom, String icon) {
 		HashMap<String, String> map = new HashMap<String, String>();
-		map.put(ICON, icon);
-		map.put(TOP, top);
-		map.put(BOTTOM, bottom);
+		map.put(Constants.ICON, icon);
+		map.put(Constants.TOP, top);
+		map.put(Constants.BOTTOM, bottom);
 		return map;
 	}
 
@@ -160,8 +175,12 @@ public class CrisisFragement extends ListFragment {
 				long id) {
 			String text = "";
 			switch (position) {
-			case 0:
-				startActivity(new Intent(getActivity(), FullMapActivity.class));
+			case 0:				
+					Intent mapActivity = new Intent(getActivity(), FullMapActivity.class);
+					mapActivity.putExtra(Constants.LATITUDE, latitude.toString());
+					mapActivity.putExtra(Constants.LONGITUDE, longitude.toString());
+					mapActivity.putExtra(Constants.CRISIS_TYPE, crisisType);
+					startActivity(mapActivity);
 				break;
 			case 1:
 				text = description;

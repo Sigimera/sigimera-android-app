@@ -93,15 +93,8 @@ public class CrisesListFragment extends ListFragment {
 					map = new HashMap<String, String>();
 					map.put("top", crisisControler.getShortTitle(crisis));
 	
-					String crisis_type = crisis.getString("subject");
-					if (crisis_type.contains("flood"))
-						map.put("icon", R.drawable.flood + "");
-					else if (crisis_type.contains("earthquake"))
-						map.put("icon", R.drawable.earthquake + "");
-					else if (crisis_type.contains("cyclone"))
-						map.put("icon", R.drawable.cyclone + "");
-					else if (crisis_type.contains("volcano"))
-						map.put("icon", R.drawable.volcano + "");
+					String crisis_type = crisis.getString("subject");					
+					map.put("icon", Common.getCrisisIcon(crisis_type) + "");
 	
 					map.put("bottom", crisis.getString("dc_date"));
 	

@@ -19,6 +19,9 @@
  */
 package org.sigimera.app.controller;
 
+import org.sigimera.app.R;
+import org.sigimera.app.model.Constants;
+
 import android.content.Intent;
 
 /**
@@ -38,5 +41,22 @@ public class Common {
 		shareIntent.setType("text/plain");
 		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, CRISIS_URL + crisisID);
 		return shareIntent;
+	}
+	
+	/**
+	 * Get the crisis icon based on the type of crisis (e.g. earthquake)
+	 * @param subject
+	 * @return
+	 */
+	public static int getCrisisIcon(String subject) {
+		if (subject.contains(Constants.FLOOD))
+			return R.drawable.flood;
+		else if (subject.contains(Constants.EARTHQUAKE))
+			return R.drawable.earthquake;
+		else if (subject.contains(Constants.CYCLONE))
+			return R.drawable.cyclone;
+		else if (subject.contains(Constants.VOLCANO))
+			return R.drawable.volcano;
+		return 0;
 	}
 }

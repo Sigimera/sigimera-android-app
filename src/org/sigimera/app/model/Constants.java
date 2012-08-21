@@ -44,4 +44,20 @@ public abstract class Constants {
 	 */
 	public static final String CRISES_LIST = "crises_list";
 	public static final String CRISIS = "crisis";
+	public static final String LATITUDE = "latitude";
+	public static final String LONGITUDE = "longitude";
+	public static final String CRISIS_TYPE = "crisis_type";
+	public static final String TOP = "top";
+	public static final String BOTTOM = "bottom";	
+	public static final String ICON = "icon";
+	public static final String ARROW = "rightArrow";
+	
+	/**
+	 * Crisis types
+	 */
+	public static final String EARTHQUAKE = "earthquake";
+	public static final String FLOOD = "flood";
+	public static final String CYCLONE = "cyclone";
+	public static final String VOLCANO = "volcano";
+	
 }
