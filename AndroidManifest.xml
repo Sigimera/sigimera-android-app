@@ -2,7 +2,7 @@
     package="org.sigimera.app"
     android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="1.0.0" >
+    android:versionName="1.0.0-beta" >
 
     <uses-sdk
         android:minSdkVersion="8"

@@ -19,27 +19,19 @@
  */
 package org.sigimera.app.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.helper.crises.CrisesHttpHelper;
-import org.sigimera.app.helper.crises.NearCrisesHttpHelper;
-import org.sigimera.app.model.Constants;
-import org.sigimera.app.util.Config;
+import org.sigimera.app.backend.PersistentStorage;
+import org.sigimera.app.backend.network.CrisesHttpHelper;
+import org.sigimera.app.backend.network.NearCrisesHttpHelper;
+import org.sigimera.app.model.Crisis;
 
+import android.database.Cursor;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * @author Corneliu-Valentin Stanciu, Alex Oberhauser
@@ -47,8 +39,11 @@ import android.util.Log;
  */
 public class CrisesController {
 	private static CrisesController instance = null;
+	private PersistentStorage pershandler;
 	
-	private CrisesController() {}
+	private CrisesController() {
+		this.pershandler = ApplicationController.getInstance().getPersistentStorageHandler();
+	}
 	
 	public static CrisesController getInstance() {
 		if ( null == instance )
@@ -64,19 +59,39 @@ public class CrisesController {
 	 * @param _page The page to retrieve, starting from page 1 (one)
 	 * @return
 	 */
-	public JSONArray getCrises(String _auth_token, int _page) {
-		AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
-		JSONArray retArray = null;
-		try {
-			retArray = crisesHelper.get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public Cursor getCrises(String _auth_token, int _page) {
+		Cursor c = this.pershandler.getLatestCrisesList(10, _page);
+		if ( c.getCount() == 0 ) {
+			AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
+			JSONArray crises = null;
+			try {
+				crises = crisesHelper.get();
+				for ( int count = 0; count < crises.length(); count++ ) {
+					try {
+						JSONObject crisis = (JSONObject) crises.get(count);
+						this.pershandler.addCrisis(crisis);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return retArray;
+		return c;
+	}
+	
+	public Crisis getLatestCrisis() {
+		return this.pershandler.getLatestCrisis();
+	}
+	
+	public Crisis getCrisis(String _crisisID) {
+		return this.pershandler.getCrisis(_crisisID);
 	}
 	
 	/**

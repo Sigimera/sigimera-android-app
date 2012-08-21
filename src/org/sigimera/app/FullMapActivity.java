@@ -21,9 +21,9 @@ package org.sigimera.app;
 
 import java.util.List;
 
-import org.sigimera.app.controller.Common;
 import org.sigimera.app.model.Constants;
 import org.sigimera.app.model.map.CollectionOverlay;
+import org.sigimera.app.util.Common;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

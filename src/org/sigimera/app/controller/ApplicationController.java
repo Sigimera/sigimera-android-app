@@ -19,6 +19,8 @@
  */
 package org.sigimera.app.controller;
 
+import org.sigimera.app.backend.PersistentStorage;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -29,7 +31,7 @@ public class ApplicationController {
 	
 	private Context context;
 	private SharedPreferences settings;
-	private Cache cache;
+	private PersistentStorage pershandler;
 	
 	private ApplicationController() {}
 	
@@ -42,7 +44,7 @@ public class ApplicationController {
 	public void init(Context _context, SharedPreferences _settings) {
 		this.context = _context;
 		this.settings = _settings;
-		this.cache = new Cache(_context);
+		this.pershandler = PersistentStorage.getInstance();
 		this.sessionHandler = SessionHandler.getInstance(this.settings);
 	}
 	
@@ -55,7 +57,7 @@ public class ApplicationController {
 	}
 	
 	public Context getApplicationContext() { return this.context; }
-	public Cache getCache() { return this.cache; }
+	public PersistentStorage getPersistentStorageHandler() { return this.pershandler; }
 	
 	public SessionHandler getSessionHandler() { return this.sessionHandler; }
 	

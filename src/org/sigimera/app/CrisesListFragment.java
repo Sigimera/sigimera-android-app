@@ -19,21 +19,16 @@
  */
 package org.sigimera.app;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.sigimera.app.controller.ApplicationController;
-import org.sigimera.app.controller.Cache;
-import org.sigimera.app.controller.Common;
 import org.sigimera.app.controller.CrisesController;
-import org.sigimera.app.model.Constants;
+import org.sigimera.app.exception.AuthenticationErrorException;
+import org.sigimera.app.util.Common;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,17 +37,14 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 /**
- * @author Corneliu-Valentin Stanciu
- * @email corneliu.stanciu@sigimera.org
+ * @author Corneliu-Valentin Stanciu, Alex Oberhauser
+ * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisesListFragment extends ListFragment {
-	private JSONArray crises;
-	private CrisesController crisisControler;
 	private Context context;
+	private Cursor c;
 	
 	private CrisesListListener crisesListListener;
 	
@@ -68,60 +60,30 @@ public class CrisesListFragment extends ListFragment {
 		getListView().setOnItemClickListener(clickListener);
 		
 		this.context = getActivity();
-		this.crisesListListener = (CrisesListListener) getActivity();
-		this.crisisControler = CrisesController.getInstance();				
-		
-		try {
-			this.crises = new JSONArray(getArguments().getString(Constants.CRISES_LIST));
-			showCrises();
-		} catch (JSONException e) {
-			new Notification(getActivity(), "No crises attached to the fragment", Toast.LENGTH_LONG);
-		}						
+		this.crisesListListener = (CrisesListListener) getActivity();			
+
+		showCrises();					
 	}
 	
 	private void showCrises() {
-		ArrayList<HashMap<String, String>> buttonList = new ArrayList<HashMap<String, String>>();
-		HashMap<String, String> map = new HashMap<String, String>();		
-		
-		Cache cache = null;
+		String auth_token = null;
 		try {
-			for ( int count = 0; count < crises.length(); count++ ) {
-				try {
-					cache = ApplicationController.getInstance().getCache();
-					JSONObject crisis = (JSONObject) crises.get(count);
-					cache.addCrisis(crisis);
-					System.out.println("Cache number of crises: " + cache.getCrisesNumber());
-	
-					map = new HashMap<String, String>();
-					map.put("top", crisisControler.getShortTitle(crisis));
-	
-					String crisis_type = crisis.getString("subject");					
-					map.put("icon", Common.getCrisisIcon(crisis_type) + "");
-	
-					map.put("bottom", crisis.getString("dc_date"));
-	
-					buttonList.add(map);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		} catch (NullPointerException e) {
-			//TODO: Auto-generated catch block
+			ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+		} catch (AuthenticationErrorException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if ( null != cache )
-				cache.onExit();
 		}
+		this.c = CrisesController.getInstance().getCrises(auth_token, 1);
 		
-		SimpleAdapter adapterMainList = new SimpleAdapter(context, buttonList,			
-				R.layout.list_entry, new String[] { "icon", "top", "bottom" }, new int[] {
-						R.id.icon, R.id.topText, R.id.bottomText });		
+		SimpleCursorAdapter adapterMainList = new SimpleCursorAdapter(context, R.layout.list_entry, this.c, 
+				new String[] { "type_icon", "short_title", "dc_date" },
+				new int[] { R.id.icon, R.id.topText, R.id.bottomText }, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		setListAdapter(adapterMainList);
 	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
-	                                ContextMenuInfo menuInfo) {
+			ContextMenuInfo menuInfo) {
 	    super.onCreateContextMenu(menu, v, menuInfo);
 	    menu.setHeaderTitle("Options");
 	    menu.setHeaderIcon(R.drawable.sigimera_logo);	    
@@ -135,16 +97,15 @@ public class CrisesListFragment extends ListFragment {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	    switch (item.getItemId()) {
 	        case R.id.open:
-	        	crisesListListener.onCrisesListItemClicked(null, null, info.position, 0);
+	        	this.crisesListListener.onCrisesListItemClicked(null, null, info.position, 0);
 	            return true;
 	        case R.id.share:
-				try {
-					this.startActivity(Common.shareCrisis(((JSONObject) crises.get(info.position)).getString("_id")));
-				} catch (JSONException e) {
-					new Notification(ApplicationController.getInstance().getApplicationContext(), 
-							"Failed to get the crisis", Toast.LENGTH_SHORT);
+				boolean success = this.c.moveToPosition(info.position);
+				if ( success ) {
+					String crisisID = this.c.getString(this.c.getColumnIndex("_id"));
+					this.startActivity(Common.shareCrisis(crisisID));
 				}
-	            return true;
+	            return success;
 	        default:
 	            return super.onContextItemSelected(item);
 	    }

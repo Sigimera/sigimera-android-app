@@ -23,13 +23,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.sigimera.app.backend.PersistentStorage;
 import org.sigimera.app.controller.ApplicationController;
-import org.sigimera.app.controller.Common;
 import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.model.Constants;
+import org.sigimera.app.model.Crisis;
+import org.sigimera.app.util.Common;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -64,27 +63,30 @@ public class CrisisFragement extends ListFragment {
 	private String countryConcat = "";
 	private String affectedPeople = null;
 	private String crisisType = null;
-	private JSONObject crisis = null;
-	private JSONArray country = null;
-	private JSONArray coordinates = null;
+//	private JSONObject crisis = null;
+//	private JSONArray country = null;
+//	private JSONArray coordinates = null;
 	
 	private Double latitude;
 	private Double longitude;
-	
+
+	private Crisis crisis;
+
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);					
 		ListView list = this.getListView();
-		list.setOnItemClickListener(listClickListener);
+		list.setOnItemClickListener(this.listClickListener);
 		
-		activity = getActivity();
+		this.activity = getActivity();
 		
-		try {
-			this.crisis = new JSONObject(getArguments().getString(Constants.CRISIS));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String crisisID = getArguments().getString(Constants.CRISIS);
+		PersistentStorage pershandler = ApplicationController.getInstance().getPersistentStorageHandler();
+		if ( null != crisisID ) {
+			this.crisis = pershandler.getCrisis(crisisID);
+		} else {
+			this.crisis = pershandler.getLatestCrisis();
 		}
 		updateGUI();
 	}
@@ -92,31 +94,26 @@ public class CrisisFragement extends ListFragment {
 	private void updateGUI() {
 		ArrayList<HashMap<String, String>> collectionList = new ArrayList<HashMap<String, String>>();
 
-		try {
-			alertLevel = crisis.getString("crisis_alertLevel");
-			severity = crisis.getString("crisis_severity");
-			description = crisis.getString("dc_description");
-			country = crisis.getJSONArray("gn_parentCountry");
-			affectedPeople = crisis.getString("crisis_population");
-			coordinates = crisis.getJSONArray("foaf_based_near");
-			crisisType = crisis.getString("subject");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		alertLevel = crisis.getAlertLevel();
+		severity = crisis.getSeverity();
+		description = crisis.getDescription();
+//			country = crisis.getParentCountry();
+			affectedPeople = crisis.getPopulation();
+//			coordinates = crisis.getJSONArray("foaf_based_near");
+			crisisType = crisis.getSubject();
 		
-		if ( coordinates != null && coordinates.length() > 1 )
-			try {
-				latitude = Double.valueOf(coordinates.get(1).toString());
-				longitude = Double.valueOf(coordinates.get(0).toString());
-				
-				collectionList.add(getListEntry("See crisis on map", 
-						"Lat:" + format.format(latitude) + " -- Long:" + format.format(longitude), 
-						String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		if ( coordinates != null && coordinates.length() > 1 )
+//			try {
+//				latitude = Double.valueOf(coordinates.get(1).toString());
+//				longitude = Double.valueOf(coordinates.get(0).toString());
+//				
+//				collectionList.add(getListEntry("See crisis on map", 
+//						"Lat: " + format.format(latitude) + " -- Long:" + format.format(longitude), 
+//						String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		
 		if (description != null)
 			collectionList.add(getListEntry(description.substring(0, 80) + " ...", 
@@ -130,21 +127,21 @@ public class CrisisFragement extends ListFragment {
 		if (severity != null)
 			collectionList.add(getListEntry(CrisesController.getInstance().capitalize(severity), 
 					"Severity", String.valueOf(R.drawable.glyphicons_079_signal_white)));
-
-		if (country != null && country.length() > 0) {
-			for (int i = 0; i < country.length(); i++) {
-				try {
-					countryConcat += crisisController.capitalize(String.valueOf(country.get(i)));
-					if (i != 0)
-						countryConcat += ", ";
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			collectionList.add(getListEntry(countryConcat, "Country",
-					String.valueOf(R.drawable.glyphicons_266_flag_white)));
-		}			
+//
+//		if (country != null && country.length() > 0) {
+//			for (int i = 0; i < country.length(); i++) {
+//				try {
+//					countryConcat += crisisController.capitalize(String.valueOf(country.get(i)));
+//					if (i != 0)
+//						countryConcat += ", ";
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			collectionList.add(getListEntry(countryConcat, "Country",
+//					String.valueOf(R.drawable.glyphicons_266_flag_white)));
+//		}			
 
 		// Add list to the view
 		SimpleAdapter adapterCollectionList = new SimpleAdapter(this.activity,
@@ -214,12 +211,11 @@ public class CrisisFragement extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_SHARE:
-			try {
-				this.startActivity(Common.shareCrisis(crisis.getString("_id")));
-			} catch (JSONException e) {
+			if ( crisis.getID() != null )
+				this.startActivity(Common.shareCrisis(crisis.getID()));
+			else
 				new Notification(ApplicationController.getInstance().getApplicationContext(), 
-						"Failed to read the crisis ID", Toast.LENGTH_SHORT);
-			}
+					"Failed to read the crisis ID", Toast.LENGTH_SHORT);
 			return true;
 		case MENU_ABOUT:
 			new Notification(ApplicationController.getInstance().getApplicationContext(), 

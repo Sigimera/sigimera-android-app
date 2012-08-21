@@ -10,8 +10,10 @@ CREATE TABLE crises (
 	crisis_population TEXT,
 	crisis_vulnerability TEXT,
 	dc_date TEXT,
-	schema_startDate,
-	schema_endDate
+	schema_startDate TEXT,
+	schema_endDate TEXT,
+	short_title TEXT,
+	type_icon TEXT
 );
 
 CREATE TABLE countries (

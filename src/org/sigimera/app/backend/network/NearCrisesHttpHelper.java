@@ -1,4 +1,4 @@
-package org.sigimera.app.helper.crises;
+package org.sigimera.app.backend.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
