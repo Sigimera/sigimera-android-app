@@ -22,6 +22,7 @@ package org.sigimera.app.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -31,22 +32,21 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.helper.crises.CrisesHttpHelper;
+import org.sigimera.app.helper.crises.NearCrisesHttpHelper;
 import org.sigimera.app.model.Constants;
 import org.sigimera.app.util.Config;
 
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.Log;
 
 /**
- * 
- * @author Corneliu-Valentin Stanciu
- * @email  corneliu.stanciu@sigimera.org
+ * @author Corneliu-Valentin Stanciu, Alex Oberhauser
+ * @email  corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisesController {
 	private static CrisesController instance = null;
-	
-	private final String HOST = Config.getInstance().getAPIHost()+"/crises.json?output=short&auth_token=";
-	private final String FREE_HOST = Config.getInstance().getFreeAPIHost();
 	
 	private CrisesController() {}
 	
@@ -57,6 +57,7 @@ public class CrisesController {
 	}
 	
 	/**
+	 * TODO: Extract the crises from the cache...
 	 * Retrieve a crisis page with X crisis.
 	 * 
 	 * @param _auth_token The authentication token as retrieved after successful login
@@ -64,61 +65,40 @@ public class CrisesController {
 	 * @return
 	 */
 	public JSONArray getCrises(String _auth_token, int _page) {
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet request;
-		if ( _auth_token != null )
-			request = new HttpGet(HOST + _auth_token + "&page=" + _page);
-		else
-			request = new HttpGet(FREE_HOST);
+		AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
+		JSONArray retArray = null;
 		try {
-			Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
-			HttpResponse result = httpclient.execute(request);
-			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
-			return json_response;
-		} catch (ClientProtocolException e) {
+			retArray = crisesHelper.get();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			httpclient.getConnectionManager().shutdown();
 		}
-		return null;
+		return retArray;
 	}
 	
+	/**
+	 * TODO: Extract the crises from the cache...
+	 * @param _auth_token
+	 * @param _page
+	 * @param _location
+	 * @return
+	 */
 	public JSONArray getNearCrises(String _auth_token, int _page, Location _location) {
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet request = new HttpGet(HOST + _auth_token + "&page=" + _page 
-				+ "&lat=" + _location.getLatitude() + "&lon=" + _location.getLongitude() 
-				+ "&radius=" + Constants.LOCATION_RADIUS);
+		AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
+		JSONArray retArray = null;
 		try {
-			Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
-			HttpResponse result = httpclient.execute(request);
-			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
-			return json_response;
-		} catch (ClientProtocolException e) {
+			retArray = crisesHelper.get();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			httpclient.getConnectionManager().shutdown();
 		}
-		return null;
+		return retArray;
 	}
 	
 	/**
