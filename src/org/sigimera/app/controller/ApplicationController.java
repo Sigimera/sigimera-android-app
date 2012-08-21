@@ -1,3 +1,22 @@
+/**
+ * Sigimera Crises Information Platform Android Client
+ * Copyright (C) 2012 by Sigimera
+ * All Rights Reserved
+ * 
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.sigimera.app.controller;
 
 import android.content.Context;
@@ -5,6 +24,9 @@ import android.content.SharedPreferences;
 
 public class ApplicationController {
 	public static ApplicationController instance = null;
+	
+	private SessionHandler sessionHandler;
+	
 	private Context context;
 	private SharedPreferences settings;
 	private Cache cache;
@@ -21,6 +43,7 @@ public class ApplicationController {
 		this.context = _context;
 		this.settings = _settings;
 		this.cache = new Cache(_context);
+		this.sessionHandler = SessionHandler.getInstance(this.settings);
 	}
 	
 	public void setApplicationContext(Context _context) {
@@ -32,6 +55,12 @@ public class ApplicationController {
 	}
 	
 	public Context getApplicationContext() { return this.context; }
-	public SharedPreferences getSharedPreferences() { return this.settings; }
 	public Cache getCache() { return this.cache; }
+	
+	public SessionHandler getSessionHandler() { return this.sessionHandler; }
+	
+	public SharedPreferences getSharedPreferences() { return this.settings; }
+	public SharedPreferences getSharedPreferences(String preferenceName) {
+    	return context.getSharedPreferences(preferenceName, 0);
+    }
 }

@@ -1,82 +1,167 @@
+/**
+ * Sigimera Crises Information Platform Android Client
+ * Copyright (C) 2012 by Sigimera
+ * All Rights Reserved
+ * 
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.sigimera.app;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.sigimera.app.CrisesListFragment.CrisesListListener;
+import org.sigimera.app.LoginFragment.LoginListener;
 import org.sigimera.app.controller.ApplicationController;
 import org.sigimera.app.controller.CrisesController;
-import org.sigimera.app.controller.LocationController;
 import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
-import org.sigimera.app.model.SigimeraConstants;
-import org.sigimera.app.util.Config;
-
-import com.google.android.gcm.GCMRegistrar;
+import org.sigimera.app.model.Constants;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+/**
+ * @author Corneliu-Valentin Stanciu
+ * @email  corneliu.stanciu@sigimera.org
+ */
+public class MainActivity extends FragmentActivity implements LoginListener, CrisesListListener {
 	private SessionHandler session_handler;
+	private PageAdapter pageAdapter;
+
+	private Fragment fragmentPageOne;
+	private Fragment fragmentPageTwo;
+
+	private String authToken;
+	private JSONArray crises;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		ApplicationController.getInstance().init(getApplicationContext(), getSessionSettings());
-		
+		setContentView(R.layout.main);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		ApplicationController appController = ApplicationController.getInstance();
+		appController.init(getApplicationContext(), getSessionSettings());
+
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		if ( activeNetwork != null && activeNetwork.isConnected() ) {						
-			
-			this.session_handler = SessionHandler.getInstance(getSessionSettings());
+		if (activeNetwork != null && activeNetwork.isConnected()) {
+
+			this.session_handler = appController.getSessionHandler();
+			CrisesController crisisControler = CrisesController.getInstance();			
+
 			try {
-				String auth_token = this.session_handler.getAuthenticationToken();
-	
-				//TODO: extract this block in a separate method
-				JSONArray nearCrises = CrisesController.getInstance().getNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
-	    		if ( nearCrises != null &&  nearCrises.length() > 0 ){
-	    			//TODO: show context menu with the near crises
-	    			Log.i(SigimeraConstants.LOG_TAG_SIGIMERA_APP, nearCrises.toString());
-	    			new Notification(getApplicationContext(), "Found " + nearCrises.length() + "crises near you.\n TODO: show near crises", Toast.LENGTH_LONG);
-	    		} else {
-	    			Intent listIntent = new Intent(MainActivity.this, CrisesListActivity.class);
-					listIntent.putExtra("auth_token", auth_token);
-					this.startActivity(listIntent);
-	    		}
-				/**
-				 * BEGIN: Google Cloud Messaging
-				 */
-				if ( Config.getInstance().getGcmProjectId() != null ) {
-					try {
-						GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
-						final String regId = GCMRegistrar.getRegistrationId(this);
-						if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
-					} catch (Exception e) {
-						Log.v(SigimeraConstants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
-					}
-				}
-				/**
-				 * END: Google Cloud Messaging
-				 */
-				
+				this.authToken = this.session_handler.getAuthenticationToken();
+				this.crises = crisisControler.getCrises(this.authToken, 1);
+											
+				// Passing the crises list and first crisis to the fragments
+				try {
+					String[] titles = { "Last Crises", "Crisis Info" };
+					
+					fragmentPageOne = new CrisesListFragment();					
+					fragmentPageOne.setArguments(forwardFragmentProperty(
+							new Bundle(), Constants.CRISES_LIST, crises.toString()));
+					
+					fragmentPageTwo = new CrisisFragement();
+					fragmentPageTwo.setArguments(forwardFragmentProperty(
+							new Bundle(), Constants.CRISIS, crises.get(0).toString()));
+					newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}				
 			} catch (AuthenticationErrorException e) {
-				Intent loginIntent = new Intent(MainActivity.this,
-						LoginActivity.class);
-				this.startActivity(loginIntent);
-			} finally {
-				this.finish();
+				crises = crisisControler.getCrises(null, 1);
+				String[] titles = { "Login", "Last 10 crises" };
+
+				// If no token -> login + crises list (free)
+				fragmentPageOne = new LoginFragment();				
+				fragmentPageTwo = new CrisesListFragment();
+				fragmentPageTwo.setArguments(forwardFragmentProperty(
+						new Bundle(), Constants.CRISES_LIST, crises.toString()));				
+				newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);
 			}
 		} else {
 			new Notification(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG);
 		}
 	}
 
+	@Override
+	public void onLoginClicked() {		
+		EditText emailView = (EditText) findViewById(R.id.email_input_field);
+		EditText passwordView = (EditText) findViewById(R.id.password_input_field);
+
+		if (session_handler.login(emailView.getText().toString(), passwordView.getText().toString())) {
+			fragmentPageOne = new CrisesListFragment();		
+			fragmentPageOne.setArguments(forwardFragmentProperty(
+					new Bundle(), Constants.CRISES_LIST, crises.toString()));
+			
+			try {
+				fragmentPageTwo = new CrisisFragement();
+				fragmentPageTwo.setArguments(forwardFragmentProperty(
+						new Bundle(), Constants.CRISIS, crises.get(0).toString()));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+			
+			String[] titles = {"Last Crises", "Crisis Info"}; 
+			newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);
+		} else {
+			new Notification(getApplicationContext(), "Email or password were incorrect!", Toast.LENGTH_SHORT);
+		}
+	}
+
+	@Override
+	public void onCrisesListItemClicked(AdapterView<?> adapterView, View view, int position, long arg3) {		
+		try {			
+			String[] titles = { "Last Crises", "Crisis Info" };
+			
+			// Instantiate a new crisis info fragment and set the crisis JSONObject in bundle					
+			fragmentPageTwo = new CrisisFragement();	
+			fragmentPageTwo.setArguments(forwardFragmentProperty(
+					new Bundle(), Constants.CRISIS, this.crises.get(position).toString()));
+			newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 1);
+		} catch (JSONException e) {
+			new Notification(getApplicationContext(), "The crisis you clicked on could not be load.", Toast.LENGTH_LONG);
+		}		
+	}
+	
+	private void newDoubleWindow(String[] titles, Fragment pageOne, Fragment pageTwo, int currentItem) {
+		ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+		this.pageAdapter = new PageAdapter(getSupportFragmentManager(),titles , pageOne, pageTwo);
+		viewPager.setAdapter(this.pageAdapter);
+		this.fragmentPageOne = pageOne;
+		this.fragmentPageTwo = pageTwo;
+		viewPager.setCurrentItem(currentItem, true);
+	}
+	
+	private Bundle forwardFragmentProperty(Bundle bundle, String key, String value) {
+		bundle.putString(key, value);
+		return bundle;
+	}
+	
 	public SharedPreferences getSessionSettings() {
 		String PREFS_NAME = "session_handler_preferences";
 		return getSharedPreferences(PREFS_NAME, 0);

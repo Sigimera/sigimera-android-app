@@ -17,31 +17,31 @@
  * with this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.sigimera.app;
-
-import android.content.Context;
-import android.view.Gravity;
-import android.widget.Toast;
+package org.sigimera.app.model;
 
 /**
- * Show a toast message.
+ * Class which includes all the constants used in the Sigimera App.
  * 
  * @author Corneliu-Valentin Stanciu
  * @email  corneliu.stanciu@sigimera.org
  */
-public class Notification extends Toast {
-
+public abstract class Constants {
+	
 	/**
-	 * Show a new notification as toast message.
-	 * 
-	 * @param context The application context ()
-	 * @param message The message that should be displayed
-	 * @param duration The message Toast.LENGTH_LONG or Toast.LENGTH_SHORT 
+	 * LOGs
 	 */
-	public Notification(Context context, String message, int duration) {
-		super(context);
-		Toast toast = Toast.makeText(context, message, duration);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-	}
+	public static final String LOG_TAG_SIGIMERA_APP = "SigimeraApp";
+	public static final String LOG_TAG_LOCATION_CONTROLLER = "LocationController";
+	public static final String LOG_TAG_CONFIG = "Config";
+	
+	/**
+	 * Location radius in kilometres
+	 */
+	public static final String LOCATION_RADIUS = "200";
+	
+	/**
+	 * Keys
+	 */
+	public static final String CRISES_LIST = "crises_list";
+	public static final String CRISIS = "crisis";
 }

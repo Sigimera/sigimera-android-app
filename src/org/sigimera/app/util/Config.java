@@ -1,3 +1,22 @@
+/**
+ * Sigimera Crises Information Platform Android Client
+ * Copyright (C) 2012 by Sigimera
+ * All Rights Reserved
+ * 
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.sigimera.app.util;
 
 import java.io.IOException;
@@ -15,6 +34,9 @@ import org.xml.sax.InputSource;
 
 /**
  * <b>ATTENTION:</b> Change this only if you know what you are doing.
+ * 
+ * @author Corneliu-Valentin Stanciu
+ * @email  corneliu.stanciu@sigimera.org
  */
 public class Config {		
 	/**
@@ -22,6 +44,7 @@ public class Config {
 	 */
 	private String www_host = null;
 	private String api_host = null;
+	private String free_api_host = null;
 	
 	/**
 	 * The Sigimera Google Cloud Messaging project ID
@@ -45,6 +68,7 @@ public class Config {
 			
 			api_host = xpath.evaluate("api-host/text()", config_node);			
 			www_host = xpath.evaluate("www-host/text()", config_node);
+			free_api_host = xpath.evaluate("free-api-host/text()", config_node);
 			gcm_project_id = xpath.evaluate("gcm-project-id/text()", config_node);
 			inputStream.close();
 		} catch (XPathExpressionException e) {
@@ -62,6 +86,10 @@ public class Config {
 
 	public String getWWWHost() {
 		return this.www_host;
+	}
+	
+	public String getFreeAPIHost() {
+		return this.free_api_host;
 	}
 	
 	public String getGcmProjectId() {

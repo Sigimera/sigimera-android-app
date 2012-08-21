@@ -44,14 +44,8 @@
         <uses-library android:name="com.google.android.maps" />
 
         <activity
-            android:name=".CrisesListFragment"
-            android:label="@string/title_activity_crises_list" />
-        <activity
-            android:name=".LoginFragment"
-            android:label="@string/title_activity_login" />
-        <activity
-            android:name=".CrisisActivity"
-            android:label="@string/title_activity_crisis" />
+            android:name=".FullMapActivity"
+            android:label="@string/title_activity_map" />      
 
         <service android:name=".GCMIntentService" />
         

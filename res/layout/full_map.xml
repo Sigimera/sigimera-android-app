@@ -3,13 +3,13 @@
     	android:layout_width="fill_parent" 
     	android:layout_height="fill_parent">
     	    
-	<com.google.android.maps.MapView 
-	       	android:id="@+id/full_map_view"
-	       	android:layout_width="fill_parent"
-	       	android:layout_height="fill_parent"
-	       	android:clickable="true"
-	       	android:apiKey="03g51D-zCFK-uOq5ZjLC22B1TI90S0E-AmE7gZQ"     
-	    />
+	<com.google.android.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:apiKey="04VaZICVnaLDfMKEpL6Ai1xmWaJbDmwE20i-s8w"
+    />
 	
 	<!-- The following key is for the signed application! The key above is the debugging key -->
     <!-- android:apiKey="03g51D-zCFK-uOq5ZjLC22B1TI90S0E-AmE7gZQ"-->

@@ -10,7 +10,9 @@
         android:ems="10"
         android:hint="@string/email_text"
         android:inputType="textEmailAddress"
-        android:text="@string/dev_username" >
+        android:text="@string/dev_username"
+        android:focusable="true"
+		android:focusableInTouchMode="true" >
 
         <requestFocus />
     </EditText>
@@ -22,7 +24,9 @@
         android:ems="10"
         android:hint="@string/password_text"
         android:inputType="textPassword"
-        android:text="@string/dev_password" />
+        android:text="@string/dev_password"
+        android:focusable="true"
+		android:focusableInTouchMode="true" />
 
     <Button
         android:id="@+id/login_button"

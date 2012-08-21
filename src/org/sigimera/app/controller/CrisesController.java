@@ -1,3 +1,22 @@
+/**
+ * Sigimera Crises Information Platform Android Client
+ * Copyright (C) 2012 by Sigimera
+ * All Rights Reserved
+ * 
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.sigimera.app.controller;
 
 import java.io.BufferedReader;
@@ -12,16 +31,22 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.model.SigimeraConstants;
+import org.sigimera.app.model.Constants;
 import org.sigimera.app.util.Config;
 
 import android.location.Location;
 import android.util.Log;
 
+/**
+ * 
+ * @author Corneliu-Valentin Stanciu
+ * @email  corneliu.stanciu@sigimera.org
+ */
 public class CrisesController {
 	private static CrisesController instance = null;
 	
 	private final String HOST = Config.getInstance().getAPIHost()+"/crises.json?output=short&auth_token=";
+	private final String FREE_HOST = Config.getInstance().getFreeAPIHost();
 	
 	private CrisesController() {}
 	
@@ -40,9 +65,13 @@ public class CrisesController {
 	 */
 	public JSONArray getCrises(String _auth_token, int _page) {
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet request = new HttpGet(HOST + _auth_token + "&page=" + _page);
+		HttpGet request;
+		if ( _auth_token != null )
+			request = new HttpGet(HOST + _auth_token + "&page=" + _page);
+		else
+			request = new HttpGet(FREE_HOST);
 		try {
-			Log.i(SigimeraConstants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
+			Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
 			HttpResponse result = httpclient.execute(request);
 			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
 			return json_response;
@@ -68,9 +97,9 @@ public class CrisesController {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet request = new HttpGet(HOST + _auth_token + "&page=" + _page 
 				+ "&lat=" + _location.getLatitude() + "&lon=" + _location.getLongitude() 
-				+ "&radius=" + SigimeraConstants.LOCATION_RADIUS);
+				+ "&radius=" + Constants.LOCATION_RADIUS);
 		try {
-			Log.i(SigimeraConstants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
+			Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
 			HttpResponse result = httpclient.execute(request);
 			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
 			return json_response;
