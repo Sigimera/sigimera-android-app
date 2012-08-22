@@ -103,7 +103,7 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 				String[] titles = { "Login", "Last 10 crises" };
 
 				// If no token -> login + crises list (free)
-				fragmentPageOne = new LoginFragment();				
+				fragmentPageOne = new LoginFragment();
 				fragmentPageTwo = new CrisesListFragment();			
 				newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);
 			}
