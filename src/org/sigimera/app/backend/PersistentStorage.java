@@ -74,10 +74,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
 		} else {
 			Iterator<?> iter = _crisis.keys();
 			ContentValues values = new ContentValues();
+			values.put("short_title", CrisesController.getInstance().getShortTitle(_crisis));
+			values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
+			values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
+			values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
 			while ( iter.hasNext() ) {
 				Object keyObject = iter.next();
-				values.put("short_title", CrisesController.getInstance().getShortTitle(_crisis));
-				values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
 				if ( keyObject instanceof String ) {
 					Object valueObject;
 					try {
@@ -135,8 +137,8 @@ public class PersistentStorage extends SQLiteOpenHelper {
 			crisis.setDate(_c.getString(_c.getColumnIndex("dc_date")));
 			crisis.setDescription(_c.getString(_c.getColumnIndex("dc_description")));
 			crisis.setEndDate(_c.getString(_c.getColumnIndex("schema_endDate")));
-			crisis.setLatitude(_c.getString(_c.getColumnIndex("latitude")));
-			crisis.setLongitude(_c.getString(_c.getColumnIndex("longitude")));
+			crisis.setLatitude(_c.getDouble(_c.getColumnIndex("latitude")));
+			crisis.setLongitude(_c.getDouble(_c.getColumnIndex("longitude")));
 			crisis.setSubject(_c.getString(_c.getColumnIndex("subject")));
 			crisis.setPopulation(_c.getString(_c.getColumnIndex("crisis_population")));
 			crisis.setSeverity(_c.getString(_c.getColumnIndex("crisis_severity")));
