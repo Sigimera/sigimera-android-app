@@ -75,6 +75,7 @@ public class CrisesController {
 						e.printStackTrace();
 					}
 				}
+				c = this.pershandler.getLatestCrisesList(10, _page);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

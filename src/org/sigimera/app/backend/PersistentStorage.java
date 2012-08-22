@@ -99,8 +99,8 @@ public class PersistentStorage extends SQLiteOpenHelper {
 	}
 	
 	public Cursor getLatestCrisesList(int _number, int _page) {
-		SQLiteDatabase db = getReadableDatabase();
-		return db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
+		this.openDatabaseReadOnly();
+		return this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
 	}
 	
 	public Crisis getCrisis(String crisis_id) {
@@ -119,6 +119,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 
 		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
 		Crisis crisis = this._extractCrisis(c);
+		
 		this.onExit();
 
 		return crisis;
