@@ -99,22 +99,15 @@ public class CrisisFragement extends ListFragment {
 		severity = crisis.getSeverity();
 		description = crisis.getDescription();
 //		country = crisis.getParentCountry();
-			affectedPeople = crisis.getPopulation();
-//			coordinates = crisis.getJSONArray("foaf_based_near");
-			crisisType = crisis.getSubject();
+		affectedPeople = crisis.getPopulation();
+		crisisType = crisis.getSubject();
 		
-//		if ( coordinates != null && coordinates.length() > 1 )
-//			try {
-//				latitude = Double.valueOf(coordinates.get(1).toString());
-//				longitude = Double.valueOf(coordinates.get(0).toString());
-//				
-//				collectionList.add(getListEntry("See crisis on map", 
-//						"Lat: " + format.format(latitude) + " -- Long:" + format.format(longitude), 
-//						String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+		latitude = crisis.getLatitude();
+		longitude = crisis.getLongitude();
+		
+		collectionList.add(getListEntry("See crisis on map", 
+				"Lat: " + format.format(latitude) + " -- Long:" + format.format(longitude), 
+				String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
 		
 		if (description != null)
 			collectionList.add(getListEntry(description.substring(0, 80) + " ...", 
