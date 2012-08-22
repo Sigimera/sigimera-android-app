@@ -2,7 +2,7 @@
  * Sigimera Crises Information Platform Android Client
  * Copyright (C) 2012 by Sigimera
  * All Rights Reserved
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -40,21 +40,21 @@ import android.os.AsyncTask;
 public class CrisesController {
 	private static CrisesController instance = null;
 	private PersistentStorage pershandler;
-	
+
 	private CrisesController() {
 		this.pershandler = ApplicationController.getInstance().getPersistentStorageHandler();
 	}
-	
+
 	public static CrisesController getInstance() {
 		if ( null == instance )
 			instance = new CrisesController();
 		return instance;
 	}
-	
+
 	/**
 	 * TODO: Extract the crises from the cache...
 	 * Retrieve a crisis page with X crisis.
-	 * 
+	 *
 	 * @param _auth_token The authentication token as retrieved after successful login
 	 * @param _page The page to retrieve, starting from page 1 (one)
 	 * @return
@@ -86,15 +86,15 @@ public class CrisesController {
 		}
 		return c;
 	}
-	
+
 	public Crisis getLatestCrisis() {
 		return this.pershandler.getLatestCrisis();
 	}
-	
+
 	public Crisis getCrisis(String _crisisID) {
 		return this.pershandler.getCrisis(_crisisID);
 	}
-	
+
 	/**
 	 * TODO: Extract the crises from the cache...
 	 * @param _auth_token
@@ -116,9 +116,9 @@ public class CrisesController {
 		}
 		return retArray;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param crisis The single crisis JSON object as received from the Sigimera REST API
 	 * @return The shortened title that is human-readable
 	 */
@@ -129,18 +129,18 @@ public class CrisesController {
 			title += " ";
 			title += crisis.getString("subject");
 			title += " alert ";
-			
+
 			if ( crisis.has("gn_parentCountry") && crisis.getJSONArray("gn_parentCountry").length() > 0 ){
 				title += " in ";
 				title += capitalize(crisis.getJSONArray("gn_parentCountry").get(0).toString());
-			}			
+			}
 			return title;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	public String capitalize(String s) {
 		if (s.length() == 0) return s;
 	    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
