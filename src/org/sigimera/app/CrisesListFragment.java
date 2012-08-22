@@ -50,7 +50,7 @@ public class CrisesListFragment extends ListFragment {
 	
 	// The communication with the MainActivity
 	public interface CrisesListListener {
-		public void onCrisesListItemClicked(AdapterView<?> arg0, View arg1, int arg2, long arg3);
+		public void onCrisesListItemClicked(String  crisisID);
 	}
 
 	@Override
@@ -97,15 +97,11 @@ public class CrisesListFragment extends ListFragment {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	    switch (item.getItemId()) {
 	        case R.id.open:
-	        	this.crisesListListener.onCrisesListItemClicked(null, null, info.position, 0);
+	        	this.crisesListListener.onCrisesListItemClicked(getCrisisID(info.position));
 	            return true;
 	        case R.id.share:
-				boolean success = this.c.moveToPosition(info.position);
-				if ( success ) {
-					String crisisID = this.c.getString(this.c.getColumnIndex("_id"));
-					this.startActivity(Common.shareCrisis(crisisID));
-				}
-	            return success;
+	        	this.startActivity(Common.shareCrisis(getCrisisID(info.position)));
+	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
@@ -114,7 +110,21 @@ public class CrisesListFragment extends ListFragment {
 	OnItemClickListener clickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			crisesListListener.onCrisesListItemClicked(arg0, arg1, arg2, arg3);
+			c.moveToPosition(arg2);
+			crisesListListener.onCrisesListItemClicked(c.getString(c.getColumnIndex("_id")));
 		}
 	};
+	
+	/**
+	 * Get the crisis ID from cursor.
+	 * @param position The row number in crises cursor.
+	 * @return crisis ID
+	 */
+	private String getCrisisID(int position) {
+		boolean success = this.c.moveToPosition(position);
+		if ( success ) {
+			return this.c.getString(this.c.getColumnIndex("_id"));
+		}
+		return null;
+	}
 }

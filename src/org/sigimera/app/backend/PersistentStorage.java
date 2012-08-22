@@ -108,7 +108,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 	public Crisis getCrisis(String crisis_id) {
 		this.openDatabaseReadOnly();
 
-		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='"+crisis_id, null);
+		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + crisis_id + "'", null);
 		Crisis crisis = this._extractCrisis(c);
 		// TODO: If crisis object null than fetch crisis from API.
 		this.onExit();
