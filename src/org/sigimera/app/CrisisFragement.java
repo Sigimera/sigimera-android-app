@@ -65,7 +65,6 @@ public class CrisisFragement extends ListFragment {
 	private String countryConcat = "";
 	private String affectedPeople = null;
 	private String crisisType = null;
-//	private JSONObject crisis = null;
 //	private JSONArray country = null;
 //	private JSONArray coordinates = null;
 	
@@ -99,7 +98,7 @@ public class CrisisFragement extends ListFragment {
 		alertLevel = crisis.getAlertLevel();
 		severity = crisis.getSeverity();
 		description = crisis.getDescription();
-//			country = crisis.getParentCountry();
+//		country = crisis.getParentCountry();
 			affectedPeople = crisis.getPopulation();
 //			coordinates = crisis.getJSONArray("foaf_based_near");
 			crisisType = crisis.getSubject();

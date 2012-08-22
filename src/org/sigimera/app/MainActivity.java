@@ -130,18 +130,14 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 		}
 	}
 
-	public void onCrisesListItemClicked(AdapterView<?> adapterView, View view, int position, long arg3) {		
-//		try {			
+	public void onCrisesListItemClicked(String crisisID) {					
 			String[] titles = { "Last Crises", "Crisis Info" };
 			
 			// Instantiate a new crisis info fragment and set the crisis JSONObject in bundle					
 			fragmentPageTwo = new CrisisFragement();	
-//			fragmentPageTwo.setArguments(forwardFragmentProperty(
-//					new Bundle(), Constants.CRISIS, this.crises.get(position).toString()));
+			fragmentPageTwo.setArguments(forwardFragmentProperty(
+					new Bundle(), Constants.CRISIS, crisisID));
 			newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 1);
-//		} catch (JSONException e) {
-//			new Notification(getApplicationContext(), "The crisis you clicked on could not be load.", Toast.LENGTH_LONG);
-//		}		
 	}
 	
 	private void newDoubleWindow(String[] titles, Fragment pageOne, Fragment pageTwo, int currentItem) {
