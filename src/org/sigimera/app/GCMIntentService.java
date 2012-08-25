@@ -91,7 +91,6 @@ public class GCMIntentService extends GCMBaseIntentService {
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 
             		int id = new Random().nextInt();
-            		System.out.println(id);
             		Intent notificationIntent = new Intent(getApplicationContext(), CrisisAlertActivity.class);
             		notificationIntent.putExtra("notification_id", id);
             		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
