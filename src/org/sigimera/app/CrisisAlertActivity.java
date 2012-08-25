@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -24,17 +25,27 @@ public class CrisisAlertActivity extends Activity {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		int notification_id = getIntent().getIntExtra("notification_id", -1);
 		String crisisID = getIntent().getStringExtra("crisis_id");
+		String crisisType = getIntent().getStringExtra("crisis_type");
 		mNotificationManager.cancel("CRISIS_ALERT", notification_id);
 		
 		/**
 		 * TODO: Show here extended crisis alert information...
 		 */
 		
+		ImageView typeImage = (ImageView) findViewById(R.id.alert_type_icon);
+		if ( "EARTHQUAKE".equalsIgnoreCase(crisisType) )
+			typeImage.setImageResource(R.drawable.earthquake);
+		else if ( "CYCLONE".equalsIgnoreCase(crisisType) )
+			typeImage.setImageResource(R.drawable.cyclone);
+		else if ( "FLOOD".equalsIgnoreCase(crisisType) )
+			typeImage.setImageResource(R.drawable.flood);
+		else if ( "VOLCANO".equalsIgnoreCase(crisisType) )
+			typeImage.setImageResource(R.drawable.volcano);
+		
 		TextView bottomBoxTitle = (TextView) findViewById(R.id.bottom_box_title);
 		bottomBoxTitle.setText("Crisis Alert");
 		
 		TextView bottomBoxSummary = (TextView) findViewById(R.id.bottom_box_summary);
-		bottomBoxSummary.setText("The following crisis occurred near your current (or specified) location: " + crisisID);
-		
+		bottomBoxSummary.setText("Crisis alarm near your current (or specified) location.\n see http://www.sigimera.org/crises/" + crisisID);
 	}
 }

@@ -1,12 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#D000" >
+    android:background="#0000"
+    android:fitsSystemWindows="true" >
+    
+	<ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/alert_red"
+        android:contentDescription="@string/title_crisis_alert_activity" />
 	
 	<ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/alert_red"
+        android:contentDescription="@string/title_crisis_alert_activity" />
+    
+	<ImageView
+	    android:id="@+id/alert_type_icon"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerInParent="true"
+        android:paddingTop="15dp"
         android:src="@drawable/alert_red"
         android:contentDescription="@string/title_crisis_alert_activity" />
 	
@@ -14,10 +31,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#2FFF"
+        android:background="#8F00"
         android:orientation="vertical"
         android:paddingBottom="15dp"
-        android:paddingTop="15dp" >
+        android:paddingTop="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
  
         <TextView
             android:id="@+id/bottom_box_title"
@@ -25,9 +44,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:shadowColor="#000"
-            android:shadowDx="3"
-            android:shadowDy="3"
-            android:shadowRadius="6"
+            android:shadowDx="6"
+            android:shadowDy="6"
+            android:shadowRadius="9"
             android:textColor="#FFF"
             android:textSize="36sp"
             android:textStyle="bold" />
@@ -38,7 +57,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="#CCC"
-            android:textSize="12sp"/>
+            android:textSize="16sp"/>
         </LinearLayout>
         
 </RelativeLayout>

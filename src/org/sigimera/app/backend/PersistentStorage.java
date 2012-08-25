@@ -71,7 +71,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 	public boolean addCrisis(JSONObject _crisis) throws JSONException {
 		String crisisID = _crisis.getString("_id");
 		if ( checkIfCrisisExists(crisisID) ) {
-			// TODO: Delete old crisis
+			// TODO: Delete old crisis or implement some type of update mechanism
 			System.err.println("Crisis was found! Not updating it...");
 			return false;
 		} else {

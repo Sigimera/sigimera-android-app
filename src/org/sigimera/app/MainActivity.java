@@ -34,6 +34,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -58,6 +59,16 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		/**
+		 * XXX: START: Example Notification Window: Opened here for testing purposes.
+		 */
+		Intent alertIntent = new Intent(getApplicationContext(), CrisisAlertActivity.class);
+		alertIntent.putExtra("crisis_type", "flood");
+		startActivity(alertIntent);
+		/**
+		 * XXX: END: Example Notification Window: Opened here for testing purposes.
+		 */
 		
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		ApplicationController appController = ApplicationController.getInstance();
