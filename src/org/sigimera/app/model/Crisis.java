@@ -1,6 +1,7 @@
 package org.sigimera.app.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Crisis implements Serializable {
 	/**
@@ -23,6 +24,7 @@ public class Crisis implements Serializable {
 	private String endDate;
 	private String shortTitle;
 	private String typeIcon;
+	private ArrayList<String> countries;
 	
 	public String getID() {
 		return id;
@@ -113,6 +115,14 @@ public class Crisis implements Serializable {
 	}
 	public void setTypeIcon(String typeIcon) {
 		this.typeIcon = typeIcon;
+	}
+	
+	public ArrayList<String> getCountries() {
+		return countries;
+	}
+	
+	public void setCountries(ArrayList<String> _countries) {
+		this.countries = _countries;
 	}
 	
 }

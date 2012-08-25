@@ -19,7 +19,6 @@
  */
 package org.sigimera.app;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,8 +44,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 /**
- * @author Corneliu-Valentin Stanciu
- * @email corneliu.stanciu@sigimera.org
+ * @author Corneliu-Valentin Stanciu, Alex Oberhauser
+ * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisisFragement extends ListFragment {
 	private Activity activity;
@@ -57,16 +56,13 @@ public class CrisisFragement extends ListFragment {
 	private static final int MENU_ADD = 0x0030;
 	private static final int MENU_COMMENT = 0x0040;
 	
-	private static final DecimalFormat format = new DecimalFormat("##.0000");
-	
 	private String alertLevel = null;
 	private String severity = null;
 	private String description = null;	
 	private String countryConcat = "";
 	private String affectedPeople = null;
 	private String crisisType = null;
-//	private JSONArray country = null;
-//	private JSONArray coordinates = null;
+	private ArrayList<String> countries = new ArrayList<String>();
 	
 	private Double latitude;
 	private Double longitude;
@@ -89,6 +85,7 @@ public class CrisisFragement extends ListFragment {
 		} else {
 			this.crisis = pershandler.getLatestCrisis();
 		}
+		System.out.println(this.countries.size());
 		updateGUI();
 	}
 
@@ -98,10 +95,9 @@ public class CrisisFragement extends ListFragment {
 		alertLevel = crisis.getAlertLevel();
 		severity = crisis.getSeverity();
 		description = crisis.getDescription();
-//		country = crisis.getParentCountry();
-			affectedPeople = crisis.getPopulation();
-//			coordinates = crisis.getJSONArray("foaf_based_near");
-			crisisType = crisis.getSubject();
+		countries = crisis.getCountries();
+		affectedPeople = crisis.getPopulation();
+		crisisType = crisis.getSubject();
 		
 //		if ( coordinates != null && coordinates.length() > 1 )
 //			try {
@@ -127,22 +123,17 @@ public class CrisisFragement extends ListFragment {
 					String.valueOf(R.drawable.glyphicons_196_circle_exclamation_mark_white)));
 		if (severity != null)
 			collectionList.add(getListEntry(CrisesController.getInstance().capitalize(severity), 
-					"Severity", String.valueOf(R.drawable.glyphicons_079_signal_white)));
-//
-//		if (country != null && country.length() > 0) {
-//			for (int i = 0; i < country.length(); i++) {
-//				try {
-//					countryConcat += crisisController.capitalize(String.valueOf(country.get(i)));
-//					if (i != 0)
-//						countryConcat += ", ";
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			collectionList.add(getListEntry(countryConcat, "Country",
-//					String.valueOf(R.drawable.glyphicons_266_flag_white)));
-//		}			
+					"Severity", String.valueOf(R.drawable.glyphicons_079_signal_white)));	
+		
+		if ( this.countries != null && this.countries.size() > 0 ) {
+			StringBuffer countryConcat = new StringBuffer("");
+			for ( String country : countries ) {
+				countryConcat.append(crisisController.capitalize(country));
+				countryConcat.append(", ");
+			}
+			collectionList.add(getListEntry(countryConcat.toString(), "Country",
+					String.valueOf(R.drawable.glyphicons_266_flag_white)));
+		}
 
 		// Add list to the view
 		SimpleAdapter adapterCollectionList = new SimpleAdapter(this.activity,
