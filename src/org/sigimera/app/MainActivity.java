@@ -39,9 +39,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -55,11 +53,12 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 
 	private Fragment fragmentPageOne;
 	private Fragment fragmentPageTwo;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		ApplicationController appController = ApplicationController.getInstance();
 		appController.init(getApplicationContext(), getSessionSettings());
@@ -82,6 +81,7 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 						GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
 						final String regId = GCMRegistrar.getRegistrationId(this);
 						if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
+//						else GCMRegistrar.unregister(this);
 					} catch (Exception e) {
 						Log.v(Constants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
 					}
@@ -108,7 +108,7 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 				newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);
 			}
 		} else {
-			new Notification(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG);
+			new ToastNotification(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG);
 		}
 	}
 
@@ -126,7 +126,7 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 			String[] titles = {"Last Crises", "Crisis Info"}; 
 			newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);
 		} else {
-			new Notification(getApplicationContext(), "Email or password were incorrect!", Toast.LENGTH_SHORT);
+			new ToastNotification(getApplicationContext(), "Email or password were incorrect!", Toast.LENGTH_SHORT);
 		}
 	}
 

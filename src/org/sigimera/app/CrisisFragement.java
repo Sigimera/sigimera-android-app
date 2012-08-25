@@ -85,7 +85,6 @@ public class CrisisFragement extends ListFragment {
 		} else {
 			this.crisis = pershandler.getLatestCrisis();
 		}
-		System.out.println(this.countries.size());
 		updateGUI();
 	}
 
@@ -187,7 +186,7 @@ public class CrisisFragement extends ListFragment {
 				text = "Country: " + countryConcat;
 				break;			
 			}
-			new Notification(activity, text, Toast.LENGTH_SHORT);
+			new ToastNotification(activity, text, Toast.LENGTH_SHORT);
 		}
 	};
 
@@ -208,11 +207,11 @@ public class CrisisFragement extends ListFragment {
 			if ( crisis.getID() != null )
 				this.startActivity(Common.shareCrisis(crisis.getID()));
 			else
-				new Notification(ApplicationController.getInstance().getApplicationContext(), 
+				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
 					"Failed to read the crisis ID", Toast.LENGTH_SHORT);
 			return true;
 		case MENU_ABOUT:
-			new Notification(ApplicationController.getInstance().getApplicationContext(), 
+			new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
 					"TODO: provide content for about window", Toast.LENGTH_SHORT);
 			return true;
 		}

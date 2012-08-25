@@ -9,6 +9,7 @@
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.VIBRATE" />
     
     <permission
         android:name="org.sigimera.app.permission.C2D_MESSAGE"
@@ -46,6 +47,10 @@
         <activity
             android:name=".FullMapActivity"
             android:label="@string/title_activity_map" />      
+            
+        <activity 
+            android:name=".CrisisAlertActivity"
+            android:label="@string/title_crisis_alert_activity"/>
 
         <service android:name=".GCMIntentService" />
         

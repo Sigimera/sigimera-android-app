@@ -29,7 +29,7 @@ import android.widget.Toast;
  * @author Corneliu-Valentin Stanciu
  * @email  corneliu.stanciu@sigimera.org
  */
-public class Notification extends Toast {
+public class ToastNotification extends Toast {
 
 	/**
 	 * Show a new notification as toast message.
@@ -38,7 +38,7 @@ public class Notification extends Toast {
 	 * @param message The message that should be displayed
 	 * @param duration The message Toast.LENGTH_LONG or Toast.LENGTH_SHORT 
 	 */
-	public Notification(Context context, String message, int duration) {
+	public ToastNotification(Context context, String message, int duration) {
 		super(context);
 		Toast toast = Toast.makeText(context, message, duration);
 		toast.setGravity(Gravity.CENTER, 0, 0);
