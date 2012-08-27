@@ -97,19 +97,13 @@ public class CrisisFragement extends ListFragment {
 		countries = crisis.getCountries();
 		affectedPeople = crisis.getPopulation();
 		crisisType = crisis.getSubject();
+		latitude = crisis.getLatitude();
+		longitude = crisis.getLatitude();
 		
-//		if ( coordinates != null && coordinates.length() > 1 )
-//			try {
-//				latitude = Double.valueOf(coordinates.get(1).toString());
-//				longitude = Double.valueOf(coordinates.get(0).toString());
-//				
-//				collectionList.add(getListEntry("See crisis on map", 
-//						"Lat: " + format.format(latitude) + " -- Long:" + format.format(longitude), 
-//						String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+
+		collectionList.add(getListEntry("See crisis on map", 
+					"Lat: " + latitude + " -- Long: " + longitude, 
+					String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
 		
 		if (description != null)
 			collectionList.add(getListEntry(description.substring(0, 80) + " ...", 
@@ -161,14 +155,16 @@ public class CrisisFragement extends ListFragment {
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> list, View view, int position,
 				long id) {
-			String text = "";
+			String text = null;
 			switch (position) {
-			case 0:				
+			case 0:
+				if ( null != latitude && null != longitude ) {
 					Intent mapActivity = new Intent(getActivity(), FullMapActivity.class);
 					mapActivity.putExtra(Constants.LATITUDE, latitude.toString());
 					mapActivity.putExtra(Constants.LONGITUDE, longitude.toString());
 					mapActivity.putExtra(Constants.CRISIS_TYPE, crisisType);
 					startActivity(mapActivity);
+				}
 				break;
 			case 1:
 				text = description;
@@ -186,7 +182,8 @@ public class CrisisFragement extends ListFragment {
 				text = "Country: " + countryConcat;
 				break;			
 			}
-			new ToastNotification(activity, text, Toast.LENGTH_SHORT);
+			if ( null != text )
+				new ToastNotification(activity, text, Toast.LENGTH_SHORT);
 		}
 	};
 
