@@ -130,7 +130,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
-			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID+"&device_name="+android.os.Build.MODEL.replace(" ", "+"));
+			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID+"&device_name="+android.os.Build.MODEL.replace(" ", "+")+"&android_api_level="+android.os.Build.VERSION.SDK_INT);
 			HttpResponse response = httpclient.execute(request);
 
 			final String message;

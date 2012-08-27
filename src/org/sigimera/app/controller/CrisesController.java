@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import org.sigimera.app.backend.PersistentStorage;
 import org.sigimera.app.backend.network.CrisesHttpHelper;
 import org.sigimera.app.backend.network.NearCrisesHttpHelper;
+import org.sigimera.app.backend.network.SingleCrisisHttpHelper;
 import org.sigimera.app.model.Crisis;
 
 import android.database.Cursor;
@@ -50,32 +51,64 @@ public class CrisesController {
 			instance = new CrisesController();
 		return instance;
 	}
+	
+	private void storeLatestCrises(String _auth_token, int _page) {
+		AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
+		JSONArray crises = null;
+		try {
+			crises = crisesHelper.get();
+			for ( int count = 0; count < crises.length(); count++ ) {
+				try {
+					JSONObject crisis = (JSONObject) crises.get(count);
+					this.pershandler.addCrisis(crisis);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
-	 * TODO: Extract the crises from the cache...
 	 * Retrieve a crisis page with X crisis.
 	 *
-	 * @param _auth_token The authentication token as retrieved after successful login
+	 * @param _authToken The authentication token as retrieved after successful login
 	 * @param _page The page to retrieve, starting from page 1 (one)
 	 * @return
 	 */
-	public Cursor getCrises(String _auth_token, int _page) {
+	public Cursor getCrises(String _authToken, int _page) {
 		Cursor c = this.pershandler.getLatestCrisesList(10, _page);
 		if ( c.getCount() == 0 ) {
-			AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
-			JSONArray crises = null;
+			storeLatestCrises(_authToken, _page);
+			c = this.pershandler.getLatestCrisesList(10, _page);
+		}
+		return c;
+	}
+
+	public Crisis getLatestCrisis(String _authToken) {
+		Crisis crisis = this.pershandler.getLatestCrisis();
+		if ( crisis == null && _authToken != null ) {
+			storeLatestCrises(_authToken, 1);
+			crisis = this.pershandler.getLatestCrisis();
+		}
+		return crisis;
+	}
+
+	public Crisis getCrisis(String _authToken, String _crisisID) {
+		Crisis crisis = this.pershandler.getCrisis(_crisisID);
+		if ( null == crisis ) {
+			AsyncTask<String, Void, JSONObject> singleCrisisTask = new SingleCrisisHttpHelper().execute(_authToken, _crisisID);
 			try {
-				crises = crisesHelper.get();
-				for ( int count = 0; count < crises.length(); count++ ) {
-					try {
-						JSONObject crisis = (JSONObject) crises.get(count);
-						this.pershandler.addCrisis(crisis);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				c = this.pershandler.getLatestCrisesList(10, _page);
+				this.pershandler.addCrisis(singleCrisisTask.get());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -83,16 +116,9 @@ public class CrisesController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			crisis = this.pershandler.getCrisis(_crisisID);
 		}
-		return c;
-	}
-
-	public Crisis getLatestCrisis() {
-		return this.pershandler.getLatestCrisis();
-	}
-
-	public Crisis getCrisis(String _crisisID) {
-		return this.pershandler.getCrisis(_crisisID);
+		return crisis;
 	}
 
 	/**

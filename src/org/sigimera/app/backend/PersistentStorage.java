@@ -119,12 +119,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
 		return this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
 	}
 	
-	public Crisis getCrisis(String crisis_id) {
+	public Crisis getCrisis(String _crisisID) {
 		this.openDatabaseReadOnly();
 
-		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + crisis_id + "'", null);
-		Crisis crisis = this._extractCrisis(c);
-		// TODO: If crisis object null than fetch crisis from API.
+		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + _crisisID + "'", null);
+		Crisis crisis = null;
+		if ( c.getCount() != 0) crisis = this._extractCrisis(c);
 		this.onExit();
 		
 		return crisis;
@@ -134,8 +134,8 @@ public class PersistentStorage extends SQLiteOpenHelper {
 		this.openDatabaseReadOnly();
 
 		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
-		Crisis crisis = this._extractCrisis(c);
-		
+		Crisis crisis = null;
+		if ( c.getCount() != 0) crisis = this._extractCrisis(c);
 		this.onExit();
 
 		return crisis;

@@ -98,7 +98,7 @@ public class CrisisFragement extends ListFragment {
 		affectedPeople = crisis.getPopulation();
 		crisisType = crisis.getSubject();
 		latitude = crisis.getLatitude();
-		longitude = crisis.getLatitude();
+		longitude = crisis.getLongitude();
 		
 
 		collectionList.add(getListEntry("See crisis on map", 
