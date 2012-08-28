@@ -19,7 +19,6 @@
  */
 package org.sigimera.app;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,8 +44,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 /**
- * @author Corneliu-Valentin Stanciu
- * @email corneliu.stanciu@sigimera.org
+ * @author Corneliu-Valentin Stanciu, Alex Oberhauser
+ * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisisFragement extends ListFragment {
 	private Activity activity;
@@ -57,16 +56,13 @@ public class CrisisFragement extends ListFragment {
 	private static final int MENU_ADD = 0x0030;
 	private static final int MENU_COMMENT = 0x0040;
 	
-	private static final DecimalFormat format = new DecimalFormat("##.0000");
-	
 	private String alertLevel = null;
 	private String severity = null;
 	private String description = null;	
 	private String countryConcat = "";
 	private String affectedPeople = null;
 	private String crisisType = null;
-//	private JSONArray country = null;
-//	private JSONArray coordinates = null;
+	private ArrayList<String> countries = new ArrayList<String>();
 	
 	private Double latitude;
 	private Double longitude;
@@ -98,16 +94,16 @@ public class CrisisFragement extends ListFragment {
 		alertLevel = crisis.getAlertLevel();
 		severity = crisis.getSeverity();
 		description = crisis.getDescription();
-//		country = crisis.getParentCountry();
+		countries = crisis.getCountries();
 		affectedPeople = crisis.getPopulation();
 		crisisType = crisis.getSubject();
-		
 		latitude = crisis.getLatitude();
 		longitude = crisis.getLongitude();
 		
+
 		collectionList.add(getListEntry("See crisis on map", 
-				"Lat: " + format.format(latitude) + " -- Long:" + format.format(longitude), 
-				String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
+					"Lat: " + latitude + " -- Long: " + longitude, 
+					String.valueOf(R.drawable.glyphicons_242_google_maps_white)));
 		
 		if (description != null)
 			collectionList.add(getListEntry(description.substring(0, 80) + " ...", 
@@ -120,22 +116,17 @@ public class CrisisFragement extends ListFragment {
 					String.valueOf(R.drawable.glyphicons_196_circle_exclamation_mark_white)));
 		if (severity != null)
 			collectionList.add(getListEntry(CrisesController.getInstance().capitalize(severity), 
-					"Severity", String.valueOf(R.drawable.glyphicons_079_signal_white)));
-//
-//		if (country != null && country.length() > 0) {
-//			for (int i = 0; i < country.length(); i++) {
-//				try {
-//					countryConcat += crisisController.capitalize(String.valueOf(country.get(i)));
-//					if (i != 0)
-//						countryConcat += ", ";
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			collectionList.add(getListEntry(countryConcat, "Country",
-//					String.valueOf(R.drawable.glyphicons_266_flag_white)));
-//		}			
+					"Severity", String.valueOf(R.drawable.glyphicons_079_signal_white)));	
+		
+		if ( this.countries != null && this.countries.size() > 0 ) {
+			StringBuffer countryConcat = new StringBuffer("");
+			for ( String country : countries ) {
+				countryConcat.append(crisisController.capitalize(country));
+				countryConcat.append(", ");
+			}
+			collectionList.add(getListEntry(countryConcat.toString(), "Country",
+					String.valueOf(R.drawable.glyphicons_266_flag_white)));
+		}
 
 		// Add list to the view
 		SimpleAdapter adapterCollectionList = new SimpleAdapter(this.activity,
@@ -164,14 +155,16 @@ public class CrisisFragement extends ListFragment {
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> list, View view, int position,
 				long id) {
-			String text = "";
+			String text = null;
 			switch (position) {
-			case 0:				
+			case 0:
+				if ( null != latitude && null != longitude ) {
 					Intent mapActivity = new Intent(getActivity(), FullMapActivity.class);
 					mapActivity.putExtra(Constants.LATITUDE, latitude.toString());
 					mapActivity.putExtra(Constants.LONGITUDE, longitude.toString());
 					mapActivity.putExtra(Constants.CRISIS_TYPE, crisisType);
 					startActivity(mapActivity);
+				}
 				break;
 			case 1:
 				text = description;
@@ -189,7 +182,8 @@ public class CrisisFragement extends ListFragment {
 				text = "Country: " + countryConcat;
 				break;			
 			}
-			new Notification(activity, text, Toast.LENGTH_SHORT);
+			if ( null != text )
+				new ToastNotification(activity, text, Toast.LENGTH_SHORT);
 		}
 	};
 
@@ -210,11 +204,11 @@ public class CrisisFragement extends ListFragment {
 			if ( crisis.getID() != null )
 				this.startActivity(Common.shareCrisis(crisis.getID()));
 			else
-				new Notification(ApplicationController.getInstance().getApplicationContext(), 
+				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
 					"Failed to read the crisis ID", Toast.LENGTH_SHORT);
 			return true;
 		case MENU_ABOUT:
-			new Notification(ApplicationController.getInstance().getApplicationContext(), 
+			new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
 					"TODO: provide content for about window", Toast.LENGTH_SHORT);
 			return true;
 		}

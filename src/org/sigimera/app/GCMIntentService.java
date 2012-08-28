@@ -19,10 +19,10 @@
  */
 package org.sigimera.app;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -36,18 +36,25 @@ import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
 import org.sigimera.app.util.Config;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
 /**
  * This Intent is called when the GCM executing process has finished.
+ * 
+ * @author Alex Oberhauser
+ * @email alex.oberhauser@sigimera.org
  */
 public class GCMIntentService extends GCMBaseIntentService {
-	private static final String HOST = Config.getInstance().getAPIHost() + "/gcm";
 	private final Handler mainThreadHandler;
 
 	public GCMIntentService() {
@@ -58,6 +65,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onError(Context arg0, String arg1) {
 		// TODO Auto-generated method stub
+		System.err.println("Error occurred: " + arg1);
 	}
 
 	@Override
@@ -78,7 +86,34 @@ public class GCMIntentService extends GCMBaseIntentService {
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
             		/**
             		 * Notifier user via notification...
+            		 */            		
+            		String ns = Context.NOTIFICATION_SERVICE;
+            		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+
+            		/**
+            		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
+            		 * but not the older ones.
             		 */
+            		int id = new Random().nextInt();
+            		Intent notificationIntent = new Intent(getApplicationContext(), CrisisAlertActivity.class);
+            		notificationIntent.putExtra("notification_id", id);
+            		notificationIntent.putExtra("crisis_id", msg.getStringExtra("crisis_id"));
+            		notificationIntent.putExtra("crisis_type", msg.getStringExtra("crisis_type"));
+            		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
+            		        0, notificationIntent,
+            		        PendingIntent.FLAG_CANCEL_CURRENT);
+            		
+            		Builder builder = new NotificationCompat.Builder(getApplicationContext())
+            			.setTicker("CRISIS ALERT!!!")
+            			.setSmallIcon(R.drawable.alert_red)
+            			.setContentTitle("CRISIS ALERT!")
+            			.setContentText("Crisis found: " + msg.getStringExtra("crisis_id"))
+            			.setOngoing(true)
+            			.setDefaults(Notification.DEFAULT_ALL)
+            			.setContentIntent(contentIntent)
+            			;
+            		
+            		mNotificationManager.notify("CRISIS_ALERT", id, builder.getNotification());
             	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {
             		/**
             		 * Open single crisis activity
@@ -90,11 +125,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onRegistered(Context _context, String _regID) {
+		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
 		HttpClient httpclient = new DefaultHttpClient();
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
-			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID+"&device_name="+android.os.Build.MODEL.replace(" ", "+"));
+			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID+"&device_name="+android.os.Build.MODEL.replace(" ", "+")+"&android_api_level="+android.os.Build.VERSION.SDK_INT);
 			HttpResponse response = httpclient.execute(request);
 
 			final String message;
@@ -133,6 +169,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onUnregistered(Context _context, String _regID) {
+		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
 		HttpClient httpclient = new DefaultHttpClient();
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }

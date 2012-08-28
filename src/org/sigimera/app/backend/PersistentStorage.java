@@ -3,8 +3,10 @@ package org.sigimera.app.backend;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.controller.ApplicationController;
@@ -67,11 +69,13 @@ public class PersistentStorage extends SQLiteOpenHelper {
 	}
 	
 	public boolean addCrisis(JSONObject _crisis) throws JSONException {
-		if ( checkIfCrisisExists(_crisis.getString("_id")) ) {
-			// TODO: Delete old crisis
+		String crisisID = _crisis.getString("_id");
+		if ( checkIfCrisisExists(crisisID) ) {
+			// TODO: Delete old crisis or implement some type of update mechanism
 			System.err.println("Crisis was found! Not updating it...");
 			return false;
 		} else {
+			this.openDatabaseWrite();
 			Iterator<?> iter = _crisis.keys();
 			ContentValues values = new ContentValues();
 			values.put("short_title", CrisesController.getInstance().getShortTitle(_crisis));
@@ -86,6 +90,17 @@ public class PersistentStorage extends SQLiteOpenHelper {
 						valueObject = _crisis.get((String) keyObject);
 						if ( valueObject instanceof String ) {								
 							values.put((String)keyObject, (String)valueObject);
+						} else if ( valueObject instanceof JSONArray ) {
+							ContentValues countryValues = new ContentValues();
+							if ( keyObject.equals("gn_parentCountry") ) {
+								JSONArray countries = (JSONArray)valueObject;
+								for ( int count=0; count < countries.length(); count++ ) {
+									countryValues.put("crisis_id", crisisID);
+									countryValues.put("country_name", countries.getString(count));
+								}
+								if ( countryValues.size() > 0 )
+									this.db.insert(TABLE_COUNTRIES, null, countryValues);
+							}
 						} else System.err.println("Not able to add value for key '" + keyObject + "'");
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
@@ -93,8 +108,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 					}
 				}
 			}
-			this.openDatabaseWrite();
-			this.db.insert("crises", null, values);
+			this.db.insert(TABLE_CRISES, null, values);
 			this.onExit();
 		}
 		return true;
@@ -105,12 +119,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
 		return this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
 	}
 	
-	public Crisis getCrisis(String crisis_id) {
+	public Crisis getCrisis(String _crisisID) {
 		this.openDatabaseReadOnly();
 
-		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + crisis_id + "'", null);
-		Crisis crisis = this._extractCrisis(c);
-		// TODO: If crisis object null than fetch crisis from API.
+		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + _crisisID + "'", null);
+		Crisis crisis = null;
+		if ( c.getCount() != 0) crisis = this._extractCrisis(c);
 		this.onExit();
 		
 		return crisis;
@@ -120,11 +134,27 @@ public class PersistentStorage extends SQLiteOpenHelper {
 		this.openDatabaseReadOnly();
 
 		Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
-		Crisis crisis = this._extractCrisis(c);
-		
+		Crisis crisis = null;
+		if ( c.getCount() != 0) crisis = this._extractCrisis(c);
 		this.onExit();
 
 		return crisis;
+	}
+	
+	public ArrayList<String> getCountries(String _crisisID) {
+		this.openDatabaseReadOnly();
+		
+		Cursor c = this.db.rawQuery("SELECT country_name FROM "+TABLE_COUNTRIES+" WHERE crisis_id='" + _crisisID + "'", null);
+		ArrayList<String> countries = new ArrayList<String>();
+		
+		for (int count=0; count < c.getCount(); count++) {
+			c.moveToPosition(count);
+			countries.add(c.getString(count));
+		}
+
+		this.onExit();
+		
+		return countries;
 	}
 	
 	private Crisis _extractCrisis(Cursor _c) {
@@ -147,6 +177,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 			crisis.setTitle(_c.getString(_c.getColumnIndex("dc_title")));
 			crisis.setTypeIcon(_c.getString(_c.getColumnIndex("type_icon")));
 			crisis.setVulnerability(_c.getString(_c.getColumnIndex("crisis_vulnerability")));
+			crisis.setCountries(getCountries(crisis.getID()));
 		}
 		return crisis;
 	}
@@ -171,6 +202,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 		else
 			returnValue = false;
 		db.endTransaction();
+		db.close();
 		return returnValue;
 	}
 	

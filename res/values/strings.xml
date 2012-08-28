@@ -14,6 +14,7 @@
     <string name="title_activity_crises_list">Crises List</string>
     <string name="title_activity_crisis">Crisis Info</string>
 	<string name="title_activity_map">Crisis Map</string>    
+	<string name="title_crisis_alert_activity">Crisis Alert</string>
     
     <!-- Develop credentials -->
     <string name="dev_username">johndoe@example.org</string>

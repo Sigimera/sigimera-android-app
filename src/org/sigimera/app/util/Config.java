@@ -59,14 +59,14 @@ public class Config {
 	}
 
 	private Config() {
-		InputStream inputStream = ApplicationController.getInstance().getApplicationContext().getResources().openRawResource(R.raw.config);
-		InputSource inputSource = new InputSource(inputStream);
-				
 		try {
+			InputStream inputStream = ApplicationController.getInstance().getApplicationContext().getResources().openRawResource(R.raw.config);
+			InputSource inputSource = new InputSource(inputStream);
+				
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			Node config_node = (Node) xpath.evaluate("//config", inputSource, XPathConstants.NODE);
 			
-			api_host = xpath.evaluate("api-host/text()", config_node);			
+			api_host = xpath.evaluate("api-host/text()", config_node);		
 			www_host = xpath.evaluate("www-host/text()", config_node);
 			free_api_host = xpath.evaluate("free-api-host/text()", config_node);
 			gcm_project_id = xpath.evaluate("gcm-project-id/text()", config_node);
@@ -75,6 +75,9 @@ public class Config {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
