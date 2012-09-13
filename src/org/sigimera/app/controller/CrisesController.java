@@ -39,136 +39,136 @@ import android.os.AsyncTask;
  * @email  corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisesController {
-	private static CrisesController instance = null;
-	private PersistentStorage pershandler;
+    private static CrisesController instance = null;
+    private PersistentStorage pershandler;
 
-	private CrisesController() {
-		this.pershandler = ApplicationController.getInstance().getPersistentStorageHandler();
-	}
+    private CrisesController() {
+        this.pershandler = ApplicationController.getInstance().getPersistentStorageHandler();
+    }
 
-	public static CrisesController getInstance() {
-		if ( null == instance )
-			instance = new CrisesController();
-		return instance;
-	}
-	
-	private void storeLatestCrises(String _auth_token, int _page) {
-		AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
-		JSONArray crises = null;
-		try {
-			crises = crisesHelper.get();
-			for ( int count = 0; count < crises.length(); count++ ) {
-				try {
-					JSONObject crisis = (JSONObject) crises.get(count);
-					this.pershandler.addCrisis(crisis);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public static CrisesController getInstance() {
+        if ( null == instance )
+            instance = new CrisesController();
+        return instance;
+    }
 
-	/**
-	 * Retrieve a crisis page with X crisis.
-	 *
-	 * @param _authToken The authentication token as retrieved after successful login
-	 * @param _page The page to retrieve, starting from page 1 (one)
-	 * @return
-	 */
-	public Cursor getCrises(String _authToken, int _page) {
-		Cursor c = this.pershandler.getLatestCrisesList(10, _page);
-		if ( c.getCount() == 0 ) {
-			storeLatestCrises(_authToken, _page);
-			c = this.pershandler.getLatestCrisesList(10, _page);
-		}
-		return c;
-	}
+    private void storeLatestCrises(String _auth_token, int _page) {
+        AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
+        JSONArray crises = null;
+        try {
+            crises = crisesHelper.get();
+            for ( int count = 0; count < crises.length(); count++ ) {
+                try {
+                    JSONObject crisis = (JSONObject) crises.get(count);
+                    this.pershandler.addCrisis(crisis);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	public Crisis getLatestCrisis(String _authToken) {
-		Crisis crisis = this.pershandler.getLatestCrisis();
-		if ( crisis == null && _authToken != null ) {
-			storeLatestCrises(_authToken, 1);
-			crisis = this.pershandler.getLatestCrisis();
-		}
-		return crisis;
-	}
+    /**
+     * Retrieve a crisis page with X crisis.
+     *
+     * @param _authToken The authentication token as retrieved after successful login
+     * @param _page The page to retrieve, starting from page 1 (one)
+     * @return
+     */
+    public Cursor getCrises(String _authToken, int _page) {
+        Cursor c = this.pershandler.getLatestCrisesList(10, _page);
+        if ( c.getCount() == 0 ) {
+            storeLatestCrises(_authToken, _page);
+            c = this.pershandler.getLatestCrisesList(10, _page);
+        }
+        return c;
+    }
 
-	public Crisis getCrisis(String _authToken, String _crisisID) {
-		Crisis crisis = this.pershandler.getCrisis(_crisisID);
-		if ( null == crisis ) {
-			AsyncTask<String, Void, JSONObject> singleCrisisTask = new SingleCrisisHttpHelper().execute(_authToken, _crisisID);
-			try {
-				this.pershandler.addCrisis(singleCrisisTask.get());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			crisis = this.pershandler.getCrisis(_crisisID);
-		}
-		return crisis;
-	}
+    public Crisis getLatestCrisis(String _authToken) {
+        Crisis crisis = this.pershandler.getLatestCrisis();
+        if ( crisis == null && _authToken != null ) {
+            storeLatestCrises(_authToken, 1);
+            crisis = this.pershandler.getLatestCrisis();
+        }
+        return crisis;
+    }
 
-	/**
-	 * TODO: Extract the crises from the cache...
-	 * @param _auth_token
-	 * @param _page
-	 * @param _location
-	 * @return
-	 */
-	public JSONArray getNearCrises(String _auth_token, int _page, Location _location) {
-		AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
-		JSONArray retArray = null;
-		try {
-			retArray = crisesHelper.get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return retArray;
-	}
+    public Crisis getCrisis(String _authToken, String _crisisID) {
+        Crisis crisis = this.pershandler.getCrisis(_crisisID);
+        if ( null == crisis ) {
+            AsyncTask<String, Void, JSONObject> singleCrisisTask = new SingleCrisisHttpHelper().execute(_authToken, _crisisID);
+            try {
+                this.pershandler.addCrisis(singleCrisisTask.get());
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            crisis = this.pershandler.getCrisis(_crisisID);
+        }
+        return crisis;
+    }
 
-	/**
-	 *
-	 * @param crisis The single crisis JSON object as received from the Sigimera REST API
-	 * @return The shortened title that is human-readable
-	 */
-	public String getShortTitle(JSONObject crisis) {
-		String title = "";
-		try {
-			title += crisis.getString("crisis_alertLevel");
-			title += " ";
-			title += crisis.getString("subject");
-			title += " alert ";
+    /**
+     * TODO: Extract the crises from the cache...
+     * @param _auth_token
+     * @param _page
+     * @param _location
+     * @return
+     */
+    public JSONArray getNearCrises(String _auth_token, int _page, Location _location) {
+        AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
+        JSONArray retArray = null;
+        try {
+            retArray = crisesHelper.get();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return retArray;
+    }
 
-			if ( crisis.has("gn_parentCountry") && crisis.getJSONArray("gn_parentCountry").length() > 0 ){
-				title += " in ";
-				title += capitalize(crisis.getJSONArray("gn_parentCountry").get(0).toString());
-			}
-			return title;
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    /**
+     *
+     * @param crisis The single crisis JSON object as received from the Sigimera REST API
+     * @return The shortened title that is human-readable
+     */
+    public String getShortTitle(JSONObject crisis) {
+        String title = "";
+        try {
+            title += crisis.getString("crisis_alertLevel");
+            title += " ";
+            title += crisis.getString("subject");
+            title += " alert ";
 
-	public String capitalize(String s) {
-		if (s.length() == 0) return s;
-	    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-	}
+            if ( crisis.has("gn_parentCountry") && crisis.getJSONArray("gn_parentCountry").length() > 0 ){
+                title += " in ";
+                title += capitalize(crisis.getJSONArray("gn_parentCountry").get(0).toString());
+            }
+            return title;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String capitalize(String s) {
+        if (s.length() == 0) return s;
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
 }

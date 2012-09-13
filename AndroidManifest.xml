@@ -9,8 +9,8 @@
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.VIBRATE" />
-    
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <permission
         android:name="org.sigimera.app.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -26,7 +26,7 @@
     <!-- GCM requires a Google account. -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!-- Keeps the processor from sleeping when a message is received. -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />       
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:icon="@drawable/sigimera_logo"
@@ -46,15 +46,15 @@
 
         <activity
             android:name=".FullMapActivity"
-            android:label="@string/title_activity_map" />      
-            
-        <activity 
+            android:label="@string/title_activity_map" />
+
+        <activity
             android:name=".CrisisAlertActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:label="@string/title_crisis_alert_activity"/>
 
         <service android:name=".GCMIntentService" />
-        
+
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

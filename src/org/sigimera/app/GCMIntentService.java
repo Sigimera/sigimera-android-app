@@ -83,6 +83,29 @@ public class GCMIntentService extends GCMBaseIntentService {
                     /**
                      * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
                      */
+            	} else if ( type.equalsIgnoreCase("PING") ) {
+            		/**
+            		 * Notifier user via notification...
+            		 */            		
+            		String ns = Context.NOTIFICATION_SERVICE;
+            		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+
+            		/**
+            		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
+            		 * but not the older ones.
+            		 */
+            		int id = new Random().nextInt();
+            		
+            		Builder builder = new NotificationCompat.Builder(getApplicationContext())
+            			.setTicker("Sigmera PING!")
+            			.setSmallIcon(R.drawable.sigimera_logo)
+            			.setContentTitle("Sigimera PING!")
+            			.setContentText("Congratulations, push notifcation received!")
+            			.setOngoing(false)
+            			.setDefaults(Notification.DEFAULT_ALL)
+            			;
+            		
+            		mNotificationManager.notify("PING", id, builder.getNotification());
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
             		/**
             		 * Notifier user via notification...
@@ -116,8 +139,30 @@ public class GCMIntentService extends GCMBaseIntentService {
             		mNotificationManager.notify("CRISIS_ALERT", id, builder.getNotification());
             	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {
             		/**
-            		 * Open single crisis activity
+            		 * TODO: Open single crisis activity
             		 */
+            		/**
+            		 * Notifier user via notification...
+            		 */            		
+            		String ns = Context.NOTIFICATION_SERVICE;
+            		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+
+            		/**
+            		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
+            		 * but not the older ones.
+            		 */
+            		int id = new Random().nextInt();
+            		
+            		Builder builder = new NotificationCompat.Builder(getApplicationContext())
+            			.setTicker("Crisis Shared!")
+            			.setSmallIcon(R.drawable.sigimera_logo)
+            			.setContentTitle("TODO: Open Crisis!")
+            			.setContentText("Crisis: " + msg.getStringExtra("crisis_id"))
+            			.setOngoing(false)
+            			.setDefaults(Notification.DEFAULT_ALL)
+            			;
+            		
+            		mNotificationManager.notify("PING", id, builder.getNotification());
             	}
             }
         });

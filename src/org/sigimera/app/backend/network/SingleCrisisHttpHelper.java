@@ -19,39 +19,39 @@ import android.util.Log;
 
 public class SingleCrisisHttpHelper extends AsyncTask<String, Void, JSONObject> {
 
-	private final String HOST = Config.getInstance().getAPIHost()+"crisis/";
-	
-	@Override
-	protected JSONObject doInBackground(String... _params) {
-		String auth_token = _params[0];
-		if ( auth_token == null ) return null;
-		
-		String crisis_id = _params[1];
+    private final String HOST = Config.getInstance().getAPIHost()+"crisis/";
 
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet request = new HttpGet(HOST + crisis_id + ".json?auth_token=" + auth_token);
+    @Override
+    protected JSONObject doInBackground(String... _params) {
+        String auth_token = _params[0];
+        if ( auth_token == null ) return null;
 
-		try {
-			Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
-			HttpResponse result = httpclient.execute(request);
-			JSONObject json_response = new JSONObject(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
-			return json_response;
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			httpclient.getConnectionManager().shutdown();
-		}
-		return null;
-	}
+        String crisis_id = _params[1];
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpGet request = new HttpGet(HOST + crisis_id + ".json?auth_token=" + auth_token);
+
+        try {
+            Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
+            HttpResponse result = httpclient.execute(request);
+            JSONObject json_response = new JSONObject(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
+            return json_response;
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            httpclient.getConnectionManager().shutdown();
+        }
+        return null;
+    }
 
 }
