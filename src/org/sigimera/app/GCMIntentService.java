@@ -32,8 +32,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.controller.ApplicationController;
+import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
+import org.sigimera.app.model.Crisis;
 import org.sigimera.app.util.Config;
 
 import android.app.Notification;
@@ -75,14 +78,20 @@ public class GCMIntentService extends GCMBaseIntentService {
             public void run() {
             	final String type = msg.getStringExtra("sig_message_type");
             	if ( type.equalsIgnoreCase("NEW_CRISIS") ) {
-            		StringBuffer message = new StringBuffer();
-            		message.append(msg.getStringExtra("sig_message_type"));
-            		message.append(" :: ");
-            		message.append(msg.getStringExtra("crisis_id") );
-            		Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
-                    /**
-                     * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
-                     */
+            		String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
+            		/**
+            		 * XXX: Blocks UI: Shift this code into a separate background thread
+            		 */
+            		Crisis crisis = CrisesController.getInstance().getCrisis(authToken, msg.getStringExtra("crisis_id"));
+            		
+        			StringBuffer message = new StringBuffer();
+            		if ( crisis != null ) {
+            			message.append(crisis.getID());
+            			message.append(" was stored successfully!");
+            		} else {
+            			message.append("Not able to get crisis!");
+            		}
+        			Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
             	} else if ( type.equalsIgnoreCase("PING") ) {
             		/**
             		 * Notifier user via notification...

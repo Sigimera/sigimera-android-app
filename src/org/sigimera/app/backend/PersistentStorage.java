@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,6 +68,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     }
 
     public boolean addCrisis(JSONObject _crisis) throws JSONException {
+    	if ( _crisis == null ) return false;
         String crisisID = _crisis.getString("_id");
         if ( checkIfCrisisExists(crisisID) ) {
             // TODO: Delete old crisis or implement some type of update mechanism
@@ -76,39 +76,54 @@ public class PersistentStorage extends SQLiteOpenHelper {
             return false;
         } else {
             this.openDatabaseWrite();
-            Iterator<?> iter = _crisis.keys();
+            
             ContentValues values = new ContentValues();
+            values.put("_id", _crisis.getString("_id"));
+            
             values.put("short_title", CrisesController.getInstance().getShortTitle(_crisis));
-            values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
-            values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(0));
-            values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
-            while ( iter.hasNext() ) {
-                Object keyObject = iter.next();
-                if ( keyObject instanceof String ) {
-                    Object valueObject;
-                    try {
-                        valueObject = _crisis.get((String) keyObject);
-                        if ( valueObject instanceof String ) {
-                            values.put((String)keyObject, (String)valueObject);
-                        } else if ( valueObject instanceof JSONArray ) {
-                            ContentValues countryValues = new ContentValues();
-                            if ( keyObject.equals("gn_parentCountry") ) {
-                                JSONArray countries = (JSONArray)valueObject;
-                                for ( int count=0; count < countries.length(); count++ ) {
-                                    countryValues.put("crisis_id", crisisID);
-                                    countryValues.put("country_name", countries.getString(count));
-                                }
-                                if ( countryValues.size() > 0 )
-                                    this.db.insert(TABLE_COUNTRIES, null, countryValues);
-                            }
-                        } else System.err.println("Not able to add value for key '" + keyObject + "'");
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
+            if ( _crisis.has("subject") )
+            	values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
+            
+            if ( _crisis.has("foaf_based_near") ) {
+            	values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(0));
+            	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
             }
+            if ( _crisis.has("dc_title") )
+            	values.put("dc_title", _crisis.getString("dc_title"));
+            if ( _crisis.has("dc_description") )
+            	values.put("dc_description", _crisis.getString("dc_description"));
+            if ( _crisis.has("dc_date") )
+            	values.put("dc_date", _crisis.getString("dc_date"));
+            if ( _crisis.has("schema_startDate") )
+            	values.put("schema_startDate", _crisis.getString("schema_startDate"));
+            if ( _crisis.has("schema_endDate") )
+            	values.put("schema_endDate", _crisis.getString("schema_endDate"));
+            if ( _crisis.has("subject") )
+            	values.put("subject", _crisis.getString("subject"));
+            if ( _crisis.has("crisis_alertLevel") )
+            	values.put("crisis_alertLevel", _crisis.getString("crisis_alertLevel"));
+            if ( _crisis.has("crisis_severity") )
+            	values.put("crisis_severity", _crisis.getString("crisis_severity"));
+            if ( _crisis.has("crisis_population") )
+            	values.put("crisis_population", _crisis.getString("crisis_population"));
+            if ( _crisis.has("crisis_vulnerability") )
+            	values.put("crisis_vulnerability", _crisis.getString("crisis_vulnerability"));
+            
+
             this.db.insert(TABLE_CRISES, null, values);
+            
+            /**
+             * Add country to separate table
+             */
+            JSONArray countries = (JSONArray)_crisis.getJSONArray("gn_parentCountry");
+            ContentValues countryValues = new ContentValues();
+            for ( int count=0; count < countries.length(); count++ ) {
+            	countryValues.put("crisis_id", crisisID);
+                countryValues.put("country_name", countries.getString(count));
+            }
+            if ( countryValues.size() > 0 )
+            	this.db.insert(TABLE_COUNTRIES, null, countryValues);
+            
             this.onExit();
         }
         return true;
@@ -233,6 +248,6 @@ public class PersistentStorage extends SQLiteOpenHelper {
         }
     }
 
-    public void onExit() { this.close(); }
+    public void onExit() { this.db.close(); }
 
 }
