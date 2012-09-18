@@ -52,7 +52,16 @@
             android:name=".CrisisAlertActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:label="@string/title_crisis_alert_activity"/>
-
+        
+        <service android:name=".backend.auth.AuthenticationService"
+           android:exported="false" >
+            <intent-filter>
+     			<action android:name="android.accounts.AccountAuthenticator" />
+   			</intent-filter>
+   			<meta-data android:name="android.accounts.AccountAuthenticator"
+            	android:resource="@xml/authenticator" />
+        </service>
+        
         <service android:name=".GCMIntentService" />
 
         <receiver
