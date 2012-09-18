@@ -81,7 +81,7 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 						GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
 						final String regId = GCMRegistrar.getRegistrationId(this);
 						if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
-						else GCMRegistrar.unregister(this);
+//						else GCMRegistrar.unregister(this);
 					} catch (Exception e) {
 						Log.v(Constants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
 					}
@@ -89,16 +89,26 @@ public class MainActivity extends FragmentActivity implements LoginListener, Cri
 				/**
 				 * END: Google Cloud Messaging
 				 */
-											
+
+				String windowType = getIntent().getStringExtra(Constants.WINDOW_TYPE);
 				// Passing the crises list and first crisis to the fragments
+				
 				String[] titles = { "Last Crises", "Crisis Info" };
-					
-				fragmentPageOne = new CrisesListFragment();					
-					
+				
+				fragmentPageOne = new CrisesListFragment();										
 				fragmentPageTwo = new CrisisFragement();
+				
+				String crisisID = null;
+				int currentPage = 0;
+								
+				if ( windowType != null && windowType.equalsIgnoreCase(Constants.WINDOW_TYPE_SHARED_CRISIS)) {
+					crisisID = getIntent().getStringExtra(Constants.CRISES_ID);
+					currentPage = 1;
+				}
+				
 				fragmentPageTwo.setArguments(forwardFragmentProperty(
-						new Bundle(), Constants.CRISIS, null));
-				newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, 0);		
+						new Bundle(), Constants.CRISIS, crisisID));
+				newDoubleWindow(titles, fragmentPageOne, fragmentPageTwo, currentPage);
 			} catch (AuthenticationErrorException e) {
 				String[] titles = { "Login", "Last 10 crises" };
 
