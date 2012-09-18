@@ -30,7 +30,7 @@ public class SingleCrisisHttpHelper extends AsyncTask<String, Void, JSONObject> 
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
         httpclient.getCookieStore().clear(); // We do not use cookies for the authentication...
-        HttpGet request = new HttpGet(HOST + crisis_id + ".json?auth_token=" + auth_token);
+        HttpGet request = new HttpGet(HOST + crisis_id + ".json?auth_token=" + auth_token + "&output=short");
 
         try {
             Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());

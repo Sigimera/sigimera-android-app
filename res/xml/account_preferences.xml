@@ -1,0 +1,12 @@
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/app_name" />
+    <PreferenceScreen
+         android:key="key1"
+         android:title="@string/app_name"
+         android:summary="@string/app_name">
+         <intent
+             android:action="key1.ACTION"
+             android:targetPackage="key1.package"
+             android:targetClass="key1.class" />
+     </PreferenceScreen>
+ </PreferenceScreen>
