@@ -42,8 +42,9 @@ public abstract class Constants {
 	/**
 	 * Keys
 	 */
-	public static final String CRISES_LIST = "crises_list";
+	public static final String CRISES_LIST = "crises_list";	
 	public static final String CRISIS = "crisis";
+	public static final String CRISES_ID = "crisis_id";
 	public static final String LATITUDE = "latitude";
 	public static final String LONGITUDE = "longitude";
 	public static final String CRISIS_TYPE = "crisis_type";
@@ -51,6 +52,7 @@ public abstract class Constants {
 	public static final String BOTTOM = "bottom";	
 	public static final String ICON = "icon";
 	public static final String ARROW = "rightArrow";
+	public static final String WINDOW_TYPE = "window_type"; 
 	
 	/**
 	 * Crisis types
@@ -59,5 +61,11 @@ public abstract class Constants {
 	public static final String FLOOD = "flood";
 	public static final String CYCLONE = "cyclone";
 	public static final String VOLCANO = "volcano";
+	
+	/**
+	 * Window types
+	 */
+	public static final String WINDOW_TYPE_SHARED_CRISIS = "shared_crisis";
+	
 	
 }
