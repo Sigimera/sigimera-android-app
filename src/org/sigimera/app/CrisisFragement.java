@@ -79,11 +79,11 @@ public class CrisisFragement extends ListFragment {
 		this.activity = getActivity();
 		
 		String crisisID = getArguments().getString(Constants.CRISIS);
-		PersistentStorage pershandler = ApplicationController.getInstance().getPersistentStorageHandler();
+		String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
 		if ( null != crisisID ) {
-			this.crisis = pershandler.getCrisis(crisisID);
+			this.crisis = CrisesController.getInstance().getCrisis(authToken, crisisID);
 		} else {
-			this.crisis = pershandler.getLatestCrisis();
+			this.crisis = CrisesController.getInstance().getLatestCrisis(authToken);
 		}
 		updateGUI();
 	}

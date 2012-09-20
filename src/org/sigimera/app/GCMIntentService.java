@@ -36,6 +36,7 @@ import org.sigimera.app.controller.ApplicationController;
 import org.sigimera.app.controller.CrisesController;
 import org.sigimera.app.controller.SessionHandler;
 import org.sigimera.app.exception.AuthenticationErrorException;
+import org.sigimera.app.model.Constants;
 import org.sigimera.app.model.Crisis;
 import org.sigimera.app.util.Config;
 
@@ -44,6 +45,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
@@ -103,75 +105,63 @@ public class GCMIntentService extends GCMBaseIntentService {
             		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
             		 * but not the older ones.
             		 */
-            		int id = new Random().nextInt();
+            		int notificationID = new Random().nextInt();
             		
-            		Builder builder = new NotificationCompat.Builder(getApplicationContext())
-            			.setTicker("Sigmera PING!")
-            			.setSmallIcon(R.drawable.sigimera_logo)
+            		Intent notificationIntent = new Intent();
+            		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
+            		        0, notificationIntent,
+            		        PendingIntent.FLAG_CANCEL_CURRENT);
+            		
+            		Notification notification = new NotificationCompat.Builder(getApplicationContext())            			
             			.setContentTitle("Sigimera PING!")
             			.setContentText("Congratulations, push notifcation received!")
-            			.setOngoing(false)
+            			.setSmallIcon(R.drawable.alert_red)
+            			.setOngoing(true)
+            			.setAutoCancel(true)
             			.setDefaults(Notification.DEFAULT_ALL)
+            			.setContentIntent(contentIntent)
+            			.getNotification()
             			;
             		
-            		mNotificationManager.notify("PING", id, builder.getNotification());
+            		mNotificationManager.notify(notificationID, notification);
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
             		/**
             		 * Notifier user via notification...
             		 */            		
+            		
             		String ns = Context.NOTIFICATION_SERVICE;
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-
+            		
             		/**
             		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
             		 * but not the older ones.
-            		 */
-            		int id = new Random().nextInt();
+            		 */           
+            		int notificationID = new Random().nextInt();
             		Intent notificationIntent = new Intent(getApplicationContext(), CrisisAlertActivity.class);
-            		notificationIntent.putExtra("notification_id", id);
+            		notificationIntent.putExtra("notification_id", notificationID);
             		notificationIntent.putExtra("crisis_id", msg.getStringExtra("crisis_id"));
             		notificationIntent.putExtra("crisis_type", msg.getStringExtra("crisis_type"));
             		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
             		        0, notificationIntent,
             		        PendingIntent.FLAG_CANCEL_CURRENT);
             		
-            		Builder builder = new NotificationCompat.Builder(getApplicationContext())
-            			.setTicker("CRISIS ALERT!!!")
-            			.setSmallIcon(R.drawable.alert_red)
-            			.setContentTitle("CRISIS ALERT!")
-            			.setContentText("Crisis found: " + msg.getStringExtra("crisis_id"))
-            			.setOngoing(true)
-            			.setDefaults(Notification.DEFAULT_ALL)
-            			.setContentIntent(contentIntent)
-            			;
+            		Notification notification = new NotificationCompat.Builder(getApplicationContext())
+            		.setContentTitle("CRISIS ALERT!")
+                    .setContentText("Crisis found: " + msg.getStringExtra("crisis_id"))
+                    .setSmallIcon(R.drawable.about_icon)
+                    .setOngoing(true)
+            		.setDefaults(Notification.DEFAULT_ALL)
+                    .setContentIntent(contentIntent)
+            		.getNotification()
+                    ;
             		
-            		mNotificationManager.notify("CRISIS_ALERT", id, builder.getNotification());
-            	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {
-            		/**
-            		 * TODO: Open single crisis activity
-            		 */
-            		/**
-            		 * Notifier user via notification...
-            		 */            		
-            		String ns = Context.NOTIFICATION_SERVICE;
-            		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-
-            		/**
-            		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
-            		 * but not the older ones.
-            		 */
-            		int id = new Random().nextInt();
-            		
-            		Builder builder = new NotificationCompat.Builder(getApplicationContext())
-            			.setTicker("Crisis Shared!")
-            			.setSmallIcon(R.drawable.sigimera_logo)
-            			.setContentTitle("TODO: Open Crisis!")
-            			.setContentText("Crisis: " + msg.getStringExtra("crisis_id"))
-            			.setOngoing(false)
-            			.setDefaults(Notification.DEFAULT_ALL)
-            			;
-            		
-            		mNotificationManager.notify("PING", id, builder.getNotification());
+            		mNotificationManager.notify(notificationID, notification);
+            	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {            		
+            		Intent intent = new Intent(GCMIntentService.this, MainActivity.class);
+            		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            		intent.putExtra(Constants.CRISES_ID, msg.getStringExtra("crisis_id"));
+            		intent.putExtra(Constants.WINDOW_TYPE, Constants.WINDOW_TYPE_SHARED_CRISIS);
+            		startActivity(intent);            		
             	}
             }
         });
