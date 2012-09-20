@@ -53,8 +53,13 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:label="@string/title_crisis_alert_activity"/>
         
+        <activity 
+            android:name=".backend.auth.AuthenticatorActivtiy"
+            android:label="@string/title_activity_login"
+            android:excludeFromRecents="true" />
+        
         <service android:name=".backend.auth.AuthenticationService"
-           android:exported="false" >
+            android:exported="true">
             <intent-filter>
      			<action android:name="android.accounts.AccountAuthenticator" />
    			</intent-filter>
