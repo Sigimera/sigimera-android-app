@@ -150,6 +150,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                     .setContentText("Crisis found: " + msg.getStringExtra("crisis_id"))
                     .setSmallIcon(R.drawable.about_icon)
                     .setOngoing(true)
+                    .setAutoCancel(true)
             		.setDefaults(Notification.DEFAULT_ALL)
                     .setContentIntent(contentIntent)
             		.getNotification()
