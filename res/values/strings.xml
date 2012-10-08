@@ -2,7 +2,8 @@
     <string name="app_name">Sigimera - Crises</string>
     <string name="logo_description">Sigimera Logo</string>
     <string name="crisis_type_logo_description">Sigimera Logo</string>
-    <string name="menu_settings">Settings</string>    
+    <string name="menu_settings">Settings</string>
+    <string name="menu_logout">Logout</string>    
        	
     <string name="email_text">Enter your e-mail</string>
     <string name="password_text">Password</string>
@@ -19,4 +20,18 @@
     <!-- Develop credentials -->
     <string name="dev_username">johndoe@example.org</string>
     <string name="dev_password">testing</string>
+    
+     <string name="account_link"><a href="https://www.sigimera.org/register">Create an account</a></string>
+     <string name="help_text">Login or create an account for beneficiation of full support</string>
+    
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
 </resources>

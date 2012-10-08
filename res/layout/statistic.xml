@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal"
+    android:baselineAligned="true">
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"        
+        android:paddingTop="10dip"
+       	android:orientation="vertical"
+    	android:layout_gravity="top|center_vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip" >
+
+            <Button
+                android:id="@+id/button0"
+                android:layout_width="20dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/glyphicons_266_flag_white"
+                android:gravity="center_vertical|center" />
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="20dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/glyphicons_024_parents_white"
+                android:gravity="center_vertical|center" />                     
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip" >
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="20dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/glyphicons_196_circle_exclamation_mark_white"
+                android:gravity="center_vertical|center" />
+
+          <Button
+                android:id="@+id/button3"
+                android:layout_width="20dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/glyphicons_326_share_white"
+                android:gravity="center_vertical|center" />
+        </LinearLayout>
+        
+    </LinearLayout>
+</LinearLayout>

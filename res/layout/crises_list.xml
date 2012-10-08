@@ -1,5 +1,12 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/crises_list"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/crisis_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >      
+    </ListView>
+
+</LinearLayout> 

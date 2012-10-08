@@ -2,37 +2,64 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
-    <EditText
-        android:id="@+id/email_input_field"
-        android:layout_width="match_parent"
+    
+    <TextView 
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/email_text"
-        android:inputType="textEmailAddress"
-        android:text="@string/dev_username"
-        android:focusable="true"
-		android:focusableInTouchMode="true" >
+        android:textSize="10dp"
+        android:text="@string/help_text"
+        android:gravity="center_horizontal" />
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
-        <requestFocus />
-    </EditText>
+        <EditText
+            android:id="@+id/email_input_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="@string/email_text"
+            android:inputType="textEmailAddress"
+            android:text="@string/dev_username" >
+            <requestFocus />
+        </EditText>
 
-    <EditText
-        android:id="@+id/password_input_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/password_text"
-        android:inputType="textPassword"
-        android:text="@string/dev_password"
-        android:focusable="true"
-		android:focusableInTouchMode="true" />
+        <EditText
+            android:id="@+id/password_input_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="@string/password_text"
+            android:inputType="textPassword"
+            android:text="@string/dev_password">
+            <requestFocus />
+        </EditText>
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="login"
-        android:text="@string/login_button" />
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="loginClicked"
+            android:text="@string/login_button" />
+        
+        <TextView 
+            android:id="@+id/account_link"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dip"
+            android:paddingRight="10dip"
+            android:gravity="right"
+            android:autoLink="web"
+            android:textColor="#00CED1"
+            android:clickable="true"
+            android:onClick="accountClicked"
+            android:text="@string/account_link"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,21 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.sigimera.app"
+    package="org.sigimera.app.android"
     android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="1.0.0-beta" >
+    android:versionName="1.0.0-beta">
 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="16" />
-
+    
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
-        android:name="org.sigimera.app.permission.C2D_MESSAGE"
+        android:name="org.sigimera.app.android.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="org.sigimera.app.permission.C2D_MESSAGE" />
+    <uses-permission android:name="org.sigimera.app.android.permission.C2D_MESSAGE" />
     <!-- Determine location of user by network and/or GPS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -31,7 +31,7 @@
     <application
         android:icon="@drawable/sigimera_logo"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault" >
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
@@ -41,14 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        
         <uses-library android:name="com.google.android.maps" />
-
-        <activity
-            android:name=".FullMapActivity"
-            android:label="@string/title_activity_map" />
-
-        <activity
+        
+         <activity
             android:name=".CrisisAlertActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:label="@string/title_crisis_alert_activity"/>
@@ -57,6 +53,14 @@
             android:name=".backend.auth.AuthenticatorActivtiy"
             android:label="@string/title_activity_login"
             android:excludeFromRecents="true" />
+        
+         <activity 
+            android:name=".CrisisActivity"
+            android:label="@string/title_activity_crisis" />
+         
+         <activity 
+            android:name=".FullMapActivity"
+            android:label="@string/title_activity_crisis" />
         
         <service android:name=".backend.auth.AuthenticationService"
             android:exported="true">
@@ -76,9 +80,10 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="org.sigimera.app" />
+                <category android:name="org.sigimera.app.android" />
             </intent-filter>
         </receiver>
     </application>
+   
 
 </manifest>
