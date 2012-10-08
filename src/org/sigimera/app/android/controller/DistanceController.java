@@ -99,7 +99,6 @@ public class DistanceController {
 		BigDecimal bigD = new BigDecimal(distance);
 		bigD = bigD.setScale(decimalPlaces, BigDecimal.ROUND_HALF_UP);
 
-		System.out.println(bigD.doubleValue());
 		return bigD.doubleValue();
 	}
 }
