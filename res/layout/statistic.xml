@@ -16,53 +16,65 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dip"
-            android:paddingRight="20dip" >
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip" >
 
             <Button
                 android:id="@+id/button0"
-                android:layout_width="20dip"
+                android:layout_width="10dip"
                 android:layout_height="90dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:drawableLeft="@drawable/glyphicons_266_flag_white"
-                android:gravity="center_vertical|center" />
-
+                android:drawableLeft="@drawable/near_small"
+                android:gravity="center_vertical|center" />             
+                
             <Button
                 android:id="@+id/button1"
-                android:layout_width="20dip"
+                android:layout_width="10dip"
                 android:layout_height="90dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:drawableLeft="@drawable/glyphicons_024_parents_white"
-                android:gravity="center_vertical|center" />                     
+                android:drawableLeft="@drawable/today_small"
+                android:gravity="center_vertical|center" />  
             
-        </LinearLayout>
+        </LinearLayout> 
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dip"
-            android:paddingRight="20dip" >
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip" >
 
             <Button
                 android:id="@+id/button2"
-                android:layout_width="20dip"
+                android:layout_width="10dip"
                 android:layout_height="90dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:drawableLeft="@drawable/glyphicons_196_circle_exclamation_mark_white"
+                android:drawableLeft="@drawable/latest_small"
                 android:gravity="center_vertical|center" />
 
-          <Button
+            <Button
                 android:id="@+id/button3"
-                android:layout_width="20dip"
+                android:layout_width="10dip"
                 android:layout_height="90dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:drawableLeft="@drawable/glyphicons_326_share_white"
-                android:gravity="center_vertical|center" />
+                android:drawableLeft="@drawable/all_small"
+                android:gravity="center_vertical|center" />  
+          
         </LinearLayout>
         
-    </LinearLayout>
+        <View 
+        	android:layout_width="match_parent"
+ 			android:layout_height="1dip"
+ 			android:layout_margin="10dip"
+ 			android:background="#00FFFF" />	
+ 			
+        <LinearLayout
+        	android:orientation="vertical"
+        	android:id="@+id/main_frag_container"
+        	android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"/>	            
+    </LinearLayout>       
 </LinearLayout>
