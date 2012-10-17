@@ -28,6 +28,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     private final static String DB_NAME = "sigimera.s3db";
     private final static String TABLE_CRISES = "crises";
     private final static String TABLE_COUNTRIES = "countries";
+    private final static String TABLE_USER = "user_info";
 
     private SQLiteDatabase db;
 
@@ -65,6 +66,24 @@ public class PersistentStorage extends SQLiteOpenHelper {
 
     public void openDatabaseWrite() {
         this.db = getWritableDatabase();
+    }
+    
+    public boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
+    	if ( _crisis == null  ) return false;
+    	this.openDatabaseWrite();
+    	ContentValues values = new ContentValues();  
+    	
+    	values.put("_id", "current_user");
+    	values.put("near_crisis_id", _crisis.getString("_id"));
+    	if ( _crisis.has("foaf_based_near") ) {
+        	values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(0));
+        	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
+        }
+    	
+    	this.db.insert(TABLE_USER, null, values);
+    	
+    	this.onExit();
+    	return true;
     }
 
     public boolean addCrisis(JSONObject _crisis) throws JSONException {
@@ -140,6 +159,19 @@ public class PersistentStorage extends SQLiteOpenHelper {
         Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + _crisisID + "'", null);
         Crisis crisis = null;
         if ( c.getCount() != 0) crisis = this._extractCrisis(c);
+        this.onExit();
+
+        return crisis;
+    }
+    
+    public Crisis getNearestCrisis() {
+        this.openDatabaseReadOnly();
+
+        Cursor c = this.db.rawQuery("SELECT near_crisis_id FROM "+TABLE_USER, null);
+        Crisis crisis = null;
+        if ( c.moveToFirst() ) {
+        	crisis = getCrisis(c.getString(0));
+        }
         this.onExit();
 
         return crisis;

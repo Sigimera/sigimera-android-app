@@ -2,77 +2,27 @@ package org.sigimera.app.android.controller;
 
 import java.math.BigDecimal;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.sigimera.app.android.exception.AuthenticationErrorException;
-import org.sigimera.app.android.model.Constants;
+import org.sigimera.app.android.model.Crisis;
 
 import android.location.Location;
 
-public class DistanceController {
-
-	private static String auth_token;
-	private static String nearCrisisID = null;
+public abstract class DistanceController {
 	private static int decimalPlaces = 2;
-	private static double smallestDistance = Constants.MAX_DISTANCE_NEAR_CRISIS;
-
-	private static DistanceController instance = null;
 
 	/**
-	 * Singleton pattern
-	 */
-	public static DistanceController getInstance() {
-		if (instance == null)
-			instance = new DistanceController();
-		return instance;
-	}
-
-	private DistanceController() {
-	}
-	
-	public static String getNearCrisis() {
-		return nearCrisisID;
-	}
-
-	/**
-	 * Retrieve the distance to the next near crisis and set the crisisID of it
-	 * in ApplicationController.
 	 * 
+	 * @param _authToken
+	 * @param _nearCrisis
+	 * @param _userLocation
 	 * @return
 	 */
-	public static double getNearCrisisDistance() {
-		try {
-			auth_token = ApplicationController.getInstance()
-					.getSessionHandler().getAuthenticationToken();
-		} catch (AuthenticationErrorException e) {
-			// TODO: go to Login Window
+	public static double getNearCrisisDistance(String _authToken, Crisis _nearCrisis, Location _userLocation) {		
+		if ( _nearCrisis != null ) {
+			return computeDistance(
+					_userLocation.getLatitude(), _userLocation.getLongitude(), 
+					_nearCrisis.getLatitude(), _nearCrisis.getLongitude());
 		}
-		Location userLocation = LocationController.getInstance().getLastKnownLocation();
-
-		JSONArray retArray = CrisesController.getInstance().getNearCrises(auth_token, 1, userLocation);
-		if ( retArray != null ) {
-			for (int count = 0; count < retArray.length(); count++) {
-				try {
-					JSONObject crisisJSON = (JSONObject) retArray.get(count);
-					double latitude = (Double) crisisJSON.getJSONArray("foaf_based_near").get(1);
-					double longitude = (Double) crisisJSON.getJSONArray("foaf_based_near").get(0);
-	
-					double tmpDistance = computeDistance(
-							userLocation.getLatitude(),
-							userLocation.getLongitude(), latitude, longitude);
-					if (tmpDistance < smallestDistance) {
-						smallestDistance = tmpDistance;
-						nearCrisisID = crisisJSON.getString("_id");
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		System.out.println(smallestDistance);
-		return smallestDistance;
+		return -1;
 	}
 
 	/**

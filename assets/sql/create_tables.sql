@@ -20,3 +20,10 @@ CREATE TABLE countries (
 	crisis_id TEXT,
 	country_name TEXT
 );
+
+CREATE TABLE user_info (
+	_id TEXT PRIMARY KEY,
+	near_crisis_id TEXT,
+	latitude REAL,
+	longitude REAL
+);

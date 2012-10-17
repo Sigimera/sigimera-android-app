@@ -144,6 +144,38 @@ public class CrisesController {
         }
         return retArray;
     }
+    
+    /**
+     * 
+     * @param _auth_token
+     * @param _location
+     * @return
+     */
+    public Crisis getNearCrisis(String _authToken, Location _location) {    	   
+        Crisis crisis = this.pershandler.getNearestCrisis();        
+        if ( null == crisis ) {     	
+            AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_authToken, 1+"", _location.getLatitude()+"", _location.getLongitude()+"");
+            try {
+            	JSONArray crisesArray = crisesHelper.get();
+            	JSONObject nearestCrisis = (JSONObject) crisesArray.get(0);            	
+            	
+            	this.pershandler.addNearCrisisInfos(nearestCrisis);
+            	this.pershandler.addCrisis(nearestCrisis);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            crisis = this.pershandler.getNearestCrisis();
+        }
+        
+        return crisis;
+    }
 
     /**
      *
