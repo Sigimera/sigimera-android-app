@@ -33,8 +33,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.android.R;
+import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.controller.SessionHandler;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -46,6 +48,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -77,9 +80,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 		final Intent msg = _message;
 		this.mainThreadHandler.post(new Runnable() {
             public void run() {
+                String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
             	final String type = msg.getStringExtra("sig_message_type");
             	if ( type.equalsIgnoreCase("NEW_CRISIS") ) {
-            		String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
             		/**
             		 * XXX: Blocks UI: Shift this code into a separate background thread
             		 */
@@ -161,6 +164,13 @@ public class GCMIntentService extends GCMBaseIntentService {
             		intent.putExtra(Constants.CRISES_ID, msg.getStringExtra("crisis_id"));
             		intent.putExtra(Constants.WINDOW_TYPE, Constants.WINDOW_TYPE_SHARED_CRISIS);
             		startActivity(intent);            		
+            	} else if ( type.equalsIgnoreCase("REFRESH") ) {
+            		LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
+            		Location loc = LocationController.getInstance().getLastKnownLocation();
+            		String latitude = loc.getLatitude() + "";
+            		String longitude = loc.getLongitude() + "";
+            		if ( authToken != null )
+            			locUpdater.execute(authToken, latitude, longitude);
             	}
             }
         });
