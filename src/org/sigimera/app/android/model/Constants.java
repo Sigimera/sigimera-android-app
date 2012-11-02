@@ -70,5 +70,10 @@ public abstract class Constants {
 	 * Window types
 	 */
 	public static final String WINDOW_TYPE_SHARED_CRISIS = "shared_crisis";
+	
+	/**
+	 * Notification Identifier
+	 */
+	public static final int PING_ID = 12627;
 		
 }

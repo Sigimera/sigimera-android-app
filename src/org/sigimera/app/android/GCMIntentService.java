@@ -103,12 +103,6 @@ public class GCMIntentService extends GCMBaseIntentService {
             		 */            		
             		String ns = Context.NOTIFICATION_SERVICE;
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-
-            		/**
-            		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
-            		 * but not the older ones.
-            		 */
-            		int notificationID = new Random().nextInt();
             		
             		Intent notificationIntent = new Intent();
             		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
@@ -124,7 +118,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             			.setContentIntent(contentIntent)
             			.build();
             		
-            		mNotificationManager.notify(notificationID, notification);
+            		mNotificationManager.notify(Constants.PING_ID, notification);
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
             		/**
             		 * Notifier user via notification...
