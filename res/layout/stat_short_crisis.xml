@@ -3,7 +3,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
     
-    <TextView 
+    <WebView
+        android:id="@+id/stat_webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dip" />    
+    
+    <!-- <TextView 
         android:id="@+id/country"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"               
@@ -22,6 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/glyphicons_024_parents_white"
-        android:layout_marginLeft="10dip" />
+        android:layout_marginLeft="10dip" /> -->
     
 </LinearLayout>

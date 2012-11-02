@@ -22,10 +22,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
-public class StatisticFragment extends Fragment {
+public class StatisticFragment extends Fragment implements OnClickListener{
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class StatisticFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.statistic, container, false);
+		View view = inflater.inflate(R.layout.statistic, container, false);		
 		
 		Location userLocation = LocationController.getInstance().getLastKnownLocation();
 		
@@ -59,6 +62,7 @@ public class StatisticFragment extends Fragment {
 		if ( auth_token != null ) { 
 			Button nearCrisisButton = (Button) view.findViewById(R.id.button0);
 			nearCrisisButton.setText(Html.fromHtml(DistanceController.getNearCrisisDistance(auth_token, nearCrisis, userLocation) + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
+			nearCrisisButton.setOnClickListener(this);
 		}
 		
 		Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
@@ -111,8 +115,14 @@ public class StatisticFragment extends Fragment {
 	 * @param miliseconds
 	 * @return
 	 */
-	private String getTimeAgoInWords(long miliseconds) {
+	private String getTimeAgoInWords(long miliseconds) {		
 		PrettyTime p = new PrettyTime();
 		return p.format(new Date(Long.parseLong("1348488000000")));
+	}
+
+	@Override
+	public void onClick(View v) {
+		Button tmpView = (Button) v;
+		System.out.println("DEBUG");
 	}
 }

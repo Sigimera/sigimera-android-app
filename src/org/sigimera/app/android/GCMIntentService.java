@@ -51,6 +51,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
+import com.google.android.gcm.GCMRegistrar;
 
 /**
  * This Intent is called when the GCM executing process has finished.
@@ -114,7 +115,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             		Notification notification = new NotificationCompat.Builder(getApplicationContext())            			
             			.setContentTitle("Sigimera PING!")
             			.setContentText("Congratulations, push notifcation received!")
-            			.setSmallIcon(R.drawable.alert_red)
+            			.setSmallIcon(R.drawable.sigimera_logo)
             			.setAutoCancel(true)
             			.setDefaults(Notification.DEFAULT_ALL)
             			.setContentIntent(contentIntent)
@@ -156,11 +157,14 @@ public class GCMIntentService extends GCMBaseIntentService {
             		
             		mNotificationManager.notify(notificationID, notification);
             	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {            		
-            		Intent intent = new Intent(GCMIntentService.this, MainActivity.class);
+            		Intent intent = new Intent(GCMIntentService.this, CrisisActivity.class);
             		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            		intent.putExtra(Constants.CRISES_ID, msg.getStringExtra("crisis_id"));
+            		intent.putExtra(Constants.CRISIS_ID, msg.getStringExtra("crisis_id"));
             		intent.putExtra(Constants.WINDOW_TYPE, Constants.WINDOW_TYPE_SHARED_CRISIS);
             		startActivity(intent);            		
+            	} else if ( type.equalsIgnoreCase("UNREGISTER_DEVICE") ) {
+            		GCMRegistrar.unregister(ApplicationController.getInstance().getApplicationContext());
+
             	}
             }
         });

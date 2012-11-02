@@ -48,7 +48,7 @@ public abstract class Constants {
 	 */
 	public static final String CRISES_LIST = "crises_list";	
 	public static final String CRISIS = "crisis";
-	public static final String CRISES_ID = "crisis_id";
+	public static final String CRISIS_ID = "crisis_id";
 	public static final String LATITUDE = "latitude";
 	public static final String LONGITUDE = "longitude";
 	public static final String CRISIS_TYPE = "crisis_type";

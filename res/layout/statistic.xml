@@ -25,7 +25,7 @@
                 android:layout_height="90dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
-                android:drawableLeft="@drawable/near_small"
+                android:drawableLeft="@drawable/near_crisis"
                 android:gravity="center_vertical|center" />             
                 
             <Button
