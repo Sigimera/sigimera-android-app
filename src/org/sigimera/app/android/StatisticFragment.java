@@ -25,8 +25,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 
 public class StatisticFragment extends Fragment implements OnClickListener{
 
@@ -49,8 +47,6 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 			auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();	
 			latestCrisis = CrisesController.getInstance().getLatestCrisis(auth_token);
 			nearCrisis = CrisesController.getInstance().getNearCrisis(auth_token, userLocation);
-			
-			System.err.println(CrisesController.getInstance().getNearCrises(auth_token, 1, userLocation));
 		} catch (AuthenticationErrorException e) {
 			//TODO: send to login window
 			System.err.println("Error on authentification" + e.getLocalizedMessage());
@@ -117,12 +113,14 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 	 */
 	private String getTimeAgoInWords(long miliseconds) {		
 		PrettyTime p = new PrettyTime();
-		return p.format(new Date(Long.parseLong("1348488000000")));
+		String timeAgo = p.format(new Date(Long.parseLong(miliseconds+"")));
+		timeAgo = timeAgo.replace(" ", "<br/>").replaceFirst("<br/>", " ");
+		return timeAgo;
 	}
 
 	@Override
 	public void onClick(View v) {
-		Button tmpView = (Button) v;
+//		Button tmpView = (Button) v;
 		System.out.println("DEBUG");
 	}
 }

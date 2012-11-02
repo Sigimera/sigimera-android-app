@@ -187,8 +187,8 @@ public class CrisisActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    menu.add(0, MENU_SHARE, 20, "Share crisis").setIcon(R.drawable.glyphicons_326_share);
 		menu.add(0, MENU_ABOUT, 30, "About").setIcon(R.drawable.about_icon);
-		menu.add(0, MENU_ADD, 30, "Add").setIcon(R.drawable.glyphicons_190_circle_plus);
-		menu.add(0, MENU_COMMENT, 40, "Comment").setIcon(R.drawable.glyphicons_309_comments);
+//		menu.add(0, MENU_ADD, 30, "Add").setIcon(R.drawable.glyphicons_190_circle_plus);
+//		menu.add(0, MENU_COMMENT, 40, "Comment").setIcon(R.drawable.glyphicons_309_comments);
 	    return true;
 	}
 	

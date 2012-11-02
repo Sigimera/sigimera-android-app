@@ -32,6 +32,8 @@ import org.sigimera.app.android.controller.ApplicationController;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import android.content.Context;
+
 
 /**
  * <b>ATTENTION:</b> Change this only if you know what you are doing.
@@ -61,17 +63,20 @@ public class Config {
 
 	private Config() {
 		try {
-			InputStream inputStream = ApplicationController.getInstance().getApplicationContext().getResources().openRawResource(R.raw.config);
-			InputSource inputSource = new InputSource(inputStream);
+			Context context = ApplicationController.getInstance().getApplicationContext();
+			if ( null != context ) {
+				InputStream inputStream = context.getResources().openRawResource(R.raw.config);
+				InputSource inputSource = new InputSource(inputStream);
+					
+				XPath xpath = XPathFactory.newInstance().newXPath();
+				Node config_node = (Node) xpath.evaluate("//config", inputSource, XPathConstants.NODE);
 				
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			Node config_node = (Node) xpath.evaluate("//config", inputSource, XPathConstants.NODE);
-			
-			api_host = xpath.evaluate("api-host/text()", config_node);		
-			www_host = xpath.evaluate("www-host/text()", config_node);
-			free_api_host = xpath.evaluate("free-api-host/text()", config_node);
-			gcm_project_id = xpath.evaluate("gcm-project-id/text()", config_node);
-			inputStream.close();
+				api_host = xpath.evaluate("api-host/text()", config_node);		
+				www_host = xpath.evaluate("www-host/text()", config_node);
+				free_api_host = xpath.evaluate("free-api-host/text()", config_node);
+				gcm_project_id = xpath.evaluate("gcm-project-id/text()", config_node);
+				inputStream.close();
+			}
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -43,8 +43,8 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 			Account account, Bundle options) throws NetworkErrorException {
 		// TODO Auto-generated method stub
 		if (options != null && options.containsKey(AccountManager.KEY_PASSWORD)) {
-            final String password =
-                    options.getString(AccountManager.KEY_PASSWORD);
+//            final String password =
+//                    options.getString(AccountManager.KEY_PASSWORD);
 //                final boolean verified =
 //                    onlineConfirmPassword(account.name, password);
                 final Bundle result = new Bundle();

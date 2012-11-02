@@ -44,8 +44,9 @@ public class LocationController {
 	}	
 	private LocationController() {
 		// Acquire a reference to the system Location Manager
-		locationManager = (LocationManager) ApplicationController.getInstance()
-				.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+		Context context = ApplicationController.getInstance().getApplicationContext();
+		if ( context != null )
+			locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		
 		/**
 		 *  TODO: Maybe in a future step we will react on location updates.
