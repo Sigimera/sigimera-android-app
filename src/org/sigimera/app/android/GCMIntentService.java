@@ -122,8 +122,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             			.setAutoCancel(true)
             			.setDefaults(Notification.DEFAULT_ALL)
             			.setContentIntent(contentIntent)
-            			.getNotification()
-            			;
+            			.build();
             		
             		mNotificationManager.notify(notificationID, notification);
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
@@ -155,8 +154,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                     .setAutoCancel(true)
             		.setDefaults(Notification.DEFAULT_ALL)
                     .setContentIntent(contentIntent)
-            		.getNotification()
-                    ;
+            		.build();
             		
             		mNotificationManager.notify(notificationID, notification);
             	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {            		
@@ -183,7 +181,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onRegistered(Context _context, String _regID) {
 		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
 		HttpClient httpclient = new DefaultHttpClient();
-		System.out.println("REST API GCM call: " + HOST);
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
