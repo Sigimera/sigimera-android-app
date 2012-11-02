@@ -79,7 +79,7 @@ public class MainActivity extends FragmentActivity {
 				GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
 				final String regId = GCMRegistrar.getRegistrationId(this);
 				if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
-//				else GCMRegistrar.unregister(this);				
+//				else GCMRegistrar.unregister(this);
 			} catch (Exception e) {
 				Log.v(Constants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
 			}
