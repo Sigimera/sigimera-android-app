@@ -40,7 +40,7 @@ public class LocationUpdaterHttpHelper extends AsyncTask<String, Void, Boolean> 
         	Context context = ApplicationController.getInstance().getApplicationContext();
             request = new HttpPut(HOST + GCMRegistrar.getRegistrationId(context) + "?auth_token=" + auth_token + "&lat=" + latitude + "&lon=" + longitude);
 	        try {
-	            Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
+	            Log.d(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
 	            httpclient.execute(request);
 	            // TODO: Check here the returned HTTP status
 	            return true;

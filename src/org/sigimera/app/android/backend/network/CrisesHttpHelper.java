@@ -34,7 +34,7 @@ public class CrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
         else
             request = new HttpGet(FREE_HOST);
         try {
-            Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
+            Log.d(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
             HttpResponse result = httpclient.execute(request);
             JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
             return json_response;

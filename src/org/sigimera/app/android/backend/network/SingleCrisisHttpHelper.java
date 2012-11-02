@@ -33,8 +33,7 @@ public class SingleCrisisHttpHelper extends AsyncTask<String, Void, JSONObject> 
         HttpGet request = new HttpGet(HOST + crisis_id + ".json?auth_token=" + auth_token + "&output=short");
 
         try {
-            Log.i(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
-
+            Log.d(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
             HttpResponse result = httpclient.execute(request);
             String response = new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine();
             JSONObject json_response = new JSONObject(response);
