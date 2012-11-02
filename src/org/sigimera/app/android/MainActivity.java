@@ -15,7 +15,6 @@ import com.google.android.gcm.GCMRegistrar;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -50,7 +49,7 @@ public class MainActivity extends FragmentActivity {
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		ApplicationController appController = ApplicationController
 				.getInstance();
-		appController.init(getApplicationContext(), getSessionSettings());
+		appController.init(getApplicationContext(), getSharedPreferences(Constants.PREFS_NAME, 0));
 
 		if (Common.hasInternet()) {
 			this.session_handler = appController.getSessionHandler();
@@ -122,15 +121,6 @@ public class MainActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
-	}
-
-	/**
-	 * Get the session handler preferences 
-	 * @return
-	 */
-	public SharedPreferences getSessionSettings() {
-		String PREFS_NAME = "session_handler_preferences";
-		return getSharedPreferences(PREFS_NAME, 0);
 	}
 
 	/**

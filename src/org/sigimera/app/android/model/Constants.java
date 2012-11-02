@@ -75,5 +75,10 @@ public abstract class Constants {
 	 * Notification Identifier
 	 */
 	public static final int PING_ID = 12627;
+	
+	/**
+	 * Preferences
+	 */
+	public static final String PREFS_NAME = "session_handler_preferences";
 		
 }
