@@ -99,10 +99,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             			message.append("Not able to get crisis!");
             		}
         			Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
-            	} else if ( type.equalsIgnoreCase("PING") ) {
-            		/**
-            		 * Notifier user via notification...
-            		 */            		
+            	} else if ( type.equalsIgnoreCase("PING") ) {      		
             		String ns = Context.NOTIFICATION_SERVICE;
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
             		
@@ -122,10 +119,6 @@ public class GCMIntentService extends GCMBaseIntentService {
             		
             		mNotificationManager.notify(Constants.PING_ID, notification);
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
-            		/**
-            		 * Notifier user via notification...
-            		 */            		
-            		
             		String ns = Context.NOTIFICATION_SERVICE;
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
             		
@@ -145,7 +138,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             		Notification notification = new NotificationCompat.Builder(getApplicationContext())
             		.setContentTitle("CRISIS ALERT!")
                     .setContentText("Crisis found: " + msg.getStringExtra("crisis_id"))
-                    .setSmallIcon(R.drawable.about_icon)
+                    .setSmallIcon(R.drawable.alert_red)
                     .setOngoing(true)
                     .setAutoCancel(true)
             		.setDefaults(Notification.DEFAULT_ALL)
