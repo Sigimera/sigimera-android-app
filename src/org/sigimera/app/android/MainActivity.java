@@ -3,8 +3,10 @@ package org.sigimera.app.android;
 import java.util.ArrayList;
 
 import org.sigimera.app.android.R;
+import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.controller.SessionHandler;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -15,6 +17,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -160,6 +163,16 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menu_refresh:
+    		LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
+    		Location loc = LocationController.getInstance().getLastKnownLocation();
+    		String latitude = loc.getLatitude() + "";
+    		String longitude = loc.getLongitude() + "";
+    		String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
+    		Log.d(Constants.LOG_TAG_SIGIMERA_APP, "AuthToken = " + authToken);
+    		if ( authToken != null )
+    			locUpdater.execute(authToken, latitude, longitude);
+    		return true;
 		case R.id.menu_logout:
 			this.session_handler.logout();
 			mTabHost.clearAllTabs();

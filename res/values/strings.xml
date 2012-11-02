@@ -3,7 +3,8 @@
     <string name="logo_description">Sigimera Logo</string>
     <string name="crisis_type_logo_description">Sigimera Logo</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_logout">Logout</string>    
+    <string name="menu_logout">Logout</string>
+    <string name="menu_refresh">Update Location</string>        
        	
     <string name="email_text">Enter your e-mail</string>
     <string name="password_text">Password</string>
