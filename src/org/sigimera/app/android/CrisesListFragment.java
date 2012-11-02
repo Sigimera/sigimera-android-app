@@ -87,7 +87,7 @@ public class CrisesListFragment extends ListFragment {
 	    switch (item.getItemId()) {
 	        case R.id.open:
 	        	Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
-				crisisActivity.putExtra(Constants.CRISIS, getCrisisID(info.position));
+				crisisActivity.putExtra(Constants.CRISIS_ID, getCrisisID(info.position));
 				startActivity(crisisActivity);
 	            return true;
 	        case R.id.share:
@@ -103,7 +103,7 @@ public class CrisesListFragment extends ListFragment {
 				long arg3) {
 			cursor.moveToPosition(arg2);
 			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
-			crisisActivity.putExtra(Constants.CRISIS, cursor.getString(cursor.getColumnIndex("_id")));
+			crisisActivity.putExtra(Constants.CRISIS_ID, cursor.getString(cursor.getColumnIndex("_id")));
 			startActivity(crisisActivity);
 		}
 	};

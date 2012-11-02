@@ -56,10 +56,10 @@ public class MainActivity extends FragmentActivity {
 			this.session_handler = appController.getSessionHandler();
 			CrisesController.getInstance();
 
-			// Initialisation of GCM
+			// Initialize of GCM
 			initGCM();
 			
-			//Initialisatio the tabs
+			// Initialize the tabs
 			initTabs();
 
 			if (savedInstanceState != null)
@@ -71,7 +71,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Initialise Google Cloud Messaging
+	 * Initialize Google Cloud Messaging
 	 */
 	private void initGCM() {
 		if ( Config.getInstance().getGcmProjectId() != null ) {
@@ -79,7 +79,6 @@ public class MainActivity extends FragmentActivity {
 				GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
 				final String regId = GCMRegistrar.getRegistrationId(this);
 				if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
-//				else GCMRegistrar.unregister(this);
 			} catch (Exception e) {
 				Log.v(Constants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
 			}
@@ -87,7 +86,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	/**
-	 * Initialisation of tabs
+	 * Initialize of tabs
 	 */
 	private void initTabs() {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -207,12 +206,12 @@ public class MainActivity extends FragmentActivity {
 		private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 
 		static final class TabInfo {
-			private final String tag;
+//			private final String tag;
 			private final Class<?> clss;
 			private final Bundle args;
 
 			TabInfo(String _tag, Class<?> _class, Bundle _args) {
-				tag = _tag;
+//				tag = _tag;
 				clss = _class;
 				args = _args;
 			}

@@ -63,14 +63,14 @@
             android:name=".FullMapActivity"
             android:label="@string/title_activity_crisis" />
         
-        <service android:name=".backend.auth.AuthenticationService"
+        <!-- service android:name=".backend.auth.AuthenticationService"
             android:exported="true">
             <intent-filter>
      			<action android:name="android.accounts.AccountAuthenticator" />
    			</intent-filter>
    			<meta-data android:name="android.accounts.AccountAuthenticator"
             	android:resource="@xml/authenticator" />
-        </service>
+        </service-->
         
         <service android:name=".GCMIntentService" />
 

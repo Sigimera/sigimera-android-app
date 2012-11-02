@@ -167,7 +167,6 @@ public class GCMIntentService extends GCMBaseIntentService {
             		startActivity(intent);            		
             	} else if ( type.equalsIgnoreCase("UNREGISTER_DEVICE") ) {
             		GCMRegistrar.unregister(ApplicationController.getInstance().getApplicationContext());
-
             	} else if ( type.equalsIgnoreCase("REFRESH") ) {
             		LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
             		Location loc = LocationController.getInstance().getLastKnownLocation();
