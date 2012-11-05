@@ -173,7 +173,7 @@ public class MainActivity extends FragmentActivity {
     		if ( authToken != null )
     			locUpdater.execute(authToken, latitude, longitude);
     		return true;
-		case R.id.menu_logout:
+		case R.id.menu_logout:			
 			this.session_handler.logout();
 			mTabHost.clearAllTabs();
 			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
@@ -183,6 +183,9 @@ public class MainActivity extends FragmentActivity {
 			mTabsAdapter.addTab(mTabHost.newTabSpec("Last 10 crises")
 					.setIndicator("Last 10 Crises"), CrisesListFragment.class,
 					null);
+			return true;
+		case R.id.menu_unregister:
+			GCMRegistrar.unregister(getApplicationContext());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -256,7 +259,7 @@ public class MainActivity extends FragmentActivity {
 			mTabHost.addTab(tabSpec);
 			notifyDataSetChanged();
 		}
-
+		
 		@Override
 		public int getCount() {
 			return mTabs.size();

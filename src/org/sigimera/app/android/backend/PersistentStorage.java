@@ -104,8 +104,9 @@ public class PersistentStorage extends SQLiteOpenHelper {
             	values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
             
             if ( _crisis.has("foaf_based_near") ) {
-            	values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(0));
-            	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
+            	System.out.println(_crisis.getJSONArray("foaf_based_near").get(0));
+            	values.put("longitude", Double.valueOf(_crisis.getJSONArray("foaf_based_near").get(0).toString()));
+            	values.put("latitude", Double.valueOf(_crisis.getJSONArray("foaf_based_near").get(1).toString()));
             }
             if ( _crisis.has("dc_title") )
             	values.put("dc_title", _crisis.getString("dc_title"));

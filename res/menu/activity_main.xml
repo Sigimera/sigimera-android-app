@@ -14,4 +14,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/menu_logout"/>
+    <item
+        android:id="@+id/menu_unregister"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_unregister"/>
 </menu>
