@@ -82,7 +82,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		this.mainThreadHandler.post(new Runnable() {
             public void run() {
             	ApplicationController controller = ApplicationController.getInstance();
-            	controller.init(getApplicationContext(), getSharedPreferences(Constants.PREFS_NAME, 0));
+            	controller.init(getApplicationContext(), getSharedPreferences(Constants.PREFS_NAME, 0), null);
                 String authToken = controller.getSharedPreferences().getString("auth_token", null);
             	final String type = msg.getStringExtra("sig_message_type");
             	if ( type.equalsIgnoreCase("NEW_CRISIS") ) {

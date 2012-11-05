@@ -52,41 +52,46 @@ public class MainActivity extends FragmentActivity {
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		ApplicationController appController = ApplicationController
 				.getInstance();
-		appController.init(getApplicationContext(), getSharedPreferences(Constants.PREFS_NAME, 0));
+		appController.init(getApplicationContext(),
+				getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
 
-		if (Common.hasInternet()) {
-			this.session_handler = appController.getSessionHandler();
-			CrisesController.getInstance();
+		this.session_handler = appController.getSessionHandler();
+		CrisesController.getInstance();
 
-			// Initialize of GCM
-			initGCM();
-			
-			// Initialize the tabs
-			initTabs();
+		// Initialize of GCM
+		initGCM();
 
-			if (savedInstanceState != null)
-				mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		// Initialize the tabs
+		initTabs();
 
-		} else
-			new ToastNotification(getApplicationContext(),
-					"No internet connection", Toast.LENGTH_LONG);
+		if (savedInstanceState != null)
+			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		
+		if ( !Common.hasInternet() ) {
+			getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));
+		}			
 	}
 
 	/**
 	 * Initialize Google Cloud Messaging
 	 */
 	private void initGCM() {
-		if ( Config.getInstance().getGcmProjectId() != null ) {
+		if (Config.getInstance().getGcmProjectId() != null) {
 			try {
-				GCMRegistrar.checkDevice(this); GCMRegistrar.checkManifest(this);
+				GCMRegistrar.checkDevice(this);
+				GCMRegistrar.checkManifest(this);
 				final String regId = GCMRegistrar.getRegistrationId(this);
-				if (regId.equals("")) GCMRegistrar.register(this, Config.getInstance().getGcmProjectId());
+				if (regId.equals(""))
+					GCMRegistrar.register(this, Config.getInstance()
+							.getGcmProjectId());
 			} catch (Exception e) {
-				Log.v(Constants.LOG_TAG_SIGIMERA_APP, "Device meets not the GCM requirements. Exception: " + e);
+				Log.v(Constants.LOG_TAG_SIGIMERA_APP,
+						"Device meets not the GCM requirements. Exception: "
+								+ e);
 			}
 		}
 	}
-	
+
 	/**
 	 * Initialize of tabs
 	 */
@@ -128,6 +133,7 @@ public class MainActivity extends FragmentActivity {
 
 	/**
 	 * Login Listener defined in login.xml layout
+	 * 
 	 * @param view
 	 */
 	public void loginClicked(View view) {
@@ -153,6 +159,7 @@ public class MainActivity extends FragmentActivity {
 
 	/**
 	 * Create account listener in login.xml layout
+	 * 
 	 * @param view
 	 */
 	public void accountClicked(View view) {
@@ -164,16 +171,18 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_refresh:
-    		LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
-    		Location loc = LocationController.getInstance().getLastKnownLocation();
-    		String latitude = loc.getLatitude() + "";
-    		String longitude = loc.getLongitude() + "";
-    		String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
-    		Log.d(Constants.LOG_TAG_SIGIMERA_APP, "AuthToken = " + authToken);
-    		if ( authToken != null )
-    			locUpdater.execute(authToken, latitude, longitude);
-    		return true;
-		case R.id.menu_logout:			
+			LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
+			Location loc = LocationController.getInstance()
+					.getLastKnownLocation();
+			String latitude = loc.getLatitude() + "";
+			String longitude = loc.getLongitude() + "";
+			String authToken = ApplicationController.getInstance()
+					.getSharedPreferences().getString("auth_token", null);
+			Log.d(Constants.LOG_TAG_SIGIMERA_APP, "AuthToken = " + authToken);
+			if (authToken != null)
+				locUpdater.execute(authToken, latitude, longitude);
+			return true;
+		case R.id.menu_logout:
 			this.session_handler.logout();
 			mTabHost.clearAllTabs();
 			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
@@ -189,10 +198,13 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
+		}			
+	}
+	
+	public void test() {
+		System.out.println("TESTING");
 	}
 
-	
 	/**
 	 * This is a helper class that implements the management of tabs and all
 	 * details of connecting a ViewPager with associated TabHost. It relies on a
@@ -212,12 +224,12 @@ public class MainActivity extends FragmentActivity {
 		private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 
 		static final class TabInfo {
-//			private final String tag;
+			// private final String tag;
 			private final Class<?> clss;
 			private final Bundle args;
 
 			TabInfo(String _tag, Class<?> _class, Bundle _args) {
-//				tag = _tag;
+				// tag = _tag;
 				clss = _class;
 				args = _args;
 			}
@@ -259,7 +271,7 @@ public class MainActivity extends FragmentActivity {
 			mTabHost.addTab(tabSpec);
 			notifyDataSetChanged();
 		}
-		
+
 		@Override
 		public int getCount() {
 			return mTabs.size();

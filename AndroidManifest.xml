@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="16" />       
     
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -32,7 +32,8 @@
         android:icon="@drawable/sigimera_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true" >
+        android:hardwareAccelerated="true"
+        android:screenOrientation="portrait" >
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
@@ -42,6 +43,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <receiver android:name=".OfflineMode">
+   			<intent-filter>
+      			<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+   			</intent-filter>
+		</receiver>
         
         <uses-library android:name="com.google.android.maps" />
         

@@ -2,6 +2,7 @@ package org.sigimera.app.android;
 
 import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.model.Crisis;
+import org.sigimera.app.android.util.Common;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
@@ -79,7 +80,12 @@ public class StatShortCrisis extends Fragment{
 		content.append("</tr>");
 		content.append("</table>");
 		content.append("<br />");
-		content.append("<img width='100%' src='http://maps.googleapis.com/maps/api/staticmap?markers=icon:http://maps.google.com/mapfiles/ms/micons/blue.png|" + crisis.getLatitude() + "," + crisis.getLongitude() + "&markers=" + userLocation.getLatitude() + "," + userLocation.getLongitude() + "&size=500x180&scale=2&sensor=true' />");
+		if ( Common.hasInternet() )
+			content.append("<img width='100%' src='http://maps.googleapis.com/maps/api/staticmap?markers=icon:http://maps.google.com/mapfiles/ms/micons/blue.png|" + crisis.getLatitude() + "," + crisis.getLongitude() + "&markers=" + userLocation.getLatitude() + "," + userLocation.getLongitude() + "&size=500x180&scale=2&sensor=true' />");
+		else{
+			content.append("<h3>No connection detected.</h3>");
+			content.append("<small>In order to show the distance from your location to crisis on map, please turn on the internet on this device.</small>");
+		}
 		content.append("</body>");
 		content.append("</html>");
 				
