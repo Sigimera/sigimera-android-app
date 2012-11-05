@@ -3,7 +3,9 @@ package org.sigimera.app.android.backend;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -148,6 +150,15 @@ public class PersistentStorage extends SQLiteOpenHelper {
         }
         return true;
     }
+    
+    public Cursor getTodayCrisesList() {
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();		
+		String todayDate = format.format(cal.getTime());
+    	
+        this.openDatabaseReadOnly();
+        return this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
+    }
 
     public Cursor getLatestCrisesList(int _number, int _page) {
         this.openDatabaseReadOnly();
@@ -237,13 +248,13 @@ public class PersistentStorage extends SQLiteOpenHelper {
     public long getCountriesNumber() {
         return DatabaseUtils.queryNumEntries(getReadableDatabase(), TABLE_COUNTRIES);
     }
-
+    
     private boolean checkIfCrisisExists(String _id) {
         SQLiteDatabase db = getReadableDatabase();
         db.beginTransaction();
         Cursor cursor = db.rawQuery("SELECT count(_id) FROM "+TABLE_CRISES+" WHERE _id = '"+_id+"'", null);
         cursor.moveToFirst();
-
+        
         boolean returnValue;
         if ( cursor.getInt(0) == 1 )
             returnValue = true;
@@ -253,7 +264,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         db.close();
         return returnValue;
     }
-
+    
     private void executeSQLScript(SQLiteDatabase _database, String _sqlscript) {
         AssetManager assetManager = this.context.getAssets();
         ByteArrayOutputStream os = new ByteArrayOutputStream();

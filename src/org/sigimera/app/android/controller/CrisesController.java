@@ -92,6 +92,15 @@ public class CrisesController {
         }
         return c;
     }
+    
+    public Cursor getTodayCrises(String _authToken) {
+        Cursor c = this.pershandler.getTodayCrisesList();
+        if ( c.getCount() == 0 ) {
+            storeLatestCrises(_authToken, 1);
+            c = this.pershandler.getTodayCrisesList();
+        }
+        return c;
+    }
 
     public Crisis getLatestCrisis(String _authToken) {
         Crisis crisis = this.pershandler.getLatestCrisis();

@@ -14,6 +14,7 @@ import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Crisis;
 
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,7 +40,7 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		View view = inflater.inflate(R.layout.statistic, container, false);		
 		
 		Location userLocation = LocationController.getInstance().getLastKnownLocation();
-		
+				
 		Crisis latestCrisis = null;
 		Crisis nearCrisis = null;
 		String auth_token = null;
@@ -61,8 +62,13 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 			nearCrisisButton.setOnClickListener(this);
 		}
 		
-		Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
-		todayCrisesButton.setText(Html.fromHtml("7 crises" + "<br/><small><i>" + "Today" + "</i></small>"));
+		if ( auth_token != null ) { 
+			Cursor c = CrisesController.getInstance().getTodayCrises(auth_token);
+			
+			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);			
+			todayCrisesButton.setText(Html.fromHtml(c.getCount() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
+								
+		}
 		
 		if ( latestCrisis != null ) {
 			Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
@@ -120,7 +126,6 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-//		Button tmpView = (Button) v;
 		System.out.println("DEBUG");
 	}
 }
