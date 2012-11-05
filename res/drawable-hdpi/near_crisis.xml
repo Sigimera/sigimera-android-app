@@ -2,5 +2,5 @@
 
  <item android:state_pressed="true"
        android:drawable="@drawable/near_small" /> <!-- pressed -->
- <item android:drawable="@drawable/action_about" /> <!-- default -->
+ <item android:drawable="@drawable/near_small" /> <!-- default -->
  </selector>
