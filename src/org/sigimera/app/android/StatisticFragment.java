@@ -12,6 +12,7 @@ import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.DistanceController;
 import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
+import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
 
 import android.database.Cursor;
@@ -76,8 +77,19 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		}
 		
 		Button totalCrises = (Button) view.findViewById(R.id.button3);
-		totalCrises.setText(Html.fromHtml("320" + " crises since<br/><small><i>" + "1 Aug. 2012" + "</i></small>"));								
 		
+		CrisesStats stats = CrisesController.getInstance().getCrisesStats(auth_token);
+		if ( stats != null ) {
+			SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
+			Date date = new Date();
+			try {
+				date = inputFormatter.parse(stats.getFirstCrisisAt());
+			} catch ( Exception e) {
+				e.printStackTrace();
+			}
+			totalCrises.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
+		}
 
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragTransaction = fragManager.beginTransaction();

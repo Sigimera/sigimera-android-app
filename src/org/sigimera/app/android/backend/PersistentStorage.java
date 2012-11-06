@@ -145,7 +145,6 @@ public class PersistentStorage extends SQLiteOpenHelper {
             	values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
             
             if ( _crisis.has("foaf_based_near") ) {
-            	System.out.println(_crisis.getJSONArray("foaf_based_near").get(0));
             	values.put("longitude", Double.valueOf(_crisis.getJSONArray("foaf_based_near").get(0).toString()));
             	values.put("latitude", Double.valueOf(_crisis.getJSONArray("foaf_based_near").get(1).toString()));
             }
@@ -287,6 +286,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         	stats = new CrisesStats();
         	stats.setId(_c.getString(_c.getColumnIndex("_id")));
         	stats.setLatestCrisisAt(_c.getString(_c.getColumnIndex("latest_crisis_at")));
+        	stats.setTotalCrises(_c.getInt(_c.getColumnIndex("total_crises")));
         	stats.setFirstCrisisAt(_c.getString(_c.getColumnIndex("first_crisis_at")));
         	stats.setNumberOfCyclones(_c.getInt(_c.getColumnIndex("number_of_cyclones")));
         	stats.setNumberOfFloods(_c.getInt(_c.getColumnIndex("number_of_floods")));
