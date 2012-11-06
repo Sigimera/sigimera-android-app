@@ -10,6 +10,7 @@ import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.controller.SessionHandler;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
+import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.util.Common;
 import org.sigimera.app.android.util.Config;
 
@@ -58,8 +59,18 @@ public class MainActivity extends FragmentActivity {
 				getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
 
 		this.session_handler = appController.getSessionHandler();
-		CrisesController.getInstance();
-
+		
+		
+		CrisesStats stats;
+		try {
+			stats = CrisesController.getInstance().getCrisesStats(appController.getSessionHandler().getAuthenticationToken());
+			if ( stats != null )
+				System.err.println("stats.first_crisis_at: " + stats.getNumberOfFloods());
+		} catch (AuthenticationErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// Initialize of GCM
 		initGCM();
 

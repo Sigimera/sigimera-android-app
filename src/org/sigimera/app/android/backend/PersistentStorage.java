@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
@@ -31,6 +32,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     private final static String TABLE_CRISES = "crises";
     private final static String TABLE_COUNTRIES = "countries";
     private final static String TABLE_USER = "user_info";
+    private final static String TABLE_CRISES_STATS = "crises_stats";
 
     private SQLiteDatabase db;
 
@@ -86,6 +88,43 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	
     	this.onExit();
     	return true;
+    }
+    
+    public boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {
+    	if ( _crisesStats == null ) return false;
+        this.openDatabaseWrite();
+        ContentValues values = new ContentValues();
+        
+        values.put("_id", "crises_stats");
+        values.put("first_crisis_at", _crisesStats.getString("first_crisis_at"));
+        values.put("latest_crisis_at", _crisesStats.getString("latest_crisis_at"));
+        values.put("total_crises", _crisesStats.getInt("total_crises"));
+        values.put("today_crises", _crisesStats.getInt("today_crises"));
+        
+        JSONObject numberOf = _crisesStats.getJSONObject("number_of");
+        values.put("number_of_earthquakes", numberOf.getInt("earthquakes"));
+        values.put("number_of_floods", numberOf.getInt("floods"));
+        values.put("number_of_cyclones", numberOf.getInt("cyclones"));
+        values.put("number_of_volcanoes", numberOf.getInt("volcanoes"));
+        
+        values.put("uploaded_images", _crisesStats.getInt("uploaded_images"));
+        values.put("posted_comments", _crisesStats.getInt("posted_comments"));
+        values.put("reported_locations", _crisesStats.getInt("reported_locations"));
+        values.put("reported_missing_people", _crisesStats.getInt("reported_missing_people"));
+        
+        this.db.insert(TABLE_CRISES_STATS, null, values);
+        
+        this.onExit();
+        return true;
+    }
+    
+    public CrisesStats getCrisesStats() {
+    	CrisesStats stats = null;
+    	this.openDatabaseReadOnly();
+        Cursor c = this.db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
+        stats = _extractCrisesStats(c);
+        this.onExit();
+    	return stats;
     }
 
     public boolean addCrisis(JSONObject _crisis) throws JSONException {
@@ -240,6 +279,27 @@ public class PersistentStorage extends SQLiteOpenHelper {
         }
         return crisis;
     }
+    
+    private CrisesStats _extractCrisesStats(Cursor _c) {
+        CrisesStats stats = null;
+        boolean hasEntry = _c.moveToFirst();
+        if ( hasEntry ) {
+        	stats = new CrisesStats();
+        	stats.setId(_c.getString(_c.getColumnIndex("_id")));
+        	stats.setLatestCrisisAt(_c.getString(_c.getColumnIndex("latest_crisis_at")));
+        	stats.setFirstCrisisAt(_c.getString(_c.getColumnIndex("first_crisis_at")));
+        	stats.setNumberOfCyclones(_c.getInt(_c.getColumnIndex("number_of_cyclones")));
+        	stats.setNumberOfFloods(_c.getInt(_c.getColumnIndex("number_of_floods")));
+        	stats.setNumberOfEarthquakes(_c.getInt(_c.getColumnIndex("number_of_earthquakes")));
+        	stats.setNumberOfVolcanoes(_c.getInt(_c.getColumnIndex("number_of_volcanoes")));
+        	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
+        	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
+        	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
+        	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));
+        }
+        return stats;
+    }
+    
 
     public long getCrisesNumber() {
         return DatabaseUtils.queryNumEntries(getReadableDatabase(), TABLE_CRISES);

@@ -28,6 +28,8 @@ import org.sigimera.app.android.backend.PersistentStorage;
 import org.sigimera.app.android.backend.network.CrisesHttpHelper;
 import org.sigimera.app.android.backend.network.NearCrisesHttpHelper;
 import org.sigimera.app.android.backend.network.SingleCrisisHttpHelper;
+import org.sigimera.app.android.backend.network.StatisticCrisesHttpHelper;
+import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
 
 import android.database.Cursor;
@@ -104,6 +106,28 @@ public class CrisesController {
             crisis = this.pershandler.getLatestCrisis();
         }
         return crisis;
+    }
+    
+    public CrisesStats getCrisesStats(String _authToken) {
+    	CrisesStats stats = this.pershandler.getCrisesStats();
+    	if ( null == stats && _authToken != null ) {
+    		AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticCrisesHttpHelper().execute(_authToken);
+    		try {
+				this.pershandler.addCrisesStats(crisesStatsHelper.get());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		stats = this.pershandler.getCrisesStats();
+    	}
+    	return stats;
+    		
     }
 
     public Crisis getCrisis(String _authToken, String _crisisID) {
