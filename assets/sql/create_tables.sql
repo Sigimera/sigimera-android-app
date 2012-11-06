@@ -27,3 +27,19 @@ CREATE TABLE user_info (
 	latitude REAL,
 	longitude REAL
 );
+
+CREATE TABLE crises_stats (
+	_id TEXT PRIMARY KEY,
+	first_crisis_at TEXT,
+	latest_crisis_at TEXT,
+	today_crises INTEGER,
+	total_crises INTEGER,
+	number_of_earthquakes INTEGER,
+	number_of_floods INTEGER,
+	number_of_cyclones INTEGER,
+	number_of_volcanoes INTEGER,
+	uploaded_images INTEGER,
+	posted_comments INTEGER,
+	reported_locations INTEGER,
+	reported_missing_people INTEGER
+);

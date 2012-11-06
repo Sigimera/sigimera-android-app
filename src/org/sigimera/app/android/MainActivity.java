@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.controller.SessionHandler;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
@@ -58,8 +57,7 @@ public class MainActivity extends FragmentActivity {
 				getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
 
 		this.session_handler = appController.getSessionHandler();
-		CrisesController.getInstance();
-
+		
 		// Initialize of GCM
 		initGCM();
 
