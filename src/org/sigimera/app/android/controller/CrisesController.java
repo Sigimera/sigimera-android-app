@@ -85,7 +85,7 @@ public class CrisesController {
      * @return
      */
     public Cursor getCrises(String _authToken, int _page) {
-        Cursor c = this.pershandler.getLatestCrisesList(10, _page);
+        Cursor c = this.pershandler.getLatestCrisesList(10, _page);        
         if ( c.getCount() == 0 ) {
             storeLatestCrises(_authToken, _page);
             c = this.pershandler.getLatestCrisesList(10, _page);
@@ -94,12 +94,7 @@ public class CrisesController {
     }
     
     public Cursor getTodayCrises(String _authToken) {
-        Cursor c = this.pershandler.getTodayCrisesList();
-        if ( c.getCount() == 0 ) {
-            storeLatestCrises(_authToken, 1);
-            c = this.pershandler.getTodayCrisesList();
-        }
-        return c;
+        return this.pershandler.getTodayCrisesList();
     }
 
     public Crisis getLatestCrisis(String _authToken) {

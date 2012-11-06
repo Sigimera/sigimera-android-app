@@ -201,9 +201,6 @@ public class MainActivity extends FragmentActivity {
 		}			
 	}
 	
-	public void test() {
-		System.out.println("TESTING");
-	}
 
 	/**
 	 * This is a helper class that implements the management of tabs and all
