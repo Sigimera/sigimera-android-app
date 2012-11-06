@@ -28,15 +28,22 @@ import org.sigimera.app.android.util.Common;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -44,40 +51,65 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author Corneliu-Valentin Stanciu, Alex Oberhauser
  * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
-public class CrisesListFragment extends ListFragment {
+public class CrisesListFragment extends Fragment {
 	private Cursor cursor;
-		
+	private ListView list;
+	private String auth_token;
+	
+	private int page = 1;
+	private boolean showMore = true;
+	private SimpleCursorAdapter adapterMainList;
+	
+//	private final Handler guiHandler = new Handler();
+//	private final Runnable updateGUI = new Runnable() {		
+//		@Override
+//		public void run() {
+//			showMoreCrises();
+//		}
+//	};
+	
 	@Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		registerForContextMenu(getListView());
-		getListView().setOnItemClickListener(clickListener);
-		showCrises();					
 	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.crises_list, container, false);
+
+		this.list = (ListView) view.findViewById(R.id.crisis_list);		
+		this.list.setOnItemClickListener(this.clickListener);
+		this.list.setOnScrollListener(this.scrollListener);
+		registerForContextMenu(this.list);			
+		
+		showCrises();
+		return view;
+	}	
 	
 	private void showCrises() {
-		String auth_token = null;
+		this.auth_token = null;
 		try {
-			ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+			this.auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
 		} catch (AuthenticationErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.cursor = CrisesController.getInstance().getCrises(auth_token, 1);
+		this.cursor = CrisesController.getInstance().getCrises(auth_token, page);		
 		
-		SimpleCursorAdapter adapterMainList = new SimpleCursorAdapter(getActivity(), R.layout.list_entry, this.cursor, 
+		this.adapterMainList = new SimpleCursorAdapter(getActivity(), R.layout.list_entry, this.cursor, 
 				new String[] { "type_icon", "short_title", "dc_date" },
-				new int[] { R.id.icon, R.id.topText, R.id.bottomText }, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-		setListAdapter(adapterMainList);
-	}
+				new int[] { R.id.icon, R.id.topText, R.id.bottomText }, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);	
+
+		this.list.setAdapter(adapterMainList);	
+	}	
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-	    super.onCreateContextMenu(menu, v, menuInfo);
+			ContextMenuInfo menuInfo) {	    
 	    menu.setHeaderTitle("Options");
 	    menu.setHeaderIcon(R.drawable.sigimera_logo);	    
-	    MenuInflater inflater = getActivity().getMenuInflater();
+	    MenuInflater inflater = new MenuInflater(getActivity());
 	    inflater.inflate(R.menu.list_menu, menu);
 	}
 	
@@ -108,6 +140,29 @@ public class CrisesListFragment extends ListFragment {
 		}
 	};
 	
+	OnScrollListener scrollListener = new OnScrollListener() {		
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {}
+		
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			
+			if ( adapterMainList != null ) {
+				int lastItem = firstVisibleItem + visibleItemCount;
+				if ( lastItem == totalItemCount && showMore ) {
+					System.out.println("DEBUG");
+					page += 1;
+					cursor = CrisesController.getInstance().getCrises(auth_token, page);
+//					cursor.registerDataSetObserver(new DataSetObserver() {});
+//					adapterMainList.notifyDataSetChanged();
+//					adapterMainList.bindView(arg0, arg1, arg2)
+					showMore = false;
+				}
+			}
+		}
+	};
+	
 	/**
 	 * Get the crisis ID from cursor.
 	 * @param position The row number in crises cursor.
@@ -120,4 +175,9 @@ public class CrisesListFragment extends ListFragment {
 		}
 		return null;
 	}
+	
+//	private void showMoreCrises() {
+//		cursor = CrisesController.getInstance().getCrises(auth_token, page);
+//		showMore = true;
+//	}	
 }

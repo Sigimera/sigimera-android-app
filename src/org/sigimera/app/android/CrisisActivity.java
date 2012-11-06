@@ -70,7 +70,7 @@ public class CrisisActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.crises_list);
+        setContentView(R.layout.crisis_info);
                 
 		this.list = (ListView) findViewById(R.id.crisis_info);
 		this.list.setOnItemClickListener(this.listClickListener);	
