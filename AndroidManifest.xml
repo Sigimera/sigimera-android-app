@@ -32,8 +32,7 @@
         android:icon="@drawable/sigimera_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true"
-        android:screenOrientation="portrait" >
+        android:hardwareAccelerated="true" >
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
