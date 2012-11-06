@@ -6,10 +6,11 @@ import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Config;
 
@@ -28,8 +29,7 @@ public class SingleCrisisHttpHelper extends AsyncTask<String, Void, JSONObject> 
 
         String crisis_id = _params[1];
 
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-        httpclient.getCookieStore().clear(); // We do not use cookies for the authentication...
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
         HttpGet request = new HttpGet(HOST + crisis_id + ".json?auth_token=" + auth_token + "&output=short");
 
         try {

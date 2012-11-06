@@ -31,10 +31,10 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sigimera.app.android.backend.network.MyHttpClient;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.util.Config;
 
@@ -47,7 +47,7 @@ public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 	
 	@Override
 	protected Boolean doInBackground(String... params) {
-		HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		HttpPost request = new HttpPost(HOST);
 		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();

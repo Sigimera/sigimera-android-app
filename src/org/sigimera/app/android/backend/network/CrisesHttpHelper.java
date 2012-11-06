@@ -8,9 +8,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Config;
 
@@ -27,7 +27,7 @@ public class CrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
         String auth_token = _params[0];
         String page = _params[1];
 
-        HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
         HttpGet request;
         if ( auth_token != null )
             request = new HttpGet(HOST + auth_token + "&page=" + page);

@@ -29,11 +29,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
+import org.sigimera.app.android.backend.network.MyHttpClient;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.LocationController;
@@ -169,7 +169,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onRegistered(Context _context, String _regID) {
 		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
-		HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
@@ -213,7 +213,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onUnregistered(Context _context, String _regID) {
 		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
-		HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		try {
 			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();

@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Config;
@@ -34,7 +33,7 @@ public class LocationUpdaterHttpHelper extends AsyncTask<String, Void, Boolean> 
         String latitude = _params[1];
         String longitude = _params[2];
 
-        HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
         HttpPut request;
         if ( auth_token != null ) {
         	Context context = ApplicationController.getInstance().getApplicationContext();

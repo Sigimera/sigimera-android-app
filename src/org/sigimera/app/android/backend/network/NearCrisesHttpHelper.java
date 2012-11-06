@@ -8,9 +8,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Config;
 
@@ -28,7 +28,7 @@ public class NearCrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
         String latitude = _params[2];
         String longitude = _params[3];
 
-        HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
         HttpGet request = new HttpGet(HOST + auth_token + "&page=" + page
                 + "&lat=" + latitude + "&lon=" + longitude
                 + "&radius=" + Constants.LOCATION_RADIUS);
