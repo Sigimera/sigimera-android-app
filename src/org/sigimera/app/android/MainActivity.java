@@ -14,6 +14,7 @@ import org.sigimera.app.android.util.Config;
 
 import com.google.android.gcm.GCMRegistrar;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.Toast;
@@ -58,6 +60,9 @@ public class MainActivity extends FragmentActivity {
 
 		this.session_handler = appController.getSessionHandler();
 		
+//		ActionBar actionBar = getActionBar();
+//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
 		// Initialize of GCM
 		initGCM();
 
@@ -69,7 +74,7 @@ public class MainActivity extends FragmentActivity {
 		
 		if ( !Common.hasInternet() ) {
 			getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));
-		}			
+		}
 	}
 
 	/**
@@ -128,7 +133,9 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
+		MenuItem item = menu.findItem(R.id.menu_search);
+		item.setTitle("Last sync: 7 Nov");
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**

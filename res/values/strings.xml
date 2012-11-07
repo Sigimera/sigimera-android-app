@@ -5,7 +5,8 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_refresh">Update Location</string>
-    <string name="menu_unregister">Unregister Device</string>        
+    <string name="menu_unregister">Unregister Device</string>
+    <string name="menu_search">Search crisis</string>        
        	
     <string name="email_text">Enter your e-mail</string>
     <string name="password_text">Password</string>
