@@ -49,9 +49,9 @@ public class CrisisActivity extends Activity {
 	private CrisesController crisisController = CrisesController.getInstance();
 
 	private static final int MENU_SHARE = 0x0010;
-	private static final int MENU_ABOUT = 0x0020;
-	private static final int MENU_ADD = 0x0030;
-	private static final int MENU_COMMENT = 0x0040;
+//	private static final int MENU_ABOUT = 0x0020;
+//	private static final int MENU_ADD = 0x0030;
+//	private static final int MENU_COMMENT = 0x0040;
 	
 	private String alertLevel = null;
 	private String severity = null;
@@ -186,7 +186,7 @@ public class CrisisActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    menu.add(0, MENU_SHARE, 20, "Share crisis").setIcon(R.drawable.glyphicons_326_share);
-		menu.add(0, MENU_ABOUT, 30, "About").setIcon(R.drawable.about_icon);
+//		menu.add(0, MENU_ABOUT, 30, "About").setIcon(R.drawable.about_icon);
 //		menu.add(0, MENU_ADD, 30, "Add").setIcon(R.drawable.glyphicons_190_circle_plus);
 //		menu.add(0, MENU_COMMENT, 40, "Comment").setIcon(R.drawable.glyphicons_309_comments);
 	    return true;
@@ -202,18 +202,18 @@ public class CrisisActivity extends Activity {
 					new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
 						"Failed to read the crisis ID", Toast.LENGTH_SHORT);
 				return true;
-			case MENU_ABOUT:
-				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
-						"TODO: provide content for about window", Toast.LENGTH_SHORT);
-				return true;			
-			case MENU_ADD:
-				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
-						"TODO: provide content for add window", Toast.LENGTH_SHORT);
-				return true;
-			case MENU_COMMENT:
-				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
-						"TODO: provide content for comment window", Toast.LENGTH_SHORT);
-				return true;				
+//			case MENU_ABOUT:
+//				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
+//						"TODO: provide content for about window", Toast.LENGTH_SHORT);
+//				return true;			
+//			case MENU_ADD:
+//				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
+//						"TODO: provide content for add window", Toast.LENGTH_SHORT);
+//				return true;
+//			case MENU_COMMENT:
+//				new ToastNotification(ApplicationController.getInstance().getApplicationContext(), 
+//						"TODO: provide content for comment window", Toast.LENGTH_SHORT);
+//				return true;				
 		}
 		return false;
 	}

@@ -14,7 +14,6 @@ import org.sigimera.app.android.util.Config;
 
 import com.google.android.gcm.GCMRegistrar;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -28,13 +27,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.Toast;
@@ -133,8 +132,8 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		MenuItem item = menu.findItem(R.id.menu_search);
-		item.setTitle("Last sync: 7 Nov");
+//		MenuItem item = menu.findItem(R.id.menu_refresh);
+//		item.setTitle("Last sync: 7 Nov");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -178,6 +177,9 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_refresh:
+			Toast toast = Toast.makeText(getApplicationContext(), "Updating your current location...", Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.TOP, 0, 0);
+			toast.show();
 			LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
 			Location loc = LocationController.getInstance()
 					.getLastKnownLocation();
