@@ -16,8 +16,8 @@ public abstract class DistanceController {
 	 * @param _userLocation
 	 * @return
 	 */
-	public static double getNearCrisisDistance(String _authToken, Crisis _nearCrisis, Location _userLocation) {		
-		if ( _nearCrisis != null ) {
+	public static double getNearCrisisDistance(String _authToken, Crisis _nearCrisis, Location _userLocation) {
+		if ( _nearCrisis != null && _userLocation != null ) {
 			return computeDistance(
 					_userLocation.getLatitude(), _userLocation.getLongitude(), 
 					_nearCrisis.getLatitude(), _nearCrisis.getLongitude());

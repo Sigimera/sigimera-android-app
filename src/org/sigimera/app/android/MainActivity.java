@@ -177,19 +177,24 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_refresh:
-			Toast toast = Toast.makeText(getApplicationContext(), "Updating your current location...", Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.TOP, 0, 0);
-			toast.show();
 			LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
-			Location loc = LocationController.getInstance()
-					.getLastKnownLocation();
-			String latitude = loc.getLatitude() + "";
-			String longitude = loc.getLongitude() + "";
-			String authToken = ApplicationController.getInstance()
-					.getSharedPreferences().getString("auth_token", null);
-			Log.d(Constants.LOG_TAG_SIGIMERA_APP, "AuthToken = " + authToken);
-			if (authToken != null)
-				locUpdater.execute(authToken, latitude, longitude);
+			Location loc = LocationController.getInstance().getLastKnownLocation();
+			if ( loc != null ) {
+				Toast toast = Toast.makeText(getApplicationContext(), "Updating your current location...", Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.TOP, 0, 0);
+				toast.show();
+				String latitude = loc.getLatitude() + "";
+				String longitude = loc.getLongitude() + "";
+				String authToken = ApplicationController.getInstance()
+						.getSharedPreferences().getString("auth_token", null);
+				Log.d(Constants.LOG_TAG_SIGIMERA_APP, "AuthToken = " + authToken);
+				if (authToken != null)
+					locUpdater.execute(authToken, latitude, longitude);
+			} else {
+				Toast toast = Toast.makeText(getApplicationContext(), "Not able to update location! Please active location access...", Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.TOP, 0, 0);
+				toast.show();
+			}
 			return true;
 		case R.id.menu_logout:
 			this.session_handler.logout();
