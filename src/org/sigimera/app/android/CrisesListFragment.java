@@ -38,8 +38,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -55,7 +53,7 @@ public class CrisesListFragment extends Fragment {
 	private String auth_token;
 	
 	private int page = 1;
-	private boolean showMore = true;
+//	private boolean showMore = true;
 	private SimpleCursorAdapter adapterMainList;
 	
 //	private final Handler guiHandler = new Handler();
@@ -78,7 +76,7 @@ public class CrisesListFragment extends Fragment {
 
 		this.list = (ListView) view.findViewById(R.id.crisis_list);		
 		this.list.setOnItemClickListener(this.clickListener);
-		this.list.setOnScrollListener(this.scrollListener);
+//		this.list.setOnScrollListener(this.scrollListener);
 		registerForContextMenu(this.list);			
 		
 		showCrises();
@@ -90,7 +88,6 @@ public class CrisesListFragment extends Fragment {
 		try {
 			this.auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
 		} catch (AuthenticationErrorException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.cursor = CrisesController.getInstance().getCrises(auth_token, page);		
@@ -129,37 +126,38 @@ public class CrisesListFragment extends Fragment {
 	}
 	
 	OnItemClickListener clickListener = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+		public void onItemClick(AdapterView<?> arg0, View arg1, int _position,
 				long arg3) {
-			cursor.moveToPosition(arg2);
+			System.err.println("Moving cursor to position: " + _position + " with total entries in cursor: " + cursor.getCount());
+			cursor.moveToPosition(_position);
 			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
 			crisisActivity.putExtra(Constants.CRISIS_ID, cursor.getString(cursor.getColumnIndex("_id")));
 			startActivity(crisisActivity);
 		}
 	};
 	
-	OnScrollListener scrollListener = new OnScrollListener() {		
-		@Override
-		public void onScrollStateChanged(AbsListView view, int scrollState) {}
-		
-		@Override
-		public void onScroll(AbsListView view, int firstVisibleItem,
-				int visibleItemCount, int totalItemCount) {
-			
-			if ( adapterMainList != null ) {
-				int lastItem = firstVisibleItem + visibleItemCount;
-				if ( lastItem == totalItemCount && showMore ) {
-					System.out.println("DEBUG");
-					page += 1;
-					cursor = CrisesController.getInstance().getCrises(auth_token, page);
-//					cursor.registerDataSetObserver(new DataSetObserver() {});
-//					adapterMainList.notifyDataSetChanged();
-//					adapterMainList.bindView(arg0, arg1, arg2)
-					showMore = false;
-				}
-			}
-		}
-	};
+//	OnScrollListener scrollListener = new OnScrollListener() {		
+//		@Override
+//		public void onScrollStateChanged(AbsListView view, int scrollState) {}
+//		
+//		@Override
+//		public void onScroll(AbsListView view, int firstVisibleItem,
+//				int visibleItemCount, int totalItemCount) {
+//			
+//			if ( adapterMainList != null ) {
+//				int lastItem = firstVisibleItem + visibleItemCount;
+//				if ( lastItem == totalItemCount && showMore ) {
+//					System.out.println("DEBUG");
+//					page += 1;
+//					cursor = CrisesController.getInstance().getCrises(auth_token, page);
+////					cursor.registerDataSetObserver(new DataSetObserver() {});
+////					adapterMainList.notifyDataSetChanged();
+////					adapterMainList.bindView(arg0, arg1, arg2)
+//					showMore = false;
+//				}
+//			}
+//		}
+//	};
 	
 	/**
 	 * Get the crisis ID from cursor.
