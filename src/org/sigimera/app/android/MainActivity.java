@@ -61,7 +61,7 @@ public class MainActivity extends FragmentActivity {
 		
 //		ActionBar actionBar = getActionBar();
 //		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		
+
 		// Initialize of GCM
 		initGCM();
 
