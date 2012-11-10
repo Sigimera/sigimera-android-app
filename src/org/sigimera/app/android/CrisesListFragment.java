@@ -128,7 +128,6 @@ public class CrisesListFragment extends Fragment {
 	OnItemClickListener clickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int _position,
 				long arg3) {
-			System.err.println("Moving cursor to position: " + _position + " with total entries in cursor: " + cursor.getCount());
 			cursor.moveToPosition(_position);
 			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
 			crisisActivity.putExtra(Constants.CRISIS_ID, cursor.getString(cursor.getColumnIndex("_id")));
