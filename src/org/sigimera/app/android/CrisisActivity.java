@@ -71,7 +71,7 @@ public class CrisisActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crisis_info);
-                
+
 		this.list = (ListView) findViewById(R.id.crisis_info);
 		this.list.setOnItemClickListener(this.listClickListener);	
 				
@@ -82,6 +82,7 @@ public class CrisisActivity extends Activity {
 		} else {
 			this.crisis = CrisesController.getInstance().getLatestCrisis(authToken);
 		}
+		
 		updateGUI();
 	}
 

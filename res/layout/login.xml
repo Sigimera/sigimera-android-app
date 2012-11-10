@@ -24,7 +24,7 @@
             android:focusableInTouchMode="true"
             android:hint="@string/email_text"
             android:inputType="textEmailAddress"
-            android:text="@string/dev_username" >
+            >
             <requestFocus />
         </EditText>
 
@@ -36,8 +36,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:hint="@string/password_text"
-            android:inputType="textPassword"
-            android:text="@string/dev_password">
+            android:inputType="textPassword">
             <requestFocus />
         </EditText>
 
