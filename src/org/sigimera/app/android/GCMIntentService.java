@@ -157,10 +157,14 @@ public class GCMIntentService extends GCMBaseIntentService {
             	} else if ( type.equalsIgnoreCase("REFRESH") ) {
             		LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
             		Location loc = LocationController.getInstance().getLastKnownLocation();
-            		String latitude = loc.getLatitude() + "";
-            		String longitude = loc.getLongitude() + "";
-            		if ( authToken != null )
-            			locUpdater.execute(authToken, latitude, longitude);
+            		if ( loc != null ) {
+	            		String latitude = loc.getLatitude() + "";
+	            		String longitude = loc.getLongitude() + "";
+	            		if ( authToken != null )
+	            			locUpdater.execute(authToken, latitude, longitude);
+            		} else {
+            			// TODO: Notify the user that the update location flow has not worked.
+            		}
             	}
             }
         });

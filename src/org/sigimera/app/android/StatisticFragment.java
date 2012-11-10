@@ -59,7 +59,11 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		 */
 		if ( auth_token != null ) { 
 			Button nearCrisisButton = (Button) view.findViewById(R.id.button0);
-			nearCrisisButton.setText(Html.fromHtml(DistanceController.getNearCrisisDistance(auth_token, nearCrisis, userLocation) + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
+			double nearDistance = DistanceController.getNearCrisisDistance(auth_token, nearCrisis, userLocation);
+			if ( nearDistance != -1.0 )
+				nearCrisisButton.setText(Html.fromHtml(nearDistance + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
+			else
+				nearCrisisButton.setText(Html.fromHtml("unknown<br/><small><i>" + "No near crisis" + "</i></small>"));
 			nearCrisisButton.setOnClickListener(this);
 		}
 		
