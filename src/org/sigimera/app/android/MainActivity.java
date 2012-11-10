@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -53,15 +54,20 @@ public class MainActivity extends FragmentActivity {
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		ApplicationController appController = ApplicationController
-				.getInstance();
-		appController.init(getApplicationContext(),
-				getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
+				.getInstance();						
+		
+		int currentapiVersion = Build.VERSION.SDK_INT;
+		if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB){			
+		    appController.init(getApplicationContext(),
+		    		 getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
+		} else {
+			appController.init(getApplicationContext(),
+		    		 getSharedPreferences(Constants.PREFS_NAME, 0), null);
+			System.out.println("Froyo");
+		}
 
 		this.session_handler = appController.getSessionHandler();
 		
-//		ActionBar actionBar = getActionBar();
-//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
 		// Initialize of GCM
 		initGCM();
 
@@ -72,7 +78,7 @@ public class MainActivity extends FragmentActivity {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
 		
 		if ( !Common.hasInternet() ) {
-			getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));
+//			getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));
 		}
 	}
 

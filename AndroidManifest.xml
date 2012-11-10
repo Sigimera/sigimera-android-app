@@ -47,9 +47,7 @@
    			<intent-filter>
       			<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
    			</intent-filter>
-		</receiver>
-        
-        <uses-library android:name="com.google.android.maps" />
+		</receiver>       
         
          <activity
             android:name=".CrisisAlertActivity"
