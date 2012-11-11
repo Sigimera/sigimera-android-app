@@ -46,8 +46,6 @@ import android.widget.Toast;
  * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisisActivity extends Activity {
-	private CrisesController crisisController = CrisesController.getInstance();
-
 	private static final int MENU_SHARE = 0x0010;
 //	private static final int MENU_ABOUT = 0x0020;
 //	private static final int MENU_ADD = 0x0030;
@@ -112,13 +110,13 @@ public class CrisisActivity extends Activity {
 			collectionList.add(getListEntry(alertLevel, "Alert Level",
 					String.valueOf(R.drawable.glyphicons_196_circle_exclamation_mark_white)));
 		if (severity != null)
-			collectionList.add(getListEntry(CrisesController.getInstance().capitalize(severity), 
+			collectionList.add(getListEntry(Common.capitalize(severity), 
 					"Severity", String.valueOf(R.drawable.glyphicons_079_signal_white)));	
 		
 		if ( this.countries != null && this.countries.size() > 0 ) {
 			StringBuffer countryConcat = new StringBuffer("");
 			for ( String country : countries ) {
-				countryConcat.append(crisisController.capitalize(country));
+				countryConcat.append(Common.capitalize(country));
 				countryConcat.append(", ");
 			}
 			collectionList.add(getListEntry(countryConcat.toString(), "Country",
@@ -173,7 +171,7 @@ public class CrisisActivity extends Activity {
 				text = "Alert level: " + alertLevel;
 				break;
 			case 4:
-				text = crisisController.capitalize(severity);
+				text = Common.capitalize(severity);
 				break;
 			case 5:
 				text = "Country: " + countryConcat;
