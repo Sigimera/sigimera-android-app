@@ -29,6 +29,7 @@ import org.sigimera.app.android.util.Common;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.ContextMenu;
@@ -50,19 +51,18 @@ import android.widget.AdapterView.OnItemClickListener;
 public class CrisesListFragment extends Fragment {
 	private Cursor cursor;
 	private ListView list;
-	private String auth_token;
 	
 	private int page = 1;
 //	private boolean showMore = true;
 	private SimpleCursorAdapter adapterMainList;
 	
-//	private final Handler guiHandler = new Handler();
-//	private final Runnable updateGUI = new Runnable() {		
-//		@Override
-//		public void run() {
-//			showMoreCrises();
-//		}
-//	};
+	private final Handler guiHandler = new Handler();
+	private final Runnable updateGUI = new Runnable() {		
+		@Override
+		public void run() {
+			showCrises();
+		}
+	};
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -79,19 +79,25 @@ public class CrisesListFragment extends Fragment {
 //		this.list.setOnScrollListener(this.scrollListener);
 		registerForContextMenu(this.list);			
 		
-		showCrises();
+		Thread worker = new Thread() {
+			@Override
+			public void run() {
+				String auth_token = null;
+				try {
+					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+				} catch (AuthenticationErrorException e) {
+					e.printStackTrace();
+				}
+				cursor = CrisesController.getInstance().getCrises(auth_token, page);
+				guiHandler.post(updateGUI);
+			}
+		};
+		worker.start();
+
 		return view;
 	}	
 	
-	private void showCrises() {
-		this.auth_token = null;
-		try {
-			this.auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
-		} catch (AuthenticationErrorException e) {
-			e.printStackTrace();
-		}
-		this.cursor = CrisesController.getInstance().getCrises(auth_token, page);		
-		
+	private void showCrises() {		
 		this.adapterMainList = new SimpleCursorAdapter(getActivity(), R.layout.list_entry, this.cursor, 
 				new String[] { "type_icon", "short_title", "dc_date" },
 				new int[] { R.id.icon, R.id.topText, R.id.bottomText }, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);	

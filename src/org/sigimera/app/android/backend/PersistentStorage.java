@@ -62,7 +62,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
          */
     }
     
-    public boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
+    public synchronized boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
     	if ( _crisis == null  ) return false;
     	SQLiteDatabase db = getWritableDatabase();
     	ContentValues values = new ContentValues();  
@@ -80,7 +80,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	return true;
     }
     
-    public boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {
+    public synchronized boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {
     	if ( _crisesStats == null ) return false;
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -108,7 +108,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return true;
     }
     
-    public CrisesStats getCrisesStats() {
+    public synchronized CrisesStats getCrisesStats() {
     	CrisesStats stats = null;
     	SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
@@ -117,7 +117,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	return stats;
     }
 
-    public boolean addCrisis(JSONObject _crisis) throws JSONException {
+    public synchronized boolean addCrisis(JSONObject _crisis) throws JSONException {
     	if ( _crisis == null ) return false;
         String crisisID = _crisis.getString("_id");
         if ( checkIfCrisisExists(crisisID) ) {
@@ -191,7 +191,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
      * XXX: Where and when is this connection closed.
      * @return Cursor that encapsulates the SQL result
      */
-    public Cursor getTodayCrisesList() {
+    public synchronized Cursor getTodayCrisesList() {
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal = Calendar.getInstance();		
 		String todayDate = format.format(cal.getTime());
@@ -204,12 +204,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
      * XXX: Where and when is this connection closed.
      * @return Cursor that encapsulates the SQL result
      */
-    public Cursor getLatestCrisesList(int _number, int _page) {
+    public synchronized Cursor getLatestCrisesList(int _number, int _page) {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
     }
 
-    public Crisis getCrisis(String _crisisID) {
+    public synchronized Crisis getCrisis(String _crisisID) {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + _crisisID + "'", null);
@@ -220,7 +220,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return crisis;
     }
     
-    public Crisis getNearestCrisis() {
+    public synchronized Crisis getNearestCrisis() {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery("SELECT near_crisis_id FROM "+TABLE_USER, null);
@@ -233,7 +233,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return crisis;
     }
 
-    public Crisis getLatestCrisis() {
+    public synchronized Crisis getLatestCrisis() {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
@@ -244,7 +244,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return crisis;
     }
 
-    public ArrayList<String> getCountries(String _crisisID) {
+    public synchronized ArrayList<String> getCountries(String _crisisID) {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery("SELECT country_name FROM "+TABLE_COUNTRIES+" WHERE crisis_id='" + _crisisID + "'", null);
