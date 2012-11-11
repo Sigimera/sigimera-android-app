@@ -6,8 +6,8 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />       
-    
+        android:targetSdkVersion="16" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -42,40 +42,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <receiver android:name=".OfflineMode">
-   			<intent-filter>
-      			<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-   			</intent-filter>
-		</receiver>       
-        
-         <activity
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity
             android:name=".CrisisAlertActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:label="@string/title_crisis_alert_activity"/>
-        
-        <activity 
+
+        <activity
             android:name=".backend.auth.AuthenticatorActivtiy"
             android:label="@string/title_activity_login"
             android:excludeFromRecents="true" />
-        
-         <activity 
+
+        <activity
             android:name=".CrisisActivity"
             android:label="@string/title_activity_crisis" />
-         
-         <activity 
+
+        <activity
             android:name=".FullMapActivity"
             android:label="@string/title_activity_crisis" />
-        
+
         <!-- service android:name=".backend.auth.AuthenticationService"
             android:exported="true">
             <intent-filter>
-     			<action android:name="android.accounts.AccountAuthenticator" />
-   			</intent-filter>
-   			<meta-data android:name="android.accounts.AccountAuthenticator"
-            	android:resource="@xml/authenticator" />
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
         </service-->
-        
+
         <service android:name=".GCMIntentService" />
 
         <receiver
@@ -89,6 +89,5 @@
             </intent-filter>
         </receiver>
     </application>
-   
 
 </manifest>

@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -86,7 +87,7 @@ public class CrisesListFragment extends Fragment {
 				try {
 					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
 				} catch (AuthenticationErrorException e) {
-					e.printStackTrace();
+					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
 				}
 				cursor = CrisesController.getInstance().getCrises(auth_token, page);
 				guiHandler.post(updateGUI);

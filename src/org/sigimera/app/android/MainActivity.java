@@ -63,19 +63,16 @@ public class MainActivity extends FragmentActivity {
 		this.setContentView(R.layout.activity_main);
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		ApplicationController appController = ApplicationController.getInstance();
 
 		int currentapiVersion = Build.VERSION.SDK_INT;
 		if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB){			
-		    appController.init(getApplicationContext(),
-		    		 getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
+		    appController.init(getApplicationContext(), getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
 		    if ( !Common.hasInternet() )
 				getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));		
 		} else {
-			appController.init(getApplicationContext(),
-		    		 getSharedPreferences(Constants.PREFS_NAME, 0), null);
+			appController.init(getApplicationContext(), getSharedPreferences(Constants.PREFS_NAME, 0), null);
 		}
 
 		// Initialize the tabs
@@ -109,28 +106,19 @@ public class MainActivity extends FragmentActivity {
 	private void initTabs() {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
+		mTabHost.clearAllTabs();
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
 
 		try {
 			ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
-
-			mTabsAdapter.addTab(mTabHost.newTabSpec("Home").setIndicator("Home"), 
-					StatisticFragment.class, null);
-
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("Crises").setIndicator("Crises"),
-					CrisesListFragment.class, null);
-
+			mTabsAdapter.addTab(mTabHost.newTabSpec("Home").setIndicator("Home"), StatisticFragment.class, null);
 			initGCM();
 		} catch (AuthenticationErrorException e) {
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("login").setIndicator("Login"),
-					LoginFragment.class, null);
-			mTabsAdapter.addTab(mTabHost.newTabSpec("Last 10 crises")
-					.setIndicator("Last 10 Crises"), CrisesListFragment.class,
-					null);
+			mTabsAdapter.addTab(mTabHost.newTabSpec("login").setIndicator("Login"), LoginFragment.class, null);
 		}
+		
+		mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
 	}
 
 	@Override
@@ -211,9 +199,7 @@ public class MainActivity extends FragmentActivity {
 			mTabsAdapter.addTab(
 					mTabHost.newTabSpec("login").setIndicator("Login"),
 					LoginFragment.class, null);
-			mTabsAdapter.addTab(mTabHost.newTabSpec("Last 10 crises")
-					.setIndicator("Last 10 Crises"), CrisesListFragment.class,
-					null);
+			mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
 			return true;
 		case R.id.menu_unregister:
 			GCMRegistrar.unregister(getApplicationContext());
