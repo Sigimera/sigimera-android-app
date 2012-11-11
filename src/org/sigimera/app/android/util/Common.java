@@ -19,6 +19,9 @@
  */
 package org.sigimera.app.android.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.ocpsoft.pretty.time.PrettyTime;
@@ -119,7 +122,39 @@ public class Common {
 	public static String getTimeAgoInWords(long miliseconds) {
 		PrettyTime p = new PrettyTime();
 		String timeAgo = p.format(new Date(Long.parseLong(miliseconds + "")));
+		return timeAgo;
+	}
+	
+	/**
+	 * Convert time from milliseconds in time ago and split it in two lines
+	 * 
+	 * @param miliseconds
+	 * @return
+	 */
+	public static String getTimeAgoInWordsSplitted(long miliseconds) {
+		PrettyTime p = new PrettyTime();
+		String timeAgo = p.format(new Date(Long.parseLong(miliseconds + "")));
 		timeAgo = timeAgo.replace(" ", "<br/>").replaceFirst("<br/>", " ");
 		return timeAgo;
+	}
+	
+	/**
+	 * Convert date into milliseconds.
+	 * 
+	 * @param crisisDate
+	 * @return
+	 */
+	public static long getMiliseconds(String crisisDate) {		  
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); 
+			Date date = (Date) formatter.parse(crisisDate);
+			Calendar cal=Calendar.getInstance();
+			cal.setTime(date);			
+			return cal.getTimeInMillis();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 				
+		return 0;
 	}
 }
