@@ -60,10 +60,11 @@ public class MainActivity extends FragmentActivity {
 		if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB){			
 		    appController.init(getApplicationContext(),
 		    		 getSharedPreferences(Constants.PREFS_NAME, 0), getActionBar());
+		    if ( !Common.hasInternet() )
+				getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));		
 		} else {
 			appController.init(getApplicationContext(),
 		    		 getSharedPreferences(Constants.PREFS_NAME, 0), null);
-			System.out.println("Froyo");
 		}
 
 		this.session_handler = appController.getSessionHandler();
@@ -75,11 +76,7 @@ public class MainActivity extends FragmentActivity {
 		initTabs();
 
 		if (savedInstanceState != null)
-			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-		
-		if ( !Common.hasInternet() ) {
-//			getActionBar().setIcon(getResources().getDrawable(R.drawable.sigimera_logo_offline));
-		}
+			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));				
 	}
 
 	/**
