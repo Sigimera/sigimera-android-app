@@ -6,7 +6,6 @@ import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.LocationController;
-import org.sigimera.app.android.controller.SessionHandler;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Common;
@@ -14,6 +13,7 @@ import org.sigimera.app.android.util.Config;
 
 import com.google.android.gcm.GCMRegistrar;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,6 +21,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -43,7 +44,16 @@ public class MainActivity extends FragmentActivity {
 	private TabHost mTabHost;
 	private ViewPager mViewPager;
 	private TabsAdapter mTabsAdapter;
-	private SessionHandler session_handler;
+
+	private final Handler guiHandler = new Handler();
+	private final Runnable errorLogin = new Runnable() {
+		@Override
+		public void run() { showLoginErrorToast(); }
+	};
+	private final Runnable successfulLogin = new Runnable() {
+		@Override
+		public void run() { updateAfterLogin(); }
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +76,6 @@ public class MainActivity extends FragmentActivity {
 			appController.init(getApplicationContext(),
 		    		 getSharedPreferences(Constants.PREFS_NAME, 0), null);
 		}
-
-		this.session_handler = appController.getSessionHandler();
 		
 		// Initialize of GCM
 		initGCM();
@@ -107,10 +115,11 @@ public class MainActivity extends FragmentActivity {
 		mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
 
 		try {
-			this.session_handler.getAuthenticationToken();
+			ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
 
-			mTabsAdapter.addTab(mTabHost.newTabSpec("Home")
-					.setIndicator("Home"), StatisticFragment.class, null);
+			mTabsAdapter.addTab(mTabHost.newTabSpec("Home").setIndicator("Home"), 
+					StatisticFragment.class, null);
+
 			mTabsAdapter.addTab(
 					mTabHost.newTabSpec("Crises").setIndicator("Crises"),
 					CrisesListFragment.class, null);
@@ -144,24 +153,23 @@ public class MainActivity extends FragmentActivity {
 	 * @param view
 	 */
 	public void loginClicked(View view) {
-		EditText emailView = (EditText) findViewById(R.id.email_input_field);
-		EditText passwordView = (EditText) findViewById(R.id.password_input_field);
+		final ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, null, "Authentication in progress...", false);
+		Thread worker = new Thread() {
+			@Override
+			public void run() {
+				EditText emailView = (EditText) findViewById(R.id.email_input_field);
+				EditText passwordView = (EditText) findViewById(R.id.password_input_field);
 
-		if (session_handler.login(emailView.getText().toString(), passwordView
-				.getText().toString())) {
-			mTabHost.clearAllTabs();
-			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-
-			mTabsAdapter.addTab(mTabHost.newTabSpec("home")
-					.setIndicator("Home"), StatisticFragment.class, null);
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("crises").setIndicator("Crises"),
-					CrisesListFragment.class, null);
-
-		} else {
-			new ToastNotification(getApplicationContext(),
-					"Email or password were incorrect!", Toast.LENGTH_SHORT);
-		}
+				if (ApplicationController.getInstance().getSessionHandler().login(emailView.getText().toString(), 
+						passwordView.getText().toString())) {
+					guiHandler.post(successfulLogin);
+				} else {
+					guiHandler.post(errorLogin);
+				}
+				progressDialog.dismiss();
+			}
+		};
+		worker.start();
 	}
 
 	/**
@@ -198,7 +206,7 @@ public class MainActivity extends FragmentActivity {
 			}
 			return true;
 		case R.id.menu_logout:
-			this.session_handler.logout();
+			ApplicationController.getInstance().getSessionHandler().logout();
 			mTabHost.clearAllTabs();
 			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
 			mTabsAdapter.addTab(
@@ -216,6 +224,22 @@ public class MainActivity extends FragmentActivity {
 		}			
 	}
 	
+	public void updateAfterLogin() {
+		this.mTabHost.clearAllTabs();
+		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost, this.mViewPager);
+
+		this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("home")
+				.setIndicator("Home"), StatisticFragment.class, null);
+		this.mTabsAdapter.addTab(
+				this.mTabHost.newTabSpec("crises").setIndicator("Crises"),
+				CrisesListFragment.class, null);
+
+	}
+
+	public void showLoginErrorToast() {
+		new ToastNotification(getApplicationContext(),
+				"Email or password were incorrect!", Toast.LENGTH_SHORT);
+	}
 
 	/**
 	 * This is a helper class that implements the management of tabs and all
