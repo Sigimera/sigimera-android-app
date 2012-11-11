@@ -68,8 +68,13 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		if ( auth_token != null ) { 
 			Cursor c = CrisesController.getInstance().getTodayCrises(auth_token);
 			
-			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);			
-			todayCrisesButton.setText(Html.fromHtml(c.getCount() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
+			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
+			String crisesToday = null;
+			if ( c.getCount() == 0 )
+				crisesToday = "No";
+			else 
+				crisesToday = c.getCount() + "";
+			todayCrisesButton.setText(Html.fromHtml(crisesToday + " Crises<br/><small><i>" + "Today" + "</i></small>"));
 								
 		}
 		
