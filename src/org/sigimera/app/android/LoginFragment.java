@@ -41,16 +41,6 @@ public class LoginFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.login, container, false);
-
-//		loginListener = (LoginListener) getActivity();
-//
-//		Button button = (Button) getActivity().findViewById(R.id.login_button);
-//		button.setOnClickListener(new OnClickListener() {
-//			public void onClick(View v) {
-//				new ToastNotification(getActivity(), "DEBUG", ToastNotification.LENGTH_LONG);
-//			}
-//		});
-		return view;
+		return inflater.inflate(R.layout.login, container, false);
 	}
 }
