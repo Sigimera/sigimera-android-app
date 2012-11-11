@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.ocpsoft.pretty.time.PrettyTime;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
@@ -14,6 +13,7 @@ import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
+import org.sigimera.app.android.util.Common;
 
 import android.database.Cursor;
 import android.location.Location;
@@ -77,7 +77,7 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		
 		if ( latestCrisis != null ) {
 			Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
-			latestCrisisButton.setText(Html.fromHtml(getTimeAgoInWords(getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
+			latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWords(getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
 		}
 		
 		Button totalCrises = (Button) view.findViewById(R.id.button3);
@@ -125,19 +125,6 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 			e.printStackTrace();
 		} 				
 		return 0;
-	}
-	
-	/**
-	 * Convert time from milliseconds in time ago.
-	 * 
-	 * @param miliseconds
-	 * @return
-	 */
-	private String getTimeAgoInWords(long miliseconds) {		
-		PrettyTime p = new PrettyTime();
-		String timeAgo = p.format(new Date(Long.parseLong(miliseconds+"")));
-		timeAgo = timeAgo.replace(" ", "<br/>").replaceFirst("<br/>", " ");
-		return timeAgo;
 	}
 
 	@Override

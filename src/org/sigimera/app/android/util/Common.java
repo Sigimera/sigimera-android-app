@@ -19,10 +19,12 @@
  */
 package org.sigimera.app.android.util;
 
+import java.util.Date;
+
+import org.ocpsoft.pretty.time.PrettyTime;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.model.Constants;
-
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +35,7 @@ import android.net.NetworkInfo;
  * Class which sum all the methods used over different windows.
  * 
  * @author Corneliu-Valentin Stanciu
- * @email  corneliu.stanciu@sigimera.org
+ * @email corneliu.stanciu@sigimera.org
  */
 public class Common {
 	private static final String CRISIS_URL = "http://www.sigimera.org/crises/";
@@ -44,12 +46,14 @@ public class Common {
 	public static Intent shareCrisis(String crisisID) {
 		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
-		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, CRISIS_URL + crisisID);
+		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, CRISIS_URL
+				+ crisisID);
 		return shareIntent;
 	}
-	
+
 	/**
 	 * Get the crisis icon based on the type of crisis (e.g. earthquake)
+	 * 
 	 * @param subject
 	 * @return
 	 */
@@ -64,23 +68,58 @@ public class Common {
 			return R.drawable.volcano;
 		return 0;
 	}
-	
+
+	/**
+	 * Get the crisis icon based on the type of crisis (e.g. earthquake)
+	 * 
+	 * @param subject
+	 * @return
+	 */
+	public static String getCrisisIconURL(String subject) {
+		String BASE_URL = "http://stage.sigimera.org/img/icons/";
+		if (subject.contains(Constants.FLOOD))
+			return BASE_URL + "flood_small.png";
+		else if (subject.contains(Constants.EARTHQUAKE))
+			return BASE_URL + "earthquake_small.png";
+		else if (subject.contains(Constants.CYCLONE))
+			return BASE_URL + "cyclone_small.png";
+		else if (subject.contains(Constants.VOLCANO))
+			return BASE_URL + "volcano_small.png";
+		return null;
+	}
+
 	/**
 	 * Check if Internet connections are available.
+	 * 
 	 * @return
 	 */
 	public static boolean hasInternet() {
-		ConnectivityManager cm = (ConnectivityManager) ApplicationController.getInstance()
-						.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) ApplicationController
+				.getInstance().getApplicationContext()
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (activeNetwork != null && activeNetwork.isConnected())
 			return true;
-		else 
+		else
 			return false;
 	}
-	
-	 public static String capitalize(String s) {
-	        if (s.length() == 0) return s;
-	        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-	    }
+
+	public static String capitalize(String s) {
+		if (s.length() == 0)
+			return s;
+		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	}
+
+	/**
+	 * Convert time from milliseconds in time ago.
+	 * 
+	 * @param miliseconds
+	 * @return
+	 */
+	public static String getTimeAgoInWords(long miliseconds) {
+		PrettyTime p = new PrettyTime();
+		String timeAgo = p.format(new Date(Long.parseLong(miliseconds + "")));
+		timeAgo = timeAgo.replace(" ", "<br/>").replaceFirst("<br/>", " ");
+		return timeAgo;
+	}
 }
