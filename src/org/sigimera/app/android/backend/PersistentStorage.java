@@ -168,6 +168,14 @@ public class PersistentStorage extends SQLiteOpenHelper {
             	values.put("crisis_population", _crisis.getString("crisis_population"));
             if ( _crisis.has("crisis_vulnerability") )
             	values.put("crisis_vulnerability", _crisis.getString("crisis_vulnerability"));
+
+            //Add the *_hash values
+            if (_crisis.has("crisis_severity_hash"))
+            	values.put("crisis_severity_hash", _crisis.getString("crisis_severity_hash"));
+            if (_crisis.has("crisis_population_hash"))
+            	values.put("crisis_population_hash", _crisis.getString("crisis_population_hash"));
+            if (_crisis.has("crisis_vulnerability_hash"))
+            	values.put("crisis_vulnerability_hash", _crisis.getString("crisis_vulnerability_hash"));
             
 
             this.db.insert(TABLE_CRISES, null, values);
@@ -268,12 +276,15 @@ public class PersistentStorage extends SQLiteOpenHelper {
             crisis.setLongitude(_c.getDouble(_c.getColumnIndex("longitude")));
             crisis.setSubject(_c.getString(_c.getColumnIndex("subject")));
             crisis.setPopulation(_c.getString(_c.getColumnIndex("crisis_population")));
+            crisis.setPopulationHash(_c.getString(_c.getColumnIndex("crisis_population_hash")));
             crisis.setSeverity(_c.getString(_c.getColumnIndex("crisis_severity")));
+            crisis.setSeverityHash(_c.getString(_c.getColumnIndex("crisis_severity_hash")));
             crisis.setShortTitle(_c.getString(_c.getColumnIndex("short_title")));
             crisis.setStartDate(_c.getString(_c.getColumnIndex("schema_startDate")));
             crisis.setTitle(_c.getString(_c.getColumnIndex("dc_title")));
             crisis.setTypeIcon(_c.getString(_c.getColumnIndex("type_icon")));
             crisis.setVulnerability(_c.getString(_c.getColumnIndex("crisis_vulnerability")));
+            crisis.setVulnerabilityHash(_c.getString(_c.getColumnIndex("crisis_vulnerability_hash")));
             crisis.setCountries(getCountries(crisis.getID()));
         }
         return crisis;

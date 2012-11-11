@@ -17,8 +17,11 @@ public class Crisis implements Serializable {
 	private String subject;
 	private String alertLevel;
 	private String severity;
+	private String severityHash;
 	private String population;
+	private String populationHash;
 	private String vulnerability;
+	private String vulnerabilityHash;
 	private String date;
 	private String startDate;
 	private String endDate;
@@ -74,17 +77,35 @@ public class Crisis implements Serializable {
 	public void setSeverity(String severity) {
 		this.severity = severity;
 	}
+	public String getSeverityHash() {
+		return severityHash;
+	}
+	public void setSeverityHash(String severityHash) {
+		this.severityHash = severityHash;				
+	}
 	public String getPopulation() {
 		return population;
 	}
 	public void setPopulation(String population) {
 		this.population = population;
 	}
+	public String getPopulationHash() {
+		return populationHash;
+	}
+	public void setPopulationHash(String populationHash) {
+		this.populationHash = populationHash;
+	}
 	public String getVulnerability() {
 		return vulnerability;
 	}
 	public void setVulnerability(String vulnerability) {
 		this.vulnerability = vulnerability;
+	}
+	public String getVulnerabilityHash() {
+		return vulnerabilityHash;
+	}
+	public void setVulnerabilityHash(String vulnerabilityHash) {
+		this.vulnerabilityHash = vulnerabilityHash;
 	}
 	public String getDate() {
 		return date;
