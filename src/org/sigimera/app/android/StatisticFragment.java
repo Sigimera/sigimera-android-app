@@ -16,6 +16,7 @@ import org.sigimera.app.android.util.Common;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,6 +29,20 @@ import android.widget.Button;
 
 public class StatisticFragment extends Fragment implements OnClickListener{
 
+	private View view;
+
+	private Location userLocation;
+
+	private Crisis latestCrisis = null;
+	private Crisis nearCrisis = null;
+	private String auth_token = null;
+
+	private final Handler guiHandler = new Handler();
+	private final Runnable updateGUI = new Runnable() {
+		@Override
+		public void run() { updateStatistics(); }
+	};
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -36,25 +51,33 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.statistic, container, false);		
+		view = inflater.inflate(R.layout.statistic, container, false);
+		Thread worker = new Thread() {
+			@Override
+			public void run() {
+				try {
+					userLocation = LocationController.getInstance().getLastKnownLocation();
+
+					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();	
+					latestCrisis = CrisesController.getInstance().getLatestCrisis(auth_token);
+					nearCrisis = CrisesController.getInstance().getNearCrisis(auth_token, userLocation);
+					/**
+					 * TODO: save the near crisis in persistence over CrisisController
+					 */
+					
+					guiHandler.post(updateGUI);
+				} catch (AuthenticationErrorException e) {
+					// SHOULD NEVER OCCUR: Check before calling this window.
+					System.err.println("Error on authentification" + e.getLocalizedMessage());
+				}
+			}
+		};
+		worker.start();
 		
-		Location userLocation = LocationController.getInstance().getLastKnownLocation();
-				
-		Crisis latestCrisis = null;
-		Crisis nearCrisis = null;
-		String auth_token = null;
-		try {			
-			auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();	
-			latestCrisis = CrisesController.getInstance().getLatestCrisis(auth_token);
-			nearCrisis = CrisesController.getInstance().getNearCrisis(auth_token, userLocation);
-		} catch (AuthenticationErrorException e) {
-			//TODO: send to login window
-			System.err.println("Error on authentification" + e.getLocalizedMessage());
-		}
-		
-		/**
-		 * TODO: save the near crisis in persistence over CrisisController
-		 */
+		return view;
+	}
+	
+	private void updateStatistics() {
 		if ( auth_token != null ) { 
 			Button nearCrisisButton = (Button) view.findViewById(R.id.button0);
 			double nearDistance = DistanceController.getNearCrisisDistance(auth_token, nearCrisis, userLocation);
@@ -63,9 +86,7 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 			else
 				nearCrisisButton.setText(Html.fromHtml("unknown<br/><small><i>" + "No near crisis" + "</i></small>"));
 			nearCrisisButton.setOnClickListener(this);
-		}
-		
-		if ( auth_token != null ) { 
+			
 			Cursor c = CrisesController.getInstance().getTodayCrises(auth_token);
 			
 			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
@@ -106,12 +127,8 @@ public class StatisticFragment extends Fragment implements OnClickListener{
         frag.setArguments(bundle);
         fragTransaction.add(R.id.main_frag_container, frag);
         fragTransaction.commit();
-		
-		return view;
 	}
 
 	@Override
-	public void onClick(View v) {
-		System.out.println("DEBUG");
-	}
+	public void onClick(View v) {}
 }

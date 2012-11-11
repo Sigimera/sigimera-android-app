@@ -76,9 +76,6 @@ public class MainActivity extends FragmentActivity {
 			appController.init(getApplicationContext(),
 		    		 getSharedPreferences(Constants.PREFS_NAME, 0), null);
 		}
-		
-		// Initialize of GCM
-		initGCM();
 
 		// Initialize the tabs
 		initTabs();
@@ -123,6 +120,8 @@ public class MainActivity extends FragmentActivity {
 			mTabsAdapter.addTab(
 					mTabHost.newTabSpec("Crises").setIndicator("Crises"),
 					CrisesListFragment.class, null);
+
+			initGCM();
 		} catch (AuthenticationErrorException e) {
 			mTabsAdapter.addTab(
 					mTabHost.newTabSpec("login").setIndicator("Login"),
@@ -233,6 +232,7 @@ public class MainActivity extends FragmentActivity {
 		this.mTabsAdapter.addTab(
 				this.mTabHost.newTabSpec("crises").setIndicator("Crises"),
 				CrisesListFragment.class, null);
+		initGCM();
 
 	}
 
