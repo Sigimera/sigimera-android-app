@@ -34,8 +34,6 @@ public class PersistentStorage extends SQLiteOpenHelper {
     private final static String TABLE_USER = "user_info";
     private final static String TABLE_CRISES_STATS = "crises_stats";
 
-    private SQLiteDatabase db;
-
     private final Context context;
 
     public static PersistentStorage getInstance() {
@@ -63,18 +61,10 @@ public class PersistentStorage extends SQLiteOpenHelper {
          * TODO: If schema version is changed. Not before first release...
          */
     }
-
-    public void openDatabaseReadOnly() {
-        this.db = getReadableDatabase();
-    }
-
-    public void openDatabaseWrite() {
-        this.db = getWritableDatabase();
-    }
     
-    public boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
+    public synchronized boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
     	if ( _crisis == null  ) return false;
-    	this.openDatabaseWrite();
+    	SQLiteDatabase db = getWritableDatabase();
     	ContentValues values = new ContentValues();  
     	
     	values.put("_id", "current_user");
@@ -84,15 +74,15 @@ public class PersistentStorage extends SQLiteOpenHelper {
         	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
         }
     	
-    	this.db.insert(TABLE_USER, null, values);
+    	db.insert(TABLE_USER, null, values);
+    	db.close();
     	
-    	this.onExit();
     	return true;
     }
     
-    public boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {
+    public synchronized boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {
     	if ( _crisesStats == null ) return false;
-        this.openDatabaseWrite();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         
         values.put("_id", "crises_stats");
@@ -100,34 +90,34 @@ public class PersistentStorage extends SQLiteOpenHelper {
         values.put("latest_crisis_at", _crisesStats.getString("latest_crisis_at"));
         values.put("total_crises", _crisesStats.getInt("total_crises"));
         values.put("today_crises", _crisesStats.getInt("today_crises"));
-        
+
         JSONObject numberOf = _crisesStats.getJSONObject("number_of");
         values.put("number_of_earthquakes", numberOf.getInt("earthquakes"));
         values.put("number_of_floods", numberOf.getInt("floods"));
         values.put("number_of_cyclones", numberOf.getInt("cyclones"));
         values.put("number_of_volcanoes", numberOf.getInt("volcanoes"));
-        
+
         values.put("uploaded_images", _crisesStats.getInt("uploaded_images"));
         values.put("posted_comments", _crisesStats.getInt("posted_comments"));
         values.put("reported_locations", _crisesStats.getInt("reported_locations"));
         values.put("reported_missing_people", _crisesStats.getInt("reported_missing_people"));
-        
-        this.db.insert(TABLE_CRISES_STATS, null, values);
-        
-        this.onExit();
+
+        db.insert(TABLE_CRISES_STATS, null, values);
+        db.close();
+
         return true;
     }
     
-    public CrisesStats getCrisesStats() {
+    public synchronized CrisesStats getCrisesStats() {
     	CrisesStats stats = null;
-    	this.openDatabaseReadOnly();
-        Cursor c = this.db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
+    	SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
         stats = _extractCrisesStats(c);
-        this.onExit();
+        db.close();
     	return stats;
     }
 
-    public boolean addCrisis(JSONObject _crisis) throws JSONException {
+    public synchronized boolean addCrisis(JSONObject _crisis) throws JSONException {
     	if ( _crisis == null ) return false;
         String crisisID = _crisis.getString("_id");
         if ( checkIfCrisisExists(crisisID) ) {
@@ -135,7 +125,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
             System.err.println("Crisis was found! Not updating it...");
             return false;
         } else {
-            this.openDatabaseWrite();
+            SQLiteDatabase db = getWritableDatabase();
             
             ContentValues values = new ContentValues();
             values.put("_id", _crisis.getString("_id"));
@@ -179,7 +169,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
             	values.put("crisis_population_hash_unit", _crisis.getJSONObject("crisis_population_hash").getString("unit"));
             }
 
-            this.db.insert(TABLE_CRISES, null, values);
+            db.insert(TABLE_CRISES, null, values);
             
             /**
              * Add country to separate table
@@ -191,74 +181,81 @@ public class PersistentStorage extends SQLiteOpenHelper {
                 countryValues.put("country_name", countries.getString(count));
             }
             if ( countryValues.size() > 0 )
-            	this.db.insert(TABLE_COUNTRIES, null, countryValues);
+            	db.insert(TABLE_COUNTRIES, null, countryValues);
             
-            this.onExit();
+            db.close();
         }
         return true;
     }
     
-    public Cursor getTodayCrisesList() {
+    /**
+     * XXX: Where and when is this connection closed.
+     * @return Cursor that encapsulates the SQL result
+     */
+    public synchronized Cursor getTodayCrisesList() {
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal = Calendar.getInstance();		
 		String todayDate = format.format(cal.getTime());
     	
-        this.openDatabaseReadOnly();
-        return this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
     }
 
-    public Cursor getLatestCrisesList(int _number, int _page) {
-        this.openDatabaseReadOnly();
-        return this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
+    /**
+     * XXX: Where and when is this connection closed.
+     * @return Cursor that encapsulates the SQL result
+     */
+    public synchronized Cursor getLatestCrisesList(int _number, int _page) {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
     }
 
-    public Crisis getCrisis(String _crisisID) {
-        this.openDatabaseReadOnly();
+    public synchronized Crisis getCrisis(String _crisisID) {
+        SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + _crisisID + "'", null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE _id='" + _crisisID + "'", null);
         Crisis crisis = null;
         if ( c.getCount() != 0) crisis = this._extractCrisis(c);
-        this.onExit();
+        db.close();
 
         return crisis;
     }
     
-    public Crisis getNearestCrisis() {
-        this.openDatabaseReadOnly();
+    public synchronized Crisis getNearestCrisis() {
+        SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = this.db.rawQuery("SELECT near_crisis_id FROM "+TABLE_USER, null);
+        Cursor c = db.rawQuery("SELECT near_crisis_id FROM "+TABLE_USER, null);
         Crisis crisis = null;
         if ( c.moveToFirst() ) {
         	crisis = getCrisis(c.getString(0));
         }
-        this.onExit();
+        db.close();
 
         return crisis;
     }
 
-    public Crisis getLatestCrisis() {
-        this.openDatabaseReadOnly();
+    public synchronized Crisis getLatestCrisis() {
+        SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = this.db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
         Crisis crisis = null;
         if ( c.getCount() != 0) crisis = this._extractCrisis(c);
-        this.onExit();
+        db.close();
 
         return crisis;
     }
 
-    public ArrayList<String> getCountries(String _crisisID) {
-        this.openDatabaseReadOnly();
+    public synchronized ArrayList<String> getCountries(String _crisisID) {
+        SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = this.db.rawQuery("SELECT country_name FROM "+TABLE_COUNTRIES+" WHERE crisis_id='" + _crisisID + "'", null);
+        Cursor c = db.rawQuery("SELECT country_name FROM "+TABLE_COUNTRIES+" WHERE crisis_id='" + _crisisID + "'", null);
         ArrayList<String> countries = new ArrayList<String>();
 
         for (int count=0; count < c.getCount(); count++) {
             c.moveToPosition(count);
             countries.add(c.getString(count));
         }
- 
-        this.onExit();
+        db.close();
 
         return countries;
     }
@@ -364,7 +361,5 @@ public class PersistentStorage extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
-    public void onExit() { this.db.close(); }
 
 }

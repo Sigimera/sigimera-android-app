@@ -25,6 +25,7 @@ public class StatisticCrisesHttpHelper extends AsyncTask<String, Void, JSONObjec
     protected JSONObject doInBackground(String... _params) {
         String auth_token = _params[0];
 
+    	try { Thread.sleep(1000); } catch (InterruptedException e1) { e1.printStackTrace();	} // Respect the API limits
         HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
         HttpGet request = new HttpGet(HOST + auth_token);
         
