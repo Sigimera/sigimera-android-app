@@ -1,8 +1,6 @@
 package org.sigimera.app.android;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.sigimera.app.android.R;
@@ -77,7 +75,7 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		
 		if ( latestCrisis != null ) {
 			Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
-			latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWords(getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
+			latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
 		}
 		
 		Button totalCrises = (Button) view.findViewById(R.id.button3);
@@ -105,26 +103,6 @@ public class StatisticFragment extends Fragment implements OnClickListener{
         fragTransaction.commit();
 		
 		return view;
-	}
-	
-	/**
-	 * Convert date into milliseconds.
-	 * 
-	 * @param crisisDate
-	 * @return
-	 */
-	private long getMiliseconds(String crisisDate) {		  
-		try {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); 
-			Date date = (Date) formatter.parse(crisisDate);
-			Calendar cal=Calendar.getInstance();
-			cal.setTime(date);			
-			return cal.getTimeInMillis();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 				
-		return 0;
 	}
 
 	@Override
