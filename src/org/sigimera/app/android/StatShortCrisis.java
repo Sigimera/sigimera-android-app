@@ -59,31 +59,49 @@ public class StatShortCrisis extends Fragment{
 	//		content.append("<td style='border-left: solid 1px white'></td>");
 			
 			content.append("<td>");
-			content.append(crisis.getCountries().get(0) + "<br/>");
+			content.append(Common.capitalize(crisis.getCountries().get(0)) + "<br/>");
 			content.append("<small><small>Country</small></small>");
 			content.append("</td>");
 			
 			content.append("<td style='border-left: solid 1px white'></td>");
 			
-			content.append("<td>");
-			content.append("24442<br/>");
-			content.append("<small><small>Affected people</small></small>");
-			content.append("</td>");
+			// If there is no affected people hash saved => show the date		
+			if ( !crisis.getPopulationHash().contains("null") ) {
+				content.append("<td>");
+				content.append( crisis.getPopulationHash() + "<br/>");
+				content.append("<small><small>Affected people</small></small>");
+				content.append("</td>");
+			} else {
+				content.append("<td>");
+				content.append(Common.getTimeAgoInWords(Common.getMiliseconds(crisis.getDate())) + "<br/>");
+				content.append("<small><small>Date</small></small>");
+				content.append("</td>");
+			}
 			
 			content.append("<td style='border-left: solid 1px white'></td>");
 			
-			content.append("<td>");				
-			content.append("6.2<br/>");
-			content.append("<small><small>Magnitude</small></small>");
-			content.append("</td>");
-			content.append("");	
-							
+			// If there is no severity hash saved => show the crisis type			
+			if ( !crisis.getSeverityHash().contains("null") ) {
+				content.append("<td>");
+				content.append(crisis.getSeverityHash() + "<br/>");
+				content.append("<small><small>Magnitude</small></small>");
+				content.append("</td>");
+				content.append("");
+			} else {
+				content.append("<td>");
+				content.append(Common.capitalize(crisis.getSubject()) + "<br/>");
+				content.append("<small><small>Crisis Type</small></small>");
+				content.append("</td>");
+				content.append("");
+			}
+
 			content.append("</tr>");
 			content.append("</table>");
 			content.append("<br />");
-			if ( Common.hasInternet() )
-				content.append("<img width='100%' src='http://maps.googleapis.com/maps/api/staticmap?markers=icon:http://maps.google.com/mapfiles/ms/micons/blue.png|" + crisis.getLatitude() + "," + crisis.getLongitude() + "&markers=" + userLocation.getLatitude() + "," + userLocation.getLongitude() + "&size=500x180&scale=2&sensor=true' />");
-			else{
+			
+			if ( Common.hasInternet() ){
+				content.append("<img width='100%' src='http://maps.googleapis.com/maps/api/staticmap?markers=icon:" + Common.getCrisisIconURL(crisis.getSubject()) + "|" + crisis.getLatitude() + "," + crisis.getLongitude() + "&markers=" + userLocation.getLatitude() + "," + userLocation.getLongitude() + "&size=500x180&scale=2&sensor=true' />");
+			}else {
 				content.append("<h3>No connection detected.</h3>");
 				content.append("<small>In order to show the distance from your location to the nearest crisis on map, please turn on the internet on this device.</small>");
 			}

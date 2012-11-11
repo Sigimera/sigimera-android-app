@@ -31,6 +31,7 @@ import org.sigimera.app.android.backend.network.SingleCrisisHttpHelper;
 import org.sigimera.app.android.backend.network.StatisticCrisesHttpHelper;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
+import org.sigimera.app.android.util.Common;
 
 import android.database.Cursor;
 import android.location.Location;
@@ -221,17 +222,12 @@ public class CrisesController {
 
             if ( crisis.has("gn_parentCountry") && crisis.getJSONArray("gn_parentCountry").length() > 0 ){
                 title += " in ";
-                title += capitalize(crisis.getJSONArray("gn_parentCountry").get(0).toString());
+                title += Common.capitalize(crisis.getJSONArray("gn_parentCountry").get(0).toString());
             }
             return title;
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public String capitalize(String s) {
-        if (s.length() == 0) return s;
-        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 }
