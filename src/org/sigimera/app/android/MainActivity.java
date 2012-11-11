@@ -133,8 +133,8 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-//		MenuItem item = menu.findItem(R.id.menu_refresh);
-//		item.setTitle("Last sync: 7 Nov");
+		MenuItem item = menu.findItem(R.id.menu_update_location);
+		item.setTitle("Update your location");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -177,7 +177,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_refresh:
+		case R.id.menu_update_location:
 			LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
 			Location loc = LocationController.getInstance().getLastKnownLocation();
 			if ( loc != null ) {

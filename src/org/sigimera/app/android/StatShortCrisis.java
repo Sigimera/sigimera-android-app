@@ -24,7 +24,7 @@ public class StatShortCrisis extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.stat_short_crisis, container, false);
+		View view = inflater.inflate(R.layout.near_crisis, container, false);
 			
 		Crisis crisis = (Crisis) getArguments().getSerializable("crisis");
 		
