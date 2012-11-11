@@ -17,11 +17,13 @@ public class Crisis implements Serializable {
 	private String subject;
 	private String alertLevel;
 	private String severity;
-	private String severityHash;
+	private String severityHashValue;
+	private String severityHashUnit;
 	private String population;
-	private String populationHash;
+	private String populationHashValue;
+	private String populationHashUnit;
 	private String vulnerability;
-	private String vulnerabilityHash;
+	private String vulnerabilityHashValue;
 	private String date;
 	private String startDate;
 	private String endDate;
@@ -77,11 +79,17 @@ public class Crisis implements Serializable {
 	public void setSeverity(String severity) {
 		this.severity = severity;
 	}
-	public String getSeverityHash() {
-		return severityHash;
+	public String getSeverityHashValue() {
+		return severityHashValue;
 	}
-	public void setSeverityHash(String severityHash) {
-		this.severityHash = severityHash;				
+	public void setSeverityHashValue(String severityHashValue) {
+		this.severityHashValue = severityHashValue;				
+	}
+	public String getSeverityHashUnit() {
+		return severityHashUnit;
+	}
+	public void setSeverityHashUnit(String severityHashUnit) {
+		this.severityHashUnit = severityHashUnit;				
 	}
 	public String getPopulation() {
 		return population;
@@ -89,11 +97,17 @@ public class Crisis implements Serializable {
 	public void setPopulation(String population) {
 		this.population = population;
 	}
-	public String getPopulationHash() {
-		return populationHash;
+	public String getPopulationHashUnit() {
+		return populationHashUnit;
 	}
-	public void setPopulationHash(String populationHash) {
-		this.populationHash = populationHash;
+	public void setPopulationHashUnit(String populationHashUnit) {
+		this.populationHashUnit = populationHashUnit;
+	}
+	public String getPopulationHashValue() {
+		return populationHashValue;
+	}
+	public void setPopulationHashValue(String populationHashValue) {
+		this.populationHashValue = populationHashValue;
 	}
 	public String getVulnerability() {
 		return vulnerability;
@@ -101,11 +115,11 @@ public class Crisis implements Serializable {
 	public void setVulnerability(String vulnerability) {
 		this.vulnerability = vulnerability;
 	}
-	public String getVulnerabilityHash() {
-		return vulnerabilityHash;
+	public String getVulnerabilityHashValue() {
+		return vulnerabilityHashValue;
 	}
-	public void setVulnerabilityHash(String vulnerabilityHash) {
-		this.vulnerabilityHash = vulnerabilityHash;
+	public void setVulnerabilityHashValue(String vulnerabilityHashValue) {
+		this.vulnerabilityHashValue = vulnerabilityHashValue;
 	}
 	public String getDate() {
 		return date;

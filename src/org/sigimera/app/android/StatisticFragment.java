@@ -26,13 +26,18 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class StatisticFragment extends Fragment implements OnClickListener{
+public class StatisticFragment extends Fragment {
+
+	private Crisis latestCrisis = null;
+	private Crisis nearCrisis = null;
+	private Cursor todayCrises = null;
+	private String auth_token = null;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -40,52 +45,49 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 		
 		Location userLocation = LocationController.getInstance().getLastKnownLocation();
 				
-		Crisis latestCrisis = null;
-		Crisis nearCrisis = null;
-		String auth_token = null;
 		try {			
-			auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();	
-			latestCrisis = CrisesController.getInstance().getLatestCrisis(auth_token);
-			nearCrisis = CrisesController.getInstance().getNearCrisis(auth_token, userLocation);
+			this.auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();	
+			this.latestCrisis = CrisesController.getInstance().getLatestCrisis(this.auth_token);
+			this.nearCrisis = CrisesController.getInstance().getNearCrisis(this.auth_token, userLocation);
 		} catch (AuthenticationErrorException e) {
 			//TODO: send to login window
 			System.err.println("Error on authentification" + e.getLocalizedMessage());
 		}
 		
-		/**
-		 * TODO: save the near crisis in persistence over CrisisController
-		 */
-		if ( auth_token != null ) { 
-			Button nearCrisisButton = (Button) view.findViewById(R.id.button0);
-			double nearDistance = DistanceController.getNearCrisisDistance(auth_token, nearCrisis, userLocation);
+		// Set distance in km until the near crisis 
+		if ( this.auth_token != null ) { 
+			Button nearCrisisButton = (Button) view.findViewById(R.id.button0);			
+			double nearDistance = DistanceController.getNearCrisisDistance(this.auth_token, this.nearCrisis, userLocation);
 			if ( nearDistance != -1.0 )
 				nearCrisisButton.setText(Html.fromHtml(nearDistance + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
 			else
 				nearCrisisButton.setText(Html.fromHtml("unknown<br/><small><i>" + "No near crisis" + "</i></small>"));
-			nearCrisisButton.setOnClickListener(this);
+			nearCrisisButton.setOnClickListener(this.nearCrisisListenter);
 		}
 		
-		if ( auth_token != null ) { 
-			Cursor c = CrisesController.getInstance().getTodayCrises(auth_token);
+		// Set the number of crises today
+		if ( this.auth_token != null ) { 
+			Cursor c = CrisesController.getInstance().getTodayCrises(this.auth_token);
 			
 			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
-			String crisesToday = null;
 			if ( c.getCount() == 0 )
-				crisesToday = "No";
+				todayCrisesButton.setText(Html.fromHtml("No Crises<br/><small><i>" + "Today" + "</i></small>"));
 			else 
-				crisesToday = c.getCount() + "";
-			todayCrisesButton.setText(Html.fromHtml(crisesToday + " Crises<br/><small><i>" + "Today" + "</i></small>"));
-								
+				todayCrisesButton.setText(Html.fromHtml(c.getCount() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
+			this.todayCrises = c;
+			todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
 		}
 		
-		if ( latestCrisis != null ) {
+		// Set the time ago since latest crisis
+		if ( this.latestCrisis != null ) {
 			Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
-			latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
+			latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(this.latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
+			latestCrisisButton.setOnClickListener(this.latestCrisisListenter);
 		}
 		
-		Button totalCrises = (Button) view.findViewById(R.id.button3);
-		
-		CrisesStats stats = CrisesController.getInstance().getCrisesStats(auth_token);
+		// Set total number of crises
+		Button totalCrisesButton = (Button) view.findViewById(R.id.button3);		
+		CrisesStats stats = CrisesController.getInstance().getCrisesStats(this.auth_token);
 		if ( stats != null ) {
 			SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 			SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
@@ -95,23 +97,75 @@ public class StatisticFragment extends Fragment implements OnClickListener{
 			} catch ( Exception e) {
 				e.printStackTrace();
 			}
-			totalCrises.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
+			totalCrisesButton.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
+			totalCrisesButton.setOnClickListener(this.allCrisesListenter);
 		}
 
-        FragmentManager fragManager = getFragmentManager();
-        FragmentTransaction fragTransaction = fragManager.beginTransaction();
-        Fragment frag = new StatShortCrisis();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("crisis", nearCrisis);
-        frag.setArguments(bundle);
-        fragTransaction.add(R.id.main_frag_container, frag);
-        fragTransaction.commit();
+		//Show one view at start
+		Fragment nearCrisisFrament = new NearCrisisFragment();	
+		Bundle bundle = new Bundle();
+        bundle.putSerializable("crisis", this.nearCrisis);	        
+        nearCrisisFrament.setArguments(bundle);        
+		showFragment(nearCrisisFrament);
 		
 		return view;
 	}
-
-	@Override
-	public void onClick(View v) {
-		System.out.println("DEBUG");
+	
+	private void showFragment(Fragment _newFragment) {
+		FragmentManager fragManager = getFragmentManager();
+		FragmentTransaction fragTransaction = fragManager.beginTransaction();
+		fragTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragTransaction.replace(R.id.main_frag_container, _newFragment);
+        fragTransaction.commit();
 	}
+
+	// Near crisis button listener
+	private OnClickListener nearCrisisListenter = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Fragment nearCrisisFrament = new NearCrisisFragment();
+			
+			Bundle bundle = new Bundle();
+	        bundle.putSerializable("crisis", nearCrisis);	        
+	        nearCrisisFrament.setArguments(bundle);
+	        
+			showFragment(nearCrisisFrament);
+		}
+	};
+
+	// Today crises button listener
+	private OnClickListener todayCrisesListenter = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Fragment todayCrisesFrament = new CrisesListFragment();	
+			
+			Bundle bundle = new Bundle();
+	        bundle.putSerializable("crises", todayCrises.toString());	        
+	        todayCrisesFrament.setArguments(bundle);
+	        
+			showFragment(todayCrisesFrament);
+		}
+	};
+
+	// Latest crisis button listener
+	private OnClickListener latestCrisisListenter = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Fragment latestCrisisFrament = new NearCrisisFragment();	
+			
+			Bundle bundle = new Bundle();
+	        bundle.putSerializable("crisis", latestCrisis);	        
+	        latestCrisisFrament.setArguments(bundle);
+	        
+			showFragment(latestCrisisFrament);
+		}
+	};
+
+	// All crises button listener
+	private OnClickListener allCrisesListenter = new OnClickListener() {
+		@Override
+		public void onClick(View v) {				        
+			showFragment(new CrisesListFragment());
+		}
+	};
 }
