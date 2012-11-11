@@ -2,7 +2,7 @@
  * Sigimera Crises Information Platform Android Client
  * Copyright (C) 2012 by Sigimera
  * All Rights Reserved
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -58,7 +58,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 /**
  * This Intent is called when the GCM executing process has finished.
- * 
+ *
  * @author Alex Oberhauser
  * @email alex.oberhauser@sigimera.org
  */
@@ -90,7 +90,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             		 * XXX: Blocks UI: Shift this code into a separate background thread
             		 */
             		Crisis crisis = CrisesController.getInstance().getCrisis(authToken, msg.getStringExtra("crisis_id"));
-            		
+
         			StringBuffer message = new StringBuffer();
             		if ( crisis != null ) {
             			message.append(crisis.getID());
@@ -99,16 +99,16 @@ public class GCMIntentService extends GCMBaseIntentService {
             			message.append("Not able to get crisis!");
             		}
         			Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
-            	} else if ( type.equalsIgnoreCase("PING") ) {      		
+            	} else if ( type.equalsIgnoreCase("PING") ) {
             		String ns = Context.NOTIFICATION_SERVICE;
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-            		
+
             		Intent notificationIntent = new Intent();
             		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
             		        0, notificationIntent,
             		        PendingIntent.FLAG_CANCEL_CURRENT);
-            		
-            		Notification notification = new NotificationCompat.Builder(getApplicationContext())            			
+
+            		Notification notification = new NotificationCompat.Builder(getApplicationContext())
             			.setContentTitle("Sigimera PING!")
             			.setContentText("Congratulations, push notifcation received!")
             			.setSmallIcon(R.drawable.sigimera_logo)
@@ -116,16 +116,16 @@ public class GCMIntentService extends GCMBaseIntentService {
             			.setDefaults(Notification.DEFAULT_ALL)
             			.setContentIntent(contentIntent)
             			.build();
-            		
+
             		mNotificationManager.notify(Constants.PING_ID, notification);
             	} else if ( type.equalsIgnoreCase("CRISIS_ALERT") ) {
             		String ns = Context.NOTIFICATION_SERVICE;
             		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-            		
+
             		/**
-            		 * XXX: Not working with random ID. That makes always the latest notification clickable, 
+            		 * XXX: Not working with random ID. That makes always the latest notification clickable,
             		 * but not the older ones.
-            		 */           
+            		 */
             		int notificationID = new Random().nextInt();
             		Intent notificationIntent = new Intent(getApplicationContext(), CrisisAlertActivity.class);
             		notificationIntent.putExtra("notification_id", notificationID);
@@ -134,7 +134,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
             		        0, notificationIntent,
             		        PendingIntent.FLAG_CANCEL_CURRENT);
-            		
+
             		Notification notification = new NotificationCompat.Builder(getApplicationContext())
             		.setContentTitle("CRISIS ALERT!")
                     .setContentText("Crisis found: " + msg.getStringExtra("crisis_id"))
@@ -144,14 +144,14 @@ public class GCMIntentService extends GCMBaseIntentService {
             		.setDefaults(Notification.DEFAULT_ALL)
                     .setContentIntent(contentIntent)
             		.build();
-            		
+
             		mNotificationManager.notify(notificationID, notification);
-            	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {            		
+            	} else if ( type.equalsIgnoreCase("SHARED_CRISIS") ) {
             		Intent intent = new Intent(GCMIntentService.this, CrisisActivity.class);
             		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             		intent.putExtra(Constants.CRISIS_ID, msg.getStringExtra("crisis_id"));
             		intent.putExtra(Constants.WINDOW_TYPE, Constants.WINDOW_TYPE_SHARED_CRISIS);
-            		startActivity(intent);            		
+            		startActivity(intent);
             	} else if ( type.equalsIgnoreCase("UNREGISTER_DEVICE") ) {
             		GCMRegistrar.unregister(ApplicationController.getInstance().getApplicationContext());
             	} else if ( type.equalsIgnoreCase("REFRESH") ) {
@@ -175,7 +175,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
         HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		try {
-			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
+			try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
 			HttpPost request = new HttpPost(HOST + "?auth_token="+authToken+"&reg_id="+_regID+"&device_name="+android.os.Build.MODEL.replace(" ", "+")+"&android_api_level="+android.os.Build.VERSION.SDK_INT);
 			HttpResponse response = httpclient.execute(request);
@@ -219,7 +219,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
         HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		try {
-			try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
+			try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
 			HttpDelete request = new HttpDelete(HOST + "/"+_regID+"?auth_token="+authToken);
 			httpclient.execute(request);

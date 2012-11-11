@@ -45,6 +45,8 @@ public class MainActivity extends FragmentActivity {
 	private ViewPager mViewPager;
 	private TabsAdapter mTabsAdapter;
 
+	private ProgressDialog progressDialog = null;
+
 	private final Handler guiHandler = new Handler();
 	private final Runnable errorLogin = new Runnable() {
 		@Override
@@ -63,9 +65,8 @@ public class MainActivity extends FragmentActivity {
 
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		ApplicationController appController = ApplicationController
-				.getInstance();						
-		
+		ApplicationController appController = ApplicationController.getInstance();
+
 		int currentapiVersion = Build.VERSION.SDK_INT;
 		if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB){			
 		    appController.init(getApplicationContext(),
@@ -152,7 +153,7 @@ public class MainActivity extends FragmentActivity {
 	 * @param view
 	 */
 	public void loginClicked(View view) {
-		final ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, null, "Authentication in progress...", false);
+		progressDialog = ProgressDialog.show(MainActivity.this, null, "Authentication in progress...", false);
 		Thread worker = new Thread() {
 			@Override
 			public void run() {
@@ -165,7 +166,6 @@ public class MainActivity extends FragmentActivity {
 				} else {
 					guiHandler.post(errorLogin);
 				}
-				progressDialog.dismiss();
 			}
 		};
 		worker.start();
@@ -223,6 +223,13 @@ public class MainActivity extends FragmentActivity {
 		}			
 	}
 	
+	public void closeProgressDialog() {
+		if ( progressDialog != null ) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
+	}
+	
 	public void updateAfterLogin() {
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost, this.mViewPager);
@@ -233,12 +240,12 @@ public class MainActivity extends FragmentActivity {
 				this.mTabHost.newTabSpec("crises").setIndicator("Crises"),
 				CrisesListFragment.class, null);
 		initGCM();
-
+		closeProgressDialog();
 	}
 
 	public void showLoginErrorToast() {
-		new ToastNotification(getApplicationContext(),
-				"Email or password were incorrect!", Toast.LENGTH_SHORT);
+		new ToastNotification(getApplicationContext(), "Email or password were incorrect!", Toast.LENGTH_SHORT);
+		closeProgressDialog();
 	}
 
 	/**

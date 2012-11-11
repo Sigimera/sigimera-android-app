@@ -23,7 +23,7 @@ public class SingleCrisisHttpHelper extends AsyncTask<String, Void, JSONObject> 
 
     @Override
     protected JSONObject doInBackground(String... _params) {
-    	try { Thread.sleep(2000); } catch (InterruptedException e1) { e1.printStackTrace();	} // Respect the API limits
+    	try { Thread.sleep(1000); } catch (InterruptedException e1) { e1.printStackTrace();	} // Respect the API limits
         String auth_token = _params[0];
         if ( auth_token == null ) return null;
 
