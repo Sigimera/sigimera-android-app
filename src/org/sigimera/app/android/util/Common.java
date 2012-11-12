@@ -84,7 +84,7 @@ public class Common {
 	 * @return
 	 */
 	public static String getCrisisIconURL(String subject) {
-		String BASE_URL = "http://stage.sigimera.org/img/icons/";
+		String BASE_URL = "http://www.sigimera.org/img/icons/";
 		if (subject.contains(Constants.FLOOD))
 			return BASE_URL + "flood_small.png";
 		else if (subject.contains(Constants.EARTHQUAKE))
