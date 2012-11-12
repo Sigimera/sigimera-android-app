@@ -51,6 +51,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
@@ -189,9 +190,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 			this.mainThreadHandler.post(new Runnable() {
 	            public void run() {
 	                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-	                /**
-	                 * TODO: Fetch here the crisis and store it to the local data structure (and/or cache)
-	                 */
 	            }
 	        });
 		} catch (AuthenticationErrorException e) {
@@ -219,10 +217,22 @@ public class GCMIntentService extends GCMBaseIntentService {
 		final String HOST = Config.getInstance().getAPIHost() + "/gcm";
         HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		try {
-			try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
 			String authToken = SessionHandler.getInstance(null).getAuthenticationToken();
-			HttpDelete request = new HttpDelete(HOST + "/"+_regID+"?auth_token="+authToken);
-			httpclient.execute(request);
+			final String toastMessage;
+			if ( _regID != null && !_regID.equals("") ) {
+				HttpDelete request = new HttpDelete(HOST + "/"+_regID+"?auth_token="+authToken);
+				httpclient.execute(request);
+				toastMessage = "Successfully unregistered!";
+			} else {
+				toastMessage = "You are not registered to receive push notifications.";
+			}
+			this.mainThreadHandler.post(new Runnable() {
+	            public void run() {
+	    			Toast toast = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
+	    			toast.setGravity(Gravity.TOP, 0, 0);
+	    			toast.show();
+	            }
+	        });
 		} catch (AuthenticationErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
