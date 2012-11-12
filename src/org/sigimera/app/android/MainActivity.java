@@ -185,14 +185,12 @@ public class MainActivity extends FragmentActivity {
 			LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
 			Location loc = LocationController.getInstance().getLastKnownLocation();
 			if ( loc != null ) {
-				Toast toast = Toast.makeText(getApplicationContext(), "Updating your current location...", Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(getApplicationContext(), "Trying to update your current location...", Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.TOP, 0, 0);
 				toast.show();
 				String latitude = loc.getLatitude() + "";
 				String longitude = loc.getLongitude() + "";
-				String authToken = ApplicationController.getInstance()
-						.getSharedPreferences().getString("auth_token", null);
-				Log.d(Constants.LOG_TAG_SIGIMERA_APP, "AuthToken = " + authToken);
+				String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
 				if (authToken != null)
 					locUpdater.execute(authToken, latitude, longitude);
 			} else {

@@ -153,7 +153,7 @@ public class Common {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); 
 			Date date = (Date) formatter.parse(crisisDate);
-			Calendar cal=Calendar.getInstance();
+			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);			
 			return cal.getTimeInMillis();
 		} catch (ParseException e) {
