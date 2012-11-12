@@ -33,11 +33,13 @@ public class LocationUpdaterHttpHelper extends AsyncTask<String, Void, Boolean> 
         String latitude = _params[1];
         String longitude = _params[2];
 
-        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
-        HttpPut request;
-        if ( auth_token != null ) {
-        	Context context = ApplicationController.getInstance().getApplicationContext();
-            request = new HttpPut(HOST + GCMRegistrar.getRegistrationId(context) + "?auth_token=" + auth_token + "&lat=" + latitude + "&lon=" + longitude);
+        Context context = ApplicationController.getInstance().getApplicationContext();
+        String reg_id = GCMRegistrar.getRegistrationId(context);
+        
+        if ( auth_token != null && reg_id != null && !reg_id.equals("") ) {
+        	HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
+        	HttpPut request;        	
+            request = new HttpPut(HOST + reg_id + "?auth_token=" + auth_token + "&lat=" + latitude + "&lon=" + longitude);
 	        try {
 	            Log.d(Constants.LOG_TAG_SIGIMERA_APP, "API CALL: " + request.getURI());
 	            httpclient.execute(request);
