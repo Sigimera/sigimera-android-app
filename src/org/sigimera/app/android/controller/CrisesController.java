@@ -19,6 +19,7 @@
  */
 package org.sigimera.app.android.controller;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -33,7 +34,6 @@ import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
-import android.database.Cursor;
 import android.location.Location;
 import android.os.AsyncTask;
 
@@ -87,16 +87,16 @@ public class CrisesController {
      * @param _page The page to retrieve, starting from page 1 (one)
      * @return
      */
-    public Cursor getCrises(String _authToken, int _page) {
-        Cursor c = this.pershandler.getLatestCrisesList(10, _page);        
-        if ( c.getCount() == 0 ) {
+    public ArrayList<Crisis> getCrises(String _authToken, int _page) {
+        ArrayList<Crisis> crises = this.pershandler.getLatestCrisesList(10, _page);        
+        if ( crises.isEmpty() ) {
             storeLatestCrises(_authToken, _page);
-            c = this.pershandler.getLatestCrisesList(10, _page);
+            crises = this.pershandler.getLatestCrisesList(10, _page);
         }
-        return c;
+        return crises;
     }
     
-    public Cursor getTodayCrises(String _authToken) {
+    public ArrayList<Crisis> getTodayCrises(String _authToken) {
         return this.pershandler.getTodayCrisesList();
     }
 

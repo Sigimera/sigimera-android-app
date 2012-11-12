@@ -1,6 +1,7 @@
 package org.sigimera.app.android;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.sigimera.app.android.R;
@@ -15,7 +16,6 @@ import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
 import android.app.ProgressDialog;
-import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -97,12 +97,12 @@ public class StatisticFragment extends Fragment {
 			nearCrisisButton.setOnClickListener(this.nearCrisisListenter);
         	
 			// Set the number of crises today
-			Cursor c = CrisesController.getInstance().getTodayCrises(this.auth_token);			
+			ArrayList<Crisis> crises = CrisesController.getInstance().getTodayCrises(this.auth_token);			
 			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
-			if ( c.getCount() == 0 )
+			if ( crises.size() == 0 )
 				todayCrisesButton.setText(Html.fromHtml("No Crises<br/><small><i>" + "Today" + "</i></small>"));
 			else 
-				todayCrisesButton.setText(Html.fromHtml(c.getCount() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
+				todayCrisesButton.setText(Html.fromHtml(crises.size() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
 //			this.todayCrises = c;
 			todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
         }

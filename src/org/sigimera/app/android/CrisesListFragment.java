@@ -19,20 +19,23 @@
  */
 package org.sigimera.app.android;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
+import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -43,6 +46,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -51,12 +55,12 @@ import android.widget.AdapterView.OnItemClickListener;
  * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisesListFragment extends Fragment {
-	private Cursor cursor;
+	private ArrayList<Crisis> crises = new ArrayList<Crisis>();;
 	private ListView list;
 	
 	private int page = 1;
 //	private boolean showMore = true;
-	private SimpleCursorAdapter adapterMainList;
+	private SimpleAdapter adapterMainList;
 	
 	private final Handler guiHandler = new Handler();
 	private final Runnable updateGUI = new Runnable() {		
@@ -91,7 +95,7 @@ public class CrisesListFragment extends Fragment {
 				} catch (AuthenticationErrorException e) {
 					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
 				}
-				cursor = CrisesController.getInstance().getCrises(auth_token, page);
+				crises = CrisesController.getInstance().getCrises(auth_token, page);
 				guiHandler.post(updateGUI);
 			}
 		};
@@ -100,10 +104,26 @@ public class CrisesListFragment extends Fragment {
 		return view;
 	}	
 	
-	private void showCrises() {		
-		this.adapterMainList = new SimpleCursorAdapter(getActivity(), R.layout.list_entry, this.cursor, 
+	private void showCrises() {
+		ArrayList<HashMap<String, String>> crisesList = new ArrayList<HashMap<String, String>>();
+		
+		HashMap<String, String> listEntry;
+		
+		Iterator<Crisis> iter = this.crises.iterator();
+		while ( iter.hasNext() ) {
+			Crisis entry = iter.next();
+			
+			listEntry = new HashMap<String, String>();
+			listEntry.put("type_icon", entry.getTypeIcon());
+			listEntry.put("short_title", entry.getShortTitle());
+			listEntry.put("dc_date", entry.getDate());
+			
+			crisesList.add(listEntry);
+		}
+		
+		this.adapterMainList = new SimpleAdapter(getActivity(), crisesList, R.layout.list_entry, 
 				new String[] { "type_icon", "short_title", "dc_date" },
-				new int[] { R.id.icon, R.id.topText, R.id.bottomText }, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);	
+				new int[] { R.id.icon, R.id.topText, R.id.bottomText });	
 
 		this.list.setAdapter(adapterMainList);	
 	}	
@@ -137,9 +157,9 @@ public class CrisesListFragment extends Fragment {
 	OnItemClickListener clickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int _position,
 				long arg3) {
-			cursor.moveToPosition(_position);
 			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
-			crisisActivity.putExtra(Constants.CRISIS_ID, cursor.getString(cursor.getColumnIndex("_id")));
+			crisisActivity.putExtra(Constants.CRISIS_ID, crises.get(_position).getID());
+
 			startActivity(crisisActivity);
 		}
 	};
@@ -173,11 +193,7 @@ public class CrisesListFragment extends Fragment {
 	 * @return crisis ID
 	 */
 	private String getCrisisID(int position) {
-		boolean success = this.cursor.moveToPosition(position);
-		if ( success ) {
-			return this.cursor.getString(this.cursor.getColumnIndex("_id"));
-		}
-		return null;
+		return this.crises.get(position).getID();
 	}
 	
 //	private void showMoreCrises() {
