@@ -127,7 +127,7 @@ public class StatisticFragment extends Fragment {
      					e.printStackTrace();
      				}
      				totalCrisesButton.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
-     				totalCrisesButton.setOnClickListener(this.allCrisesListenter);
+//     				totalCrisesButton.setOnClickListener(this.allCrisesListenter);
      			}
      			
      			//Show one view at start
@@ -203,11 +203,12 @@ public class StatisticFragment extends Fragment {
 		}
 	};
 
-	// All crises button listener
-	private OnClickListener allCrisesListenter = new OnClickListener() {
-		@Override
-		public void onClick(View v) {				        
-			showFragment(new CrisesListFragment());
-		}
-	};
+//	// All crises button listener
+//	private OnClickListener allCrisesListenter = new OnClickListener() {
+//		@Override
+//		public void onClick(View v) {				        
+////			showFragment(new CrisesListFragment());
+//			
+//		}
+//	};
 }

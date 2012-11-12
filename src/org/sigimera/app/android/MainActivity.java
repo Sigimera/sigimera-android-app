@@ -122,7 +122,7 @@ public class MainActivity extends FragmentActivity {
 			mTabsAdapter.addTab(mTabHost.newTabSpec("login").setIndicator("Login"), LoginFragment.class, null);
 		}
 		
-		mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
+		mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);		
 	}
 
 	@Override
@@ -161,6 +161,11 @@ public class MainActivity extends FragmentActivity {
 			}
 		};
 		worker.start();
+	}
+	
+	public void allCrisesClicked(View view){
+		if ( mViewPager != null )			
+			mViewPager.setCurrentItem(1, true);
 	}
 
 	/**
