@@ -59,6 +59,7 @@
                 android:layout_width="10dip"
                 android:layout_height="90dip"
                 android:layout_weight="1"
+                android:onClick="allCrisesClicked"
                 android:contentDescription="@string/app_name"
                 android:drawableLeft="@drawable/all_small"
                 android:gravity="center_vertical|center" />  

@@ -26,7 +26,7 @@ public class StatsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.near_crisis, container, false);
+		View view = inflater.inflate(R.layout.stats_fragment, container, false);
 
 		WebView statWebview = (WebView) view.findViewById(R.id.stat_webview);
 
