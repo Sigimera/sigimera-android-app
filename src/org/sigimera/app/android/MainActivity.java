@@ -245,9 +245,9 @@ public class MainActivity extends FragmentActivity {
 	    strbuffer.append("<li>Get crises (natural disaster) information. Currently floods, earthquakes, cyclones and volcanic erruptions.</li>");
 	    strbuffer.append("<li>Get crises alerts via push notifications.</li>");
 	    strbuffer.append("<li>Get new crises via push notifications.</li>");
-	    strbuffer.append("<li>Manage your App via <a href='http://www.sigimera.org/mobile_devices'>mobile device management website</a>.");
+	    strbuffer.append("<li>Manage your App via <a href='http://www.sigimera.org/mobile_devices'><span style='color: #00FFFF'>mobile device management website</span></a>.");
 	    strbuffer.append("</ul>");
-	    strbuffer.append("<p>&copy; 2012 <a href='http://www.sigimera.org'>Sigimera</a>. All rights reserved.</p>");
+	    strbuffer.append("<p>&copy; 2012 <a href='http://www.sigimera.org'><span style='color: #00FFFF'>Sigimera</span></a>. All rights reserved.</p>");
 		
 	    wv.loadData(strbuffer.toString(), "text/html", "utf-8");
 	    
