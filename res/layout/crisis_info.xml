@@ -10,11 +10,12 @@
         android:clickable="true"
         android:apiKey="04VaZICVnaLDfMKEpL6Ai1xmWaJbDmwE20i-s8w"
     />
-
-    <ListView
-        android:id="@+id/crisis_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >               
-    </ListView>       
+    
+    <WebView
+        android:id="@+id/crisis_info_webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip" />           
     
 </LinearLayout> 

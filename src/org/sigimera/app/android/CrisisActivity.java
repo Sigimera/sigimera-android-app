@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.controller.DistanceController;
+import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.model.map.CollectionOverlay;
@@ -36,11 +38,13 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import android.app.ProgressDialog;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.ShareActionProvider;
 
 /**
@@ -59,7 +63,7 @@ public class CrisisActivity extends MapActivity {
 	private final Handler guiHandler = new Handler();
 	private final Runnable updateCollection = new Runnable() {
 		public void run() {
-			updateMap();			
+			updateMap();
 		}
 	};
 
@@ -93,6 +97,22 @@ public class CrisisActivity extends MapActivity {
 					mapControl.setZoom(4);					
 					mapControl.stopPanning();
 					mapControl.setCenter(new GeoPoint(0, 0));
+										
+					WebView infoview = (WebView) findViewById(R.id.crisis_info_webview);
+					Location userLocation = LocationController.getInstance().getLastKnownLocation();
+					
+					StringBuffer content = new StringBuffer();
+					content.append("<html>");
+					content.append("<body style='background: #545959; color: white;'>");					
+					
+					content.append(getCrisisHTMLContent(userLocation));
+					
+					content.append("<br />");
+					content.append("</body>");
+					content.append("</html>");
+					infoview.loadData(content.toString(), "text/html", "UTF-8");
+					
+					
 				} finally {										
 					progressDialog.dismiss();
 				}
@@ -100,7 +120,7 @@ public class CrisisActivity extends MapActivity {
 			}
 		};
 		seeker.start();
-	}	
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,6 +133,45 @@ public class CrisisActivity extends MapActivity {
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
+	private String getCrisisHTMLContent(Location userLocation) {		
+		StringBuffer content = new StringBuffer();
+		
+		//Show crisis title
+		content.append("<p>" + crisis.getShortTitle() + "</p>");
+		content.append("<hr />");
+		
+		//Show distance, date and severity|population|subject in a table
+		content.append("<table width='100%'>");					
+		content.append("<tr>");
+		content.append(this.getTableHTMLContent(DistanceController.computeDistance(
+				userLocation.getLatitude(), userLocation.getLongitude(), 
+				crisis.getLatitude(), crisis.getLongitude())+ "km", "Distance"));					
+		content.append(this.getHTMLSeparator());		
+		content.append(this.getTableHTMLContent(Common.getTimeAgoInWords(Common.getMiliseconds(crisis.getDate())), "Date"));		
+		content.append(this.getHTMLSeparator());
+				
+		if ( crisis.getSeverityHashValue() != null && crisis.getSeverityHashUnit() != null )
+			content.append(this.getTableHTMLContent(crisis.getSeverityHashValue() + crisis.getSeverityHashUnit(), "Severity"));				
+		else if ( crisis.getPopulationHashValue() != null && crisis.getPopulationHashUnit() != null )
+			content.append(this.getTableHTMLContent(crisis.getPopulationHashValue() + crisis.getPopulationHashUnit(), "Affected people"));
+		else
+			content.append(this.getTableHTMLContent(Common.capitalize(crisis.getSubject()), "Type"));		
+		content.append("</tr>");					
+		content.append("</table>");
+		
+		// Show the crisis descrioption
+		content.append("<p><small>" + crisis.getDescription()+ "</small></p>");
+		
+		// Show the start and end dates
+		content.append("<table width='100%'>");					
+		content.append("<tr>");
+		content.append(this.getTableHTMLContent(crisis.getPopulationHashValue(), "Affected people"));				
+		content.append("</tr>");					
+		content.append("</table>");
+		
+		return content.toString();
+	}
+	
 	private void updateMap() {
 		GeoPoint geo = new GeoPoint((int) (crisis.getLatitude() * 1E6), (int) (crisis.getLongitude() * 1E6));
 		mapControl.setCenter(geo);
@@ -120,6 +179,19 @@ public class CrisisActivity extends MapActivity {
 		this.collectionOverlay.addOverlay(overlayitem);
 		this.mapOverlays.add(this.collectionOverlay);
 	}
+	
+	private String getTableHTMLContent(String content, String helpText) {
+		StringBuffer element = new StringBuffer();
+		element.append("<td>");
+		element.append(content + "<br/>");
+		element.append("<small><small>" + helpText + "</small></small>");
+		element.append("</td>");
+		return element.toString();
+	}	
+	
+	private String getHTMLSeparator() {
+		return "<td style='border-left: solid 1px white'></td>";
+	}	
 
 	@Override
 	protected boolean isRouteDisplayed() { return false; }

@@ -153,7 +153,7 @@ public class Common {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); 
 			Date date = (Date) formatter.parse(crisisDate);
-			Calendar cal=Calendar.getInstance();
+			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);			
 			return cal.getTimeInMillis();
 		} catch (ParseException e) {
@@ -161,5 +161,19 @@ public class Common {
 			e.printStackTrace();
 		} 				
 		return 0;
+	}
+	
+	public static Date getDate(String crisisDate) {
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); 
+			Date date = (Date) formatter.parse(crisisDate);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);			
+			return cal.getTime();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 		
+		return null;
 	}
 }
