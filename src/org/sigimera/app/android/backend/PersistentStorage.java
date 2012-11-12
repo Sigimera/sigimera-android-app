@@ -74,7 +74,9 @@ public class PersistentStorage extends SQLiteOpenHelper {
         	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
         }
     	
-    	db.insert(TABLE_USER, null, values);
+    	int number_of_rows = db.update(TABLE_USER, values, "_id == 'current_user'", null);
+    	if ( number_of_rows == 0 )
+    		db.insert(TABLE_USER, null, values);
     	db.close();
     	
     	return true;
@@ -160,13 +162,23 @@ public class PersistentStorage extends SQLiteOpenHelper {
             	values.put("crisis_vulnerability", _crisis.getString("crisis_vulnerability"));
             
             if ( _crisis.getJSONObject("crisis_severity_hash") != null ) {
-            	values.put("crisis_severity_hash_value", _crisis.getJSONObject("crisis_severity_hash").getString("value"));
-            	values.put("crisis_severity_hash_unit", _crisis.getJSONObject("crisis_severity_hash").getString("unit"));
+            	String severity_value = _crisis.getJSONObject("crisis_severity_hash").getString("value");
+            	if ( severity_value != null )
+            		values.put("crisis_severity_hash_value", severity_value);
+            	
+            	String severity_unit = _crisis.getJSONObject("crisis_severity_hash").getString("unit");
+            	if ( severity_unit != null )
+            		values.put("crisis_severity_hash_unit", severity_unit);
             }
                        
             if ( _crisis.getJSONObject("crisis_population_hash") != null ) {
-            	values.put("crisis_population_hash_value", _crisis.getJSONObject("crisis_population_hash").getString("value"));
-            	values.put("crisis_population_hash_unit", _crisis.getJSONObject("crisis_population_hash").getString("unit"));
+            	String population_value = _crisis.getJSONObject("crisis_population_hash").getString("value");
+            	if ( population_value != null )
+            		values.put("crisis_population_hash_value", population_value);
+            	
+            	String population_unit = _crisis.getJSONObject("crisis_population_hash").getString("unit");
+            	if ( population_unit != null )
+            		values.put("crisis_population_hash_unit", population_unit);
             }
 
             db.insert(TABLE_CRISES, null, values);
