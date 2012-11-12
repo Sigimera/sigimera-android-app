@@ -67,6 +67,12 @@ public abstract class Constants {
 	public static final String VOLCANO = "volcano";
 	
 	/**
+	 * Style handling
+	 */
+	public static final String LATEST_CRISIS = "LATEST_CRISIS";
+	public static final String NEAR_CRISIS = "NEAR_CRISIS";
+	
+	/**
 	 * Window types
 	 */
 	public static final String WINDOW_TYPE_SHARED_CRISIS = "shared_crisis";

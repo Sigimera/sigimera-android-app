@@ -131,9 +131,10 @@ public class StatisticFragment extends Fragment {
      			}
      			
      			//Show one view at start
-     			Fragment nearCrisisFrament = new NearCrisisFragment();	
+     			Fragment nearCrisisFrament = new StatsFragment();	
      			Bundle bundle = new Bundle();
-     	        bundle.putSerializable("crisis", this.nearCrisis);	        
+     	        bundle.putSerializable("crisis", this.nearCrisis);
+     	        bundle.putSerializable("style", Constants.NEAR_CRISIS);
      	        nearCrisisFrament.setArguments(bundle);        
      			showFragment(nearCrisisFrament);     			
 	}
@@ -159,10 +160,11 @@ public class StatisticFragment extends Fragment {
 	private OnClickListener nearCrisisListenter = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Fragment nearCrisisFrament = new NearCrisisFragment();
+			Fragment nearCrisisFrament = new StatsFragment();
 			
 			Bundle bundle = new Bundle();
-	        bundle.putSerializable("crisis", nearCrisis);	        
+	        bundle.putSerializable("crisis", nearCrisis);
+	        bundle.putSerializable("style", Constants.NEAR_CRISIS);
 	        nearCrisisFrament.setArguments(bundle);
 	        
 			showFragment(nearCrisisFrament);
@@ -190,10 +192,11 @@ public class StatisticFragment extends Fragment {
 	private OnClickListener latestCrisisListenter = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Fragment latestCrisisFrament = new NearCrisisFragment();	
+			Fragment latestCrisisFrament = new StatsFragment();	
 			
 			Bundle bundle = new Bundle();
-	        bundle.putSerializable("crisis", latestCrisis);	        
+	        bundle.putSerializable("crisis", latestCrisis);
+	        bundle.putSerializable("style", Constants.LATEST_CRISIS);
 	        latestCrisisFrament.setArguments(bundle);
 	        
 			showFragment(latestCrisisFrament);
