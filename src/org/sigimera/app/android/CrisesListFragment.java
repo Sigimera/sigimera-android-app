@@ -83,7 +83,13 @@ public class CrisesListFragment extends Fragment {
 		this.list = (ListView) view.findViewById(R.id.crisis_list);		
 		this.list.setOnItemClickListener(this.clickListener);
 //		this.list.setOnScrollListener(this.scrollListener);
-		registerForContextMenu(this.list);			
+		registerForContextMenu(this.list);
+		
+		if ( getArguments() != null ) {
+			Object object = getArguments().getSerializable("crises");
+			if ( object != null )
+				crises = (ArrayList<Crisis>) object;	
+		}		
 		
 		Thread worker = new Thread() {
 			@Override
@@ -95,7 +101,10 @@ public class CrisesListFragment extends Fragment {
 				} catch (AuthenticationErrorException e) {
 					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
 				}
-				crises = CrisesController.getInstance().getCrises(auth_token, page);
+				
+				if ( crises.isEmpty() )
+					crises = CrisesController.getInstance().getCrises(auth_token, page);
+				
 				guiHandler.post(updateGUI);
 			}
 		};

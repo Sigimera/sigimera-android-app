@@ -35,7 +35,7 @@ public class StatisticFragment extends Fragment {
 
 	private Crisis latestCrisis = null;
 	private Crisis nearCrisis = null;
-//	private Cursor todayCrises = null;
+	private ArrayList<Crisis> todayCrises = null;
 	private String auth_token = null;
 	
 	private View view;
@@ -103,40 +103,39 @@ public class StatisticFragment extends Fragment {
 				todayCrisesButton.setText(Html.fromHtml("No Crises<br/><small><i>" + "Today" + "</i></small>"));
 			else 
 				todayCrisesButton.setText(Html.fromHtml(crises.size() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
-//			this.todayCrises = c;
+			this.todayCrises = crises;
 			todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
         }
         
-     // Set the time ago since latest crisis
-     			if ( this.latestCrisis != null ) {
-     				Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
-     				latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(this.latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
-     				latestCrisisButton.setOnClickListener(this.latestCrisisListenter);
-     			}
+        // Set the time ago since latest crisis
+        if ( this.latestCrisis != null ) {
+        	Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
+        	latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(this.latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
+        	latestCrisisButton.setOnClickListener(this.latestCrisisListenter);
+        }
+        
+        // Set total number of crises
+        Button totalCrisesButton = (Button) view.findViewById(R.id.button3);		
+        CrisesStats stats = CrisesController.getInstance().getCrisesStats(this.auth_token);
+        if ( stats != null ) {
+        	SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        	SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
+        	Date date = new Date();
+        	try {
+        		date = inputFormatter.parse(stats.getFirstCrisisAt());
+        	} catch ( Exception e) {
+        		e.printStackTrace();
+        	}
+        	totalCrisesButton.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
+        }
      			
-     			// Set total number of crises
-     			Button totalCrisesButton = (Button) view.findViewById(R.id.button3);		
-     			CrisesStats stats = CrisesController.getInstance().getCrisesStats(this.auth_token);
-     			if ( stats != null ) {
-     				SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-     				SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
-     				Date date = new Date();
-     				try {
-     					date = inputFormatter.parse(stats.getFirstCrisisAt());
-     				} catch ( Exception e) {
-     					e.printStackTrace();
-     				}
-     				totalCrisesButton.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
-//     				totalCrisesButton.setOnClickListener(this.allCrisesListenter);
-     			}
-     			
-     			//Show one view at start
-     			Fragment nearCrisisFrament = new StatsFragment();	
-     			Bundle bundle = new Bundle();
-     	        bundle.putSerializable("crisis", this.nearCrisis);
-     	        bundle.putSerializable("style", Constants.NEAR_CRISIS);
-     	        nearCrisisFrament.setArguments(bundle);        
-     			showFragment(nearCrisisFrament);     			
+        //Show one view at start
+        Fragment nearCrisisFrament = new StatsFragment();	
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("crisis", this.nearCrisis);
+        bundle.putSerializable("style", Constants.NEAR_CRISIS);
+        nearCrisisFrament.setArguments(bundle);        
+        showFragment(nearCrisisFrament);     			
 	}
 	
 	private void showFragment(Fragment _newFragment) {
@@ -174,17 +173,14 @@ public class StatisticFragment extends Fragment {
 	// Today crises button listener
 	private OnClickListener todayCrisesListenter = new OnClickListener() {
 		@Override
-		public void onClick(View v) {
-			/**
-			 * XXX: This shows the complete crises list...
-			 */
-//			Fragment todayCrisesFrament = new CrisesListFragment();	
-//			
-//			Bundle bundle = new Bundle();
-//	        bundle.putSerializable("crises", todayCrises.toString());	        
-//	        todayCrisesFrament.setArguments(bundle);
-//	        
-//			showFragment(todayCrisesFrament);
+		public void onClick(View v) {			
+			Fragment todayCrisesFrament = new CrisesListFragment();	
+			
+			Bundle bundle = new Bundle();
+	        bundle.putSerializable("crises", todayCrises);	        
+	        todayCrisesFrament.setArguments(bundle);
+	        
+			showFragment(todayCrisesFrament);
 		}
 	};
 
@@ -202,13 +198,4 @@ public class StatisticFragment extends Fragment {
 			showFragment(latestCrisisFrament);
 		}
 	};
-
-//	// All crises button listener
-//	private OnClickListener allCrisesListenter = new OnClickListener() {
-//		@Override
-//		public void onClick(View v) {				        
-////			showFragment(new CrisesListFragment());
-//			
-//		}
-//	};
 }
