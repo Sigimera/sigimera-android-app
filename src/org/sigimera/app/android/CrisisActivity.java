@@ -162,7 +162,7 @@ public class CrisisActivity extends MapActivity {
 		content.append("<hr />");
 		
 		// Show the crisis descrioption
-		content.append("<p><small>" + crisis.getDescription()+ "</small></p>");
+		content.append("<p style='text-align: justify'><small>" + crisis.getDescription()+ "</small></p>");
 			
 		// Show the start and end dates
 		if ( crisis.getPopulationHashValue() != null ) {
