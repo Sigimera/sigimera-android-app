@@ -137,7 +137,7 @@ public class CrisisActivity extends MapActivity {
 		StringBuffer content = new StringBuffer();
 		
 		//Show crisis title
-		content.append("<p>" + crisis.getShortTitle() + "</p>");
+		content.append("<i>" + crisis.getShortTitle() + "</i>");
 		content.append("<hr />");
 		
 		//Show distance, date and severity|population|subject in a table
@@ -159,15 +159,21 @@ public class CrisisActivity extends MapActivity {
 		content.append("</tr>");					
 		content.append("</table>");
 		
+		content.append("<hr />");
+		
 		// Show the crisis descrioption
 		content.append("<p><small>" + crisis.getDescription()+ "</small></p>");
-		
+			
 		// Show the start and end dates
-		content.append("<table width='100%'>");					
-		content.append("<tr>");
-		content.append(this.getTableHTMLContent(crisis.getPopulationHashValue(), "Affected people"));				
-		content.append("</tr>");					
-		content.append("</table>");
+		if ( crisis.getPopulationHashValue() != null ) {
+			content.append("<table width='100%'>");					
+			content.append("<tr>");
+			content.append(this.getTableHTMLContent(crisis.getPopulationHashValue(), "Affected people"));
+			content.append(this.getHTMLSeparator());
+			content.append(this.getTableHTMLContent(crisis.getStartDate(), "Start date"));
+			content.append("</tr>");					
+			content.append("</table>");
+		}
 		
 		return content.toString();
 	}
@@ -184,7 +190,7 @@ public class CrisisActivity extends MapActivity {
 		StringBuffer element = new StringBuffer();
 		element.append("<td>");
 		element.append(content + "<br/>");
-		element.append("<small><small>" + helpText + "</small></small>");
+		element.append("<small style='color: #00FFFF;'><small>" + helpText + "</small></small>");
 		element.append("</td>");
 		return element.toString();
 	}	
