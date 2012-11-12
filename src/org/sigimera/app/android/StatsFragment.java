@@ -1,5 +1,6 @@
 package org.sigimera.app.android;
 
+import org.sigimera.app.android.controller.DistanceController;
 import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
@@ -45,7 +46,7 @@ public class StatsFragment extends Fragment {
 				if ( style.equalsIgnoreCase(Constants.NEAR_CRISIS) )
 					content.append(this.getNearCrisisHTMLContent(crisis));
 				else if ( style.equalsIgnoreCase(Constants.LATEST_CRISIS) )
-					content.append(this.getLatestCrisisHTMLContent(crisis));
+					content.append(this.getLatestCrisisHTMLContent(crisis, userLocation));
 
 				content.append("</tr>");
 				content.append("</table>");
@@ -106,9 +107,11 @@ public class StatsFragment extends Fragment {
 		return content.toString();
 	}
 
-	private String getLatestCrisisHTMLContent(Crisis crisis) {		
+	private String getLatestCrisisHTMLContent(Crisis crisis, Location userLocation) {		
 		StringBuffer content = new StringBuffer();		
-		content.append(this.getTableHTMLContent(Common.getTimeAgoInWords(Common.getMiliseconds(crisis.getDate())), "Date"));					
+		content.append(this.getTableHTMLContent(DistanceController.computeDistance(
+				userLocation.getLatitude(), userLocation.getLongitude(), 
+				crisis.getLatitude(), crisis.getLongitude())+ "km", "Distance"));					
 		content.append(this.getHTMLSeparator());		
 		content.append(this.getTableHTMLContent(Common.capitalize(crisis.getAlertLevel()), "Alert Level"));		
 		content.append(this.getHTMLSeparator());
@@ -118,9 +121,9 @@ public class StatsFragment extends Fragment {
 		else if ( crisis.getPopulationHashValue() != null && crisis.getPopulationHashUnit() != null )
 			content.append(this.getTableHTMLContent(crisis.getPopulationHashValue() + crisis.getPopulationHashUnit(), "Affected people"));
 		else if ( !crisis.getCountries().isEmpty() )
-			content.append(this.getTableHTMLContent(crisis.getCountries().get(0), "Country"));
+			content.append(this.getTableHTMLContent(Common.capitalize(crisis.getCountries().get(0)), "Country"));
 		else
-			content.append(this.getTableHTMLContent(crisis.getSubject(), "Type"));
+			content.append(this.getTableHTMLContent(Common.capitalize(crisis.getSubject()), "Type"));
 				
 		return content.toString();
 	}

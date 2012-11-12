@@ -34,7 +34,7 @@ public abstract class DistanceController {
 	 * @param long2
 	 * @return
 	 */
-	private static double computeDistance(double lat1, double long1,
+	public static double computeDistance(double lat1, double long1,
 			double lat2, double long2) {
 		double earthRadius = 6371;
 		double dLatBot = Math.toRadians(lat2 - lat1);
