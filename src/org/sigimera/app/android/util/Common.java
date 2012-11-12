@@ -51,7 +51,7 @@ public class Common {
 		
 		StringBuffer shareContent = new StringBuffer();
 		shareContent.append(shortTitle);
-		shareContent.append("\n");
+		shareContent.append(" - ");
 		shareContent.append("http://www.sigimera.org/crises/");
 		shareContent.append(crisisID);
 		
