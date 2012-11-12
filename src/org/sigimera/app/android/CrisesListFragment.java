@@ -125,7 +125,7 @@ public class CrisesListFragment extends Fragment {
 			listEntry = new HashMap<String, String>();
 			listEntry.put("type_icon", entry.getTypeIcon());
 			listEntry.put("short_title", entry.getShortTitle());
-			listEntry.put("dc_date", entry.getDate());
+			listEntry.put("dc_date", Common.getTimeAgoInWords(Common.getMiliseconds(entry.getDate())));
 			
 			crisesList.add(listEntry);
 		}
