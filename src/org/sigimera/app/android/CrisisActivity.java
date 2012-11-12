@@ -154,7 +154,7 @@ public class CrisisActivity extends Activity {
 			switch (position) {
 			case 0:
 				if ( null != latitude && null != longitude ) {
-					Intent mapActivity = new Intent(getApplicationContext(), FullMapActivity.class);
+					Intent mapActivity = new Intent(ApplicationController.getInstance().getApplicationContext(), FullMapActivity.class);
 					mapActivity.putExtra(Constants.LATITUDE, latitude.toString());
 					mapActivity.putExtra(Constants.LONGITUDE, longitude.toString());
 					mapActivity.putExtra(Constants.CRISIS_TYPE, crisisType);

@@ -161,7 +161,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
             if ( _crisis.has("crisis_vulnerability") )
             	values.put("crisis_vulnerability", _crisis.getString("crisis_vulnerability"));
             
-            if ( _crisis.has("crises_severity_hash") && _crisis.isNull("crises_severity_hash")  ) {
+            if ( _crisis.has("crises_severity_hash") && !_crisis.isNull("crises_severity_hash")  ) {
             	JSONObject severity_hash = _crisis.getJSONObject("crisis_severity_hash");
             	if ( severity_hash.isNull("value") )
             		values.put("crisis_severity_hash_value", severity_hash.getString("value"));
@@ -170,7 +170,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
             		values.put("crisis_severity_hash_unit", severity_hash.getString("unit"));
             }
                        
-            if ( _crisis.has("crisis_population_hash") && _crisis.isNull("crisis_population_hash") ) {
+            if ( _crisis.has("crisis_population_hash") && !_crisis.isNull("crisis_population_hash") ) {
             	JSONObject population_hash = _crisis.getJSONObject("crisis_population_hash");
             	if ( population_hash.isNull("value") )
             		values.put("crisis_population_hash_value", population_hash.getString("value"));

@@ -19,6 +19,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -64,6 +65,7 @@ public class StatisticFragment extends Fragment {
             @Override
             public void run() {
                 try {
+                	Looper.prepare();
                     userLocation = LocationController.getInstance().getLastKnownLocation();
 
                     auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();

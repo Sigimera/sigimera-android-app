@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -83,6 +84,7 @@ public class CrisesListFragment extends Fragment {
 		Thread worker = new Thread() {
 			@Override
 			public void run() {
+				Looper.prepare();
 				String auth_token = null;
 				try {
 					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();

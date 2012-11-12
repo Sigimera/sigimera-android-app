@@ -54,8 +54,8 @@ public class NearCrisisFragment extends Fragment{
 					content.append("</td>");
 				} else {
 					content.append("<td>");
-					content.append(Common.getTimeAgoInWords(Common.getMiliseconds(crisis.getDate())) + "<br/>");
-					content.append("<small><small>Date</small></small>");
+					content.append(Common.capitalize(crisis.getSubject()) + "<br/>");
+					content.append("<small><small>Crisis Type</small></small>");
 					content.append("</td>");
 				}
 				
@@ -69,8 +69,8 @@ public class NearCrisisFragment extends Fragment{
 					content.append("</td>");
 				} else {
 					content.append("<td>");
-					content.append(Common.getTimeAgoInWords(Common.getMiliseconds(crisis.getDate())) + "<br/>");
-					content.append("<small><small>Date</small></small>");
+					content.append(crisis.getAlertLevel() + "<br/>");
+					content.append("<small><small>Alert Level</small></small>");
 					content.append("</td>");
 				}
 				
@@ -83,12 +83,11 @@ public class NearCrisisFragment extends Fragment{
 					content.append("<small><small>Magnitude</small></small>");
 					content.append("</td>");
 					content.append("");
-				} else {
+				} else {										
 					content.append("<td>");
-					content.append(Common.capitalize(crisis.getSubject()) + "<br/>");
-					content.append("<small><small>Crisis Type</small></small>");
+					content.append(Common.getTimeAgoInWords(Common.getMiliseconds(crisis.getDate())) + "<br/>");
+					content.append("<small><small>Date</small></small>");
 					content.append("</td>");
-					content.append("");
 				}
 	
 				content.append("</tr>");
