@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.sigimera.app"
+    package="org.sigimera.app.android"
     android:installLocation="auto"
-    android:versionCode="1"
-    android:versionName="1.0.0-beta" >
+    android:versionCode="3"
+    android:versionName="1.0.0-beta">
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -12,10 +12,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
-        android:name="org.sigimera.app.permission.C2D_MESSAGE"
+        android:name="org.sigimera.app.android.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="org.sigimera.app.permission.C2D_MESSAGE" />
+    <uses-permission android:name="org.sigimera.app.android.permission.C2D_MESSAGE" />
     <!-- Determine location of user by network and/or GPS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -26,12 +26,16 @@
     <!-- GCM requires a Google account. -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!-- Keeps the processor from sleeping when a message is received. -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />   
 
     <application
         android:icon="@drawable/sigimera_logo"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault" >
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true" >
+        
+        <uses-library android:name="com.google.android.maps" />
+        
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
@@ -42,31 +46,39 @@
             </intent-filter>
         </activity>
 
-        <uses-library android:name="com.google.android.maps" />
-
-        <activity
-            android:name=".FullMapActivity"
-            android:label="@string/title_activity_map" />
+        <receiver android:name=".OfflineMode">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".CrisisAlertActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:label="@string/title_crisis_alert_activity"/>
-        
-        <activity 
+
+        <activity
             android:name=".backend.auth.AuthenticatorActivtiy"
             android:label="@string/title_activity_login"
             android:excludeFromRecents="true" />
-        
-        <service android:name=".backend.auth.AuthenticationService"
+
+        <activity
+            android:name=".CrisisActivity"
+            android:label="@string/title_activity_crisis" />
+
+        <activity
+            android:name=".FullMapActivity"
+            android:label="@string/title_activity_crisis" />
+
+        <!-- service android:name=".backend.auth.AuthenticationService"
             android:exported="true">
             <intent-filter>
-     			<action android:name="android.accounts.AccountAuthenticator" />
-   			</intent-filter>
-   			<meta-data android:name="android.accounts.AccountAuthenticator"
-            	android:resource="@xml/authenticator" />
-        </service>
-        
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service-->
+
         <service android:name=".GCMIntentService" />
 
         <receiver
@@ -76,7 +88,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="org.sigimera.app" />
+                <category android:name="org.sigimera.app.android" />
             </intent-filter>
         </receiver>
     </application>

@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal"
+    android:baselineAligned="true">
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"        
+        android:paddingTop="10dip"
+       	android:orientation="vertical"
+    	android:layout_gravity="top|center_vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip" >
+
+            <Button
+                android:id="@+id/button0"
+                android:layout_width="10dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/near_crisis"
+                android:gravity="center_vertical|center" />             
+                
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="10dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/today_small"
+                android:gravity="center_vertical|center" />  
+            
+        </LinearLayout> 
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip" >
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="10dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/latest_small"
+                android:gravity="center_vertical|center" />
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="10dip"
+                android:layout_height="90dip"
+                android:layout_weight="1"
+                android:onClick="allCrisesClicked"
+                android:contentDescription="@string/app_name"
+                android:drawableLeft="@drawable/all_small"
+                android:gravity="center_vertical|center" />  
+          
+        </LinearLayout>
+        
+        <View 
+        	android:layout_width="match_parent"
+ 			android:layout_height="1dip"
+ 			android:layout_margin="10dip"
+ 			android:background="#00FFFF" />	
+ 			
+        <LinearLayout
+        	android:orientation="vertical"
+        	android:id="@+id/main_frag_container"
+        	android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"/>	            
+    </LinearLayout>       
+</LinearLayout>

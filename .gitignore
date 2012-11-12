@@ -1,5 +1,5 @@
 # built application files
-*.apk
+bin/*.apk
 *.ap_
 *.classpath
 *.project
@@ -20,3 +20,4 @@ gen/
 local.properties
 
 config.xml
+full_map.xml

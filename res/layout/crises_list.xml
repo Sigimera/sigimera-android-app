@@ -1,5 +1,20 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/crises_list"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"/>
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/crisis_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+    </ListView>
+
+<!--     <Button
+        android:id="@+id/more_crises"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="More crises" >
+    </Button> -->
+
+</LinearLayout>

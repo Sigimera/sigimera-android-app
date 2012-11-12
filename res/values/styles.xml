@@ -1,6 +1,7 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="AppTheme" parent="android:Theme.Holo" />
+    
     <color name="green">#00FF00</color>
     <color name="gray">#6C6C6C</color>
 </resources>
