@@ -156,7 +156,7 @@ public class CrisesListFragment extends Fragment {
 				startActivity(crisisActivity);
 	            return true;
 	        case R.id.share:
-	        	this.startActivity(Common.shareCrisis(getCrisisID(info.position)));
+	        	this.startActivity(Common.shareCrisis(getCrisisID(info.position), getCrisisShortTitle(info.position)));
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
@@ -203,6 +203,10 @@ public class CrisesListFragment extends Fragment {
 	 */
 	private String getCrisisID(int position) {
 		return this.crises.get(position).getID();
+	}
+	
+	private String getCrisisShortTitle(int position) {
+		return this.crises.get(position).getShortTitle();
 	}
 	
 //	private void showMoreCrises() {

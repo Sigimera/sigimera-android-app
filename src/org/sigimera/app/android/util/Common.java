@@ -41,16 +41,21 @@ import android.net.NetworkInfo;
  * @email corneliu.stanciu@sigimera.org
  */
 public class Common {
-	private static final String CRISIS_URL = "http://www.sigimera.org/crises/";
 
 	/**
 	 * Share the crisis with your friend and/or the world.
 	 */
-	public static Intent shareCrisis(String crisisID) {
+	public static Intent shareCrisis(String crisisID, String shortTitle) {
 		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
-		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, CRISIS_URL
-				+ crisisID);
+		
+		StringBuffer shareContent = new StringBuffer();
+		shareContent.append(shortTitle);
+		shareContent.append("\n");
+		shareContent.append("http://www.sigimera.org/crises/");
+		shareContent.append(crisisID);
+		
+		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareContent.toString());
 		return shareIntent;
 	}
 
