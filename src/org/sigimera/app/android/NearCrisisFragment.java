@@ -1,7 +1,6 @@
 package org.sigimera.app.android;
 
 import org.sigimera.app.android.controller.LocationController;
-import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
@@ -9,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +62,9 @@ public class NearCrisisFragment extends Fragment{
 				content.append("<td style='border-left: solid 1px white'></td>");
 				
 				// If there is no affected people hash saved => show the date		
-				if ( !crisis.getPopulationHashValue().contains("null") ) {
+				if ( crisis.getPopulationHashValue() != null ) {
 					content.append("<td>");
-					content.append( crisis.getPopulationHashValue() + "<br/>");
+					content.append(crisis.getPopulationHashValue() + "<br/>");
 					content.append("<small><small>Affected people</small></small>");
 					content.append("</td>");
 				} else {
@@ -79,7 +77,7 @@ public class NearCrisisFragment extends Fragment{
 				content.append("<td style='border-left: solid 1px white'></td>");
 				
 				// If there is no severity hash saved => show the crisis type			
-				if ( !crisis.getSeverityHashValue().contains("null") ) {
+				if ( crisis.getSeverityHashValue() != null ) {
 					content.append("<td>");
 					content.append(crisis.getSeverityHashValue() + "<br/>");
 					content.append("<small><small>Magnitude</small></small>");
