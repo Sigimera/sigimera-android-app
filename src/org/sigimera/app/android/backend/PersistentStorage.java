@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
@@ -23,6 +24,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class PersistentStorage extends SQLiteOpenHelper {
     private static PersistentStorage instance = null;
@@ -124,7 +126,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         String crisisID = _crisis.getString("_id");
         if ( checkIfCrisisExists(crisisID) ) {
             // TODO: Delete old crisis or implement some type of update mechanism
-            System.err.println("Crisis was found! Not updating it...");
+            Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Crisis was found! Not updating it...");
             return false;
         } else {
             SQLiteDatabase db = getWritableDatabase();
@@ -133,8 +135,8 @@ public class PersistentStorage extends SQLiteOpenHelper {
             values.put("_id", _crisis.getString("_id"));
             
             values.put("short_title", CrisesController.getInstance().getShortTitle(_crisis));
-            if ( _crisis.has("subject") )
-            	values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
+//            if ( _crisis.has("subject") )
+//            	values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
             
             if ( _crisis.has("foaf_based_near") ) {
             	values.put("longitude", Double.valueOf(_crisis.getJSONArray("foaf_based_near").get(0).toString()));
@@ -202,22 +204,24 @@ public class PersistentStorage extends SQLiteOpenHelper {
      * XXX: Where and when is this connection closed.
      * @return Cursor that encapsulates the SQL result
      */
-    public synchronized Cursor getTodayCrisesList() {
+    public synchronized ArrayList<Crisis> getTodayCrisesList() {
     	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal = Calendar.getInstance();		
 		String todayDate = format.format(cal.getTime());
     	
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
+        ArrayList<Crisis> crises = _extractCrises(c);
+        c.close();
+        return crises;
     }
 
-    /**
-     * XXX: Where and when is this connection closed.
-     * @return Cursor that encapsulates the SQL result
-     */
-    public synchronized Cursor getLatestCrisesList(int _number, int _page) {
+    public synchronized ArrayList<Crisis> getLatestCrisesList(int _number, int _page) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT "+_number+" OFFSET " +((_page-1) * _number), null);
+        ArrayList<Crisis> crises = _extractCrises(c);
+        c.close();
+        return crises;
     }
 
     public synchronized Crisis getCrisis(String _crisisID) {
@@ -261,13 +265,29 @@ public class PersistentStorage extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT country_name FROM "+TABLE_COUNTRIES+" WHERE crisis_id='" + _crisisID + "'", null);
         ArrayList<String> countries = new ArrayList<String>();
 
-        for (int count=0; count < c.getCount(); count++) {
-            c.moveToPosition(count);
-            countries.add(c.getString(count));
+        while ( c.moveToNext() ) {
+            countries.add(c.getString(0));
         }
         db.close();
 
         return countries;
+    }
+    
+    private ArrayList<Crisis> _extractCrises(Cursor _c) {
+    	ArrayList<Crisis> crises = new ArrayList<Crisis>();
+    	
+    	if ( _c != null ) {
+    		while ( _c.moveToNext() ) {
+    			Crisis crisis = new Crisis();
+    			crisis.setID(_c.getString(_c.getColumnIndex("_id")));
+    			crisis.setTypeIcon(Common.getCrisisIcon(_c.getString(_c.getColumnIndex("subject"))) + "");
+    			crisis.setShortTitle(_c.getString(_c.getColumnIndex("short_title")));
+    			crisis.setDate(_c.getString(_c.getColumnIndex("dc_date")));
+    			crises.add(crisis);
+    		}
+    	}
+    	
+    	return crises;
     }
 
     private Crisis _extractCrisis(Cursor _c) {

@@ -74,6 +74,7 @@ public class CrisisActivity extends Activity {
 		this.list.setOnItemClickListener(this.listClickListener);	
 				
 		String crisisID = getIntent().getStringExtra(Constants.CRISIS_ID);
+
 		String authToken = ApplicationController.getInstance().getSharedPreferences().getString("auth_token", null);
 		if ( null != crisisID ) {
 			this.crisis = CrisesController.getInstance().getCrisis(authToken, crisisID);
