@@ -34,7 +34,7 @@ public class StatisticFragment extends Fragment {
 
 	private Crisis latestCrisis = null;
 	private Crisis nearCrisis = null;
-	private Cursor todayCrises = null;
+//	private Cursor todayCrises = null;
 	private String auth_token = null;
 	
 	private View view;
@@ -101,7 +101,7 @@ public class StatisticFragment extends Fragment {
 				todayCrisesButton.setText(Html.fromHtml("No Crises<br/><small><i>" + "Today" + "</i></small>"));
 			else 
 				todayCrisesButton.setText(Html.fromHtml(c.getCount() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
-			this.todayCrises = c;
+//			this.todayCrises = c;
 			todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
         }
         
@@ -171,13 +171,16 @@ public class StatisticFragment extends Fragment {
 	private OnClickListener todayCrisesListenter = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Fragment todayCrisesFrament = new CrisesListFragment();	
-			
-			Bundle bundle = new Bundle();
-	        bundle.putSerializable("crises", todayCrises.toString());	        
-	        todayCrisesFrament.setArguments(bundle);
-	        
-			showFragment(todayCrisesFrament);
+			/**
+			 * XXX: This shows the complete crises list...
+			 */
+//			Fragment todayCrisesFrament = new CrisesListFragment();	
+//			
+//			Bundle bundle = new Bundle();
+//	        bundle.putSerializable("crises", todayCrises.toString());	        
+//	        todayCrisesFrament.setArguments(bundle);
+//	        
+//			showFragment(todayCrisesFrament);
 		}
 	};
 

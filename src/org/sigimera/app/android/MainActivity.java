@@ -13,10 +13,13 @@ import org.sigimera.app.android.util.Config;
 
 import com.google.android.gcm.GCMRegistrar;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -35,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -204,6 +208,9 @@ public class MainActivity extends FragmentActivity {
 		case R.id.menu_unregister:
 			GCMRegistrar.unregister(getApplicationContext());
 			return true;
+		case R.id.about:
+			showAboutDialog();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}			
@@ -214,6 +221,38 @@ public class MainActivity extends FragmentActivity {
 			progressDialog.dismiss();
 			progressDialog = null;
 		}
+	}
+	
+	public void showAboutDialog() {
+		AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
+		dialog.setTitle("About");
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            } 
+		});
+		
+		WebView wv = new WebView(this);
+		wv.setBackgroundColor(Color.BLACK);
+		
+		StringBuffer strbuffer = new StringBuffer();
+	    strbuffer.append("<small><font color='white'>");
+	    strbuffer.append("<h3 style='text-align: center'>" + this.getString(R.string.app_name) + "</h3>");
+	    
+	    strbuffer.append("<p>This is the official App of the Crises Information Platform Sigimera. It provides the following functionality:</p>");
+	    strbuffer.append("<ul>");
+	    strbuffer.append("<li>Get crises (natural disaster) information. Currently floods, earthquakes, cyclones and volcanic erruptions.</li>");
+	    strbuffer.append("<li>Get crises alerts via push notifications.</li>");
+	    strbuffer.append("<li>Get new crises via push notifications.</li>");
+	    strbuffer.append("<li>Manage your App via <a href='http://www.sigimera.org/mobile_devices'>mobile device management website</a>.");
+	    strbuffer.append("</ul>");
+	    strbuffer.append("<p>&copy; 2012 <a href='http://www.sigimera.org'>Sigimera</a>. All rights reserved.</p>");
+		
+	    wv.loadData(strbuffer.toString(), "text/html", "utf-8");
+	    
+		dialog.setView(wv);
+		dialog.show();
 	}
 	
 	public void updateAfterLogin() {
