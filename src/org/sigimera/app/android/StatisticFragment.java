@@ -101,9 +101,9 @@ public class StatisticFragment extends Fragment {
 			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
 			if ( crises.size() == 0 ) {
 				todayCrisesButton.setEnabled(false);
-				todayCrisesButton.setText(Html.fromHtml("No Crises<br/><small><i>" + "Today" + "</i></small>"));
+				todayCrisesButton.setText(Html.fromHtml("No crises<br/><small><i>" + "Today" + "</i></small>"));
 			} else 
-				todayCrisesButton.setText(Html.fromHtml(crises.size() + " Crises<br/><small><i>" + "Today" + "</i></small>"));
+				todayCrisesButton.setText(Html.fromHtml(crises.size() + " crises<br/><small><i>" + "Today" + "</i></small>"));
 			this.todayCrises = crises;
 			todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
         }
