@@ -161,24 +161,22 @@ public class PersistentStorage extends SQLiteOpenHelper {
             if ( _crisis.has("crisis_vulnerability") )
             	values.put("crisis_vulnerability", _crisis.getString("crisis_vulnerability"));
             
-            if ( _crisis.getJSONObject("crisis_severity_hash") != null ) {
-            	String severity_value = _crisis.getJSONObject("crisis_severity_hash").getString("value");
-            	if ( severity_value != null )
-            		values.put("crisis_severity_hash_value", severity_value);
+            if ( _crisis.has("crises_severity_hash") && _crisis.isNull("crises_severity_hash")  ) {
+            	JSONObject severity_hash = _crisis.getJSONObject("crisis_severity_hash");
+            	if ( severity_hash.isNull("value") )
+            		values.put("crisis_severity_hash_value", severity_hash.getString("value"));
             	
-            	String severity_unit = _crisis.getJSONObject("crisis_severity_hash").getString("unit");
-            	if ( severity_unit != null )
-            		values.put("crisis_severity_hash_unit", severity_unit);
+            	if ( severity_hash.isNull("unit") )
+            		values.put("crisis_severity_hash_unit", severity_hash.getString("unit"));
             }
                        
-            if ( _crisis.getJSONObject("crisis_population_hash") != null ) {
-            	String population_value = _crisis.getJSONObject("crisis_population_hash").getString("value");
-            	if ( population_value != null )
-            		values.put("crisis_population_hash_value", population_value);
+            if ( _crisis.has("crisis_population_hash") && _crisis.isNull("crisis_population_hash") ) {
+            	JSONObject population_hash = _crisis.getJSONObject("crisis_population_hash");
+            	if ( population_hash.isNull("value") )
+            		values.put("crisis_population_hash_value", population_hash.getString("value"));
             	
-            	String population_unit = _crisis.getJSONObject("crisis_population_hash").getString("unit");
-            	if ( population_unit != null )
-            		values.put("crisis_population_hash_unit", population_unit);
+            	if ( population_hash.isNull("unit") )
+            		values.put("crisis_population_hash_unit", population_hash.getString("unit"));
             }
 
             db.insert(TABLE_CRISES, null, values);
