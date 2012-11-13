@@ -79,7 +79,7 @@ public class CrisisActivity extends MapActivity {
 			@Override
 			public void run() {
 				Looper.prepare();
-				try {						
+				try {	
 					String crisisID = getIntent().getStringExtra(Constants.CRISIS_ID);
 					String authToken = getSharedPreferences(Constants.PREFS_NAME, 0).getString("auth_token", null);
 					
@@ -128,7 +128,11 @@ public class CrisisActivity extends MapActivity {
 		MenuItem menuItem = menu.findItem(R.id.menu_share);
 		mShareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
 		mShareActionProvider.setShareHistoryFileName("crisis_share_history.xml");
-		mShareActionProvider.setShareIntent(Common.shareCrisis(crisis.getID(), crisis.getShortTitle()));
+		if ( crisis == null ) {
+			String authToken = getSharedPreferences(Constants.PREFS_NAME, 0).getString("auth_token", null);
+			crisis = CrisesController.getInstance().getLatestCrisis(authToken);
+		}
+		mShareActionProvider.setShareIntent(Common.shareCrisis(crisis.getID(), crisis.getShortTitle()));			
 		
 	    return super.onCreateOptionsMenu(menu);
 	}

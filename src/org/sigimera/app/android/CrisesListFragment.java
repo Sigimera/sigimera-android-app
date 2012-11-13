@@ -132,7 +132,7 @@ public class CrisesListFragment extends Fragment {
 		
 		this.adapterMainList = new SimpleAdapter(getActivity(), crisesList, R.layout.list_entry, 
 				new String[] { "type_icon", "short_title", "dc_date" },
-				new int[] { R.id.icon, R.id.topText, R.id.bottomText });	
+				new int[] { R.id.icon, R.id.topText, R.id.bottomText });
 
 		this.list.setAdapter(adapterMainList);	
 	}	
