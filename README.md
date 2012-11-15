@@ -20,7 +20,7 @@ Screenshots
 
 <p align="center">
     <a href="https://play.google.com/store/apps/details?id=org.sigimera.app.android" target="_blank">
-    <img src="https://raw.github.com/Sigimera/sigimera-android-app/screenshots/featured.jpg" />
+    <img src="https://raw.github.com/Sigimera/sigimera-android-app/develop/screenshots/featured.jpg" />
     </a>
 </p>
 
