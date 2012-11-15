@@ -15,6 +15,16 @@ In order to compile and run this app from the sourcecode you have to copy the
 configuration file _config.xml-example_ to _/res/raw/config.xml_
 
 
+Screenshots
+-----------
+
+<p align="center">
+    <a href="https://play.google.com/store/apps/details?id=org.sigimera.app.android" target="_blank">
+    <img src="https://raw.github.com/Sigimera/sigimera-android-app/screenshots/featured.jpg" />
+    </a>
+</p>
+
+
 Contact
 -------
 
