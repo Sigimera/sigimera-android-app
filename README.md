@@ -20,11 +20,9 @@ Screenshots
 
 <p align="center">
     <a href="https://play.google.com/store/apps/details?id=org.sigimera.app.android" target="_blank">
-    <img src="https://github.com/Sigimera/sigimera-android-app/blob/develop/screenshots/android_smartphone_dual.png" />
+    <img src="https://raw.github.com/Sigimera/sigimera-android-app/develop/screenshots/android_smartphone_dual.png" />
     </a>
-</p>
-
-<p align="center">
+    <br/>
     <a href="https://play.google.com/store/apps/details?id=org.sigimera.app.android" target="_blank">
     <img src="https://raw.github.com/Sigimera/sigimera-android-app/develop/screenshots/featured.jpg" />
     </a>
