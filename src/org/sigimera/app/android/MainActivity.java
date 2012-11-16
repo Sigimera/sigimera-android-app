@@ -121,8 +121,8 @@ public class MainActivity extends FragmentActivity {
         } catch (AuthenticationErrorException e) {
             mTabsAdapter.addTab(mTabHost.newTabSpec("login").setIndicator("Login"), LoginFragment.class, null);
         }
-
         mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("Profile").setIndicator("Profile"), ProfileFragment.class, null);
     }
 
     @Override
