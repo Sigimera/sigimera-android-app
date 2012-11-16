@@ -15,6 +15,7 @@
         android:id="@+id/crisis_info_webview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="#000000"
         android:layout_marginTop="10dip"
         android:layout_marginBottom="10dip" />           
     

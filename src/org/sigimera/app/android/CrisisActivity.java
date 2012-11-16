@@ -38,6 +38,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -99,11 +100,13 @@ public class CrisisActivity extends MapActivity {
                     mapControl.setCenter(new GeoPoint(0, 0));
 
                     WebView infoview = (WebView) findViewById(R.id.crisis_info_webview);
+                    infoview.setBackgroundColor(Color.BLACK);
+                    
                     Location userLocation = LocationController.getInstance().getLastKnownLocation();
 
                     StringBuffer content = new StringBuffer();
                     content.append("<html>");
-                    content.append("<body style='background: #545959; color: white;'>");
+                    content.append("<body style='color: white;'>");
 
                     content.append(getCrisisHTMLContent(userLocation));
 
