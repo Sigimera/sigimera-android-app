@@ -141,6 +141,8 @@ public class CrisisActivity extends MapActivity {
     }
 
     private String getCrisisHTMLContent(Location userLocation) {
+        if ( null == crisis ) return "No crisis found!";
+
         StringBuffer content = new StringBuffer();
 
         //Show crisis title
