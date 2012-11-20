@@ -45,9 +45,9 @@ public class Config {
 	/**
 	 * The Sigimera Endpoints
 	 */
-	private String www_host = null;
 	private String api_host = null;
 	private String free_api_host = null;
+	private String google_maps_key = null;
 	
 	/**
 	 * The Sigimera Google Cloud Messaging project ID
@@ -72,9 +72,9 @@ public class Config {
 				Node config_node = (Node) xpath.evaluate("//config", inputSource, XPathConstants.NODE);
 				
 				api_host = xpath.evaluate("api-host/text()", config_node);		
-				www_host = xpath.evaluate("www-host/text()", config_node);
 				free_api_host = xpath.evaluate("free-api-host/text()", config_node);
 				gcm_project_id = xpath.evaluate("gcm-project-id/text()", config_node);
+				google_maps_key = xpath.evaluate("google-maps-key/text()", config_node);
 				inputStream.close();
 			}
 		} catch (XPathExpressionException e) {
@@ -94,7 +94,7 @@ public class Config {
 	}
 
 	public String getWWWHost() {
-		return this.www_host;
+		return this.api_host;
 	}
 	
 	public String getFreeAPIHost() {
@@ -103,5 +103,9 @@ public class Config {
 	
 	public String getGcmProjectId() {
 		return this.gcm_project_id;
+	}
+	
+	public String getGoogleMapsKey() {
+		return this.google_maps_key;
 	}
 }

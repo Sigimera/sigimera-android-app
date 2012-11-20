@@ -20,5 +20,3 @@ gen/
 local.properties
 
 config.xml
-res/layout/full_map.xml
-res/layout/crisis_info.xml
