@@ -5,10 +5,15 @@
     android:layout_gravity="center_horizontal"
     android:baselineAligned="true">
     
+    <ImageView 
+        android:id="@+id/avatar"
+        android:layout_width="20dip"
+        android:layout_height="20dip" />
+    
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Something"
-         />
+        android:text="Something" />
 
 </LinearLayout>

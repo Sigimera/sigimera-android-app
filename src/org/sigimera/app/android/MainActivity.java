@@ -117,12 +117,13 @@ public class MainActivity extends FragmentActivity {
         try {
             ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
             mTabsAdapter.addTab(mTabHost.newTabSpec("Home").setIndicator("Home"), StatisticFragment.class, null);
-//          mTabsAdapter.addTab(mTabHost.newTabSpec("Profile").setIndicator("Profile"), ProfileFragment.class, null);
+            mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
+            mTabsAdapter.addTab(mTabHost.newTabSpec("Profile").setIndicator("Profile"), ProfileFragment.class, null);
             initGCM();
         } catch (AuthenticationErrorException e) {
             mTabsAdapter.addTab(mTabHost.newTabSpec("login").setIndicator("Login"), LoginFragment.class, null);
-        }
-        mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
+            mTabsAdapter.addTab(mTabHost.newTabSpec("Crises").setIndicator("Crises"), CrisesListFragment.class, null);
+        }        
     }
 
     @Override
@@ -130,7 +131,7 @@ public class MainActivity extends FragmentActivity {
         super.onSaveInstanceState(outState);
         outState.putString("tab", mTabHost.getCurrentTabTag());
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -138,7 +139,7 @@ public class MainActivity extends FragmentActivity {
         item.setTitle("Update your location");
         return super.onCreateOptionsMenu(menu);
     }
-
+    
     /**
      * Login Listener defined in login.xml layout
      *

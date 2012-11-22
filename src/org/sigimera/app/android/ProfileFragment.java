@@ -1,20 +1,31 @@
 package org.sigimera.app.android;
 
-import org.sigimera.app.android.exception.AuthenticationErrorException;
-import org.sigimera.app.android.model.Constants;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
+import org.sigimera.app.android.util.MD5Util;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ProfileFragment extends Fragment {
 
 	private View view;
+	private ImageView avatar;
 	private ProgressDialog progessDialog = null;
 
 	private final Handler guiHandler = new Handler();
@@ -34,24 +45,47 @@ public class ProfileFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.profile_fragment, container, false);
+		avatar = (ImageView) view.findViewById(R.id.avatar);
 
-//		progessDialog = ProgressDialog.show(getActivity(),
-//				"Preparing crises information!",
-//				"Please be patient until the information are ready...");
-//		Thread worker = new Thread() {
-//			@Override
-//			public void run() {
-//					Looper.prepare();				
-//			}
-//		};
-//		worker.start();
+		TextView title = (TextView) view.findViewById(R.id.title);
+		title.setText(Html.fromHtml("<p><b>29</b><br/>API Calls</p>"));
+
+		progessDialog = ProgressDialog.show(getActivity(),
+				"Preparing crises information!",
+				"Please be patient until the information are ready...");
+		Thread worker = new Thread() {
+			@Override
+			public void run() {
+				Looper.prepare();
+				try {
+					InputStream is = (InputStream) getAvatarURL(
+							"scorneliu@gmail.com").getContent();
+					Drawable d = Drawable.createFromStream(is, "src name");
+					avatar.setBackground(d);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				guiHandler.post(updateGUI);
+			}
+		};
+		worker.start();
 
 		return view;
 	}
-	
-	
+
 	private void updateProfile() {
-		// TODO Auto-generated method stub
-		
+		progessDialog.dismiss();
+	}
+
+	private URL getAvatarURL(String email) {
+		try {
+			String emailHash = MD5Util.md5Hex(email.toLowerCase().trim());
+			URL url = new URL("http://www.gravatar.com/avatar/" + emailHash);
+			return url;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

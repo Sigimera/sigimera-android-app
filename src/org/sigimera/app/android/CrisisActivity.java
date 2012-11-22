@@ -29,6 +29,7 @@ import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.model.map.CollectionOverlay;
 import org.sigimera.app.android.util.Common;
+import org.sigimera.app.android.util.Config;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -93,6 +94,7 @@ public class CrisisActivity extends MapActivity {
 
                     final MapView mapView = (MapView) findViewById(R.id.mapview);
                     mapView.setSatellite(true);
+                    
                     mapOverlays = mapView.getOverlays();
                     collectionOverlay = new CollectionOverlay(getResources().getDrawable(Common.getCrisisIcon(crisis.getSubject())));
 
