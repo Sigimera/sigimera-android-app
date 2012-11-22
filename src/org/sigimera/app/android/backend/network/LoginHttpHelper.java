@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.sigimera.app.android.helper;
+package org.sigimera.app.android.backend.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +34,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.android.backend.network.MyHttpClient;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.util.Config;
 
