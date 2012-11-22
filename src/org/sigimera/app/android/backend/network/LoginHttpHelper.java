@@ -17,29 +17,24 @@
  * with this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.sigimera.app.android.helper;
+package org.sigimera.app.android.backend.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.android.backend.network.MyHttpClient;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.util.Config;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Base64;
 
 public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 
@@ -50,19 +45,23 @@ public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
         HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
 		HttpPost request = new HttpPost(HOST);
 		
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("user[email]", params[0]));
-		pairs.add(new BasicNameValuePair("user[password]", params[1]));		
+		/**
+		 * Basic Authentication for the auth_token fetching:
+		 *
+		 * 		Authorization: Basic QWxhZGluOnNlc2FtIG9wZW4=
+		 */
+		StringBuffer authString = new StringBuffer();
+		authString.append(params[0]); authString.append(":"); authString.append(params[1]);
+		String basicAuthentication = "Basic " + Base64.encodeToString(authString.toString().getBytes(), Base64.DEFAULT);
+		request.addHeader("Authorization", basicAuthentication);
         		
 		try {
-			request.setEntity(new UrlEncodedFormEntity(pairs));
 			HttpResponse result = httpclient.execute(request);
 			JSONObject json_response = new JSONObject(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
 			if ( json_response.has("auth_token") ) {
 				SharedPreferences.Editor editor = ApplicationController.getInstance().getSharedPreferences().edit();
 				editor.putString("auth_token", json_response.getString("auth_token"));
-				editor.commit();
-				return true;
+				return editor.commit();
 			} else if ( json_response.has("error") ) {
 				return false;
 			}
