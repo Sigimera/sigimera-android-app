@@ -61,8 +61,7 @@ public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 			if ( json_response.has("auth_token") ) {
 				SharedPreferences.Editor editor = ApplicationController.getInstance().getSharedPreferences().edit();
 				editor.putString("auth_token", json_response.getString("auth_token"));
-				editor.commit();
-				return true;
+				return editor.commit();
 			} else if ( json_response.has("error") ) {
 				return false;
 			}
