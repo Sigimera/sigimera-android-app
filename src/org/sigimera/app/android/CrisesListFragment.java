@@ -87,8 +87,8 @@ public class CrisesListFragment extends Fragment {
 		
 		if ( getArguments() != null ) {
 			Object object = getArguments().getSerializable("crises");
-			if ( object != null )
-				crises = (ArrayList<Crisis>) object;	
+//			if ( object != null )
+//				crises = (ArrayList<Crisis>) object;	
 		}		
 		
 		Thread worker = new Thread() {
@@ -103,8 +103,7 @@ public class CrisesListFragment extends Fragment {
 				}
 				
 				if ( crises.isEmpty() )
-					crises = CrisesController.getInstance().getCrises(auth_token, page);
-				
+					crises = CrisesController.getInstance().getCrises(auth_token, page);				
 				guiHandler.post(updateGUI);
 			}
 		};

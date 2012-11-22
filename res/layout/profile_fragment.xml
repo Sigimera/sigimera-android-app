@@ -1,14 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal"
-    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"    
     android:baselineAligned="true">
     
-    <ImageView 
+    <ImageView
         android:id="@+id/avatar"
-        android:layout_width="20dip"
-        android:layout_height="20dip" />
+        android:paddingTop="10dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <View 
+        	android:layout_width="match_parent"
+ 			android:layout_height="1dip"
+ 			android:layout_margin="10dip"
+ 			android:background="#00FFFF" />	
     
     <TextView
         android:id="@+id/title"

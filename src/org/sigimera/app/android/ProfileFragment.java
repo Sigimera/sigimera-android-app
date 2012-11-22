@@ -26,6 +26,7 @@ public class ProfileFragment extends Fragment {
 
 	private View view;
 	private ImageView avatar;
+	Drawable drawable;
 	private ProgressDialog progessDialog = null;
 
 	private final Handler guiHandler = new Handler();
@@ -59,9 +60,9 @@ public class ProfileFragment extends Fragment {
 				Looper.prepare();
 				try {
 					InputStream is = (InputStream) getAvatarURL(
-							"scorneliu@gmail.com").getContent();
-					Drawable d = Drawable.createFromStream(is, "src name");
-					avatar.setBackground(d);
+							"corneliu.stanciu@sigimera.org").getContent();
+					drawable = Drawable.createFromStream(is, "src name");
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -73,11 +74,12 @@ public class ProfileFragment extends Fragment {
 
 		return view;
 	}
-
+	
 	private void updateProfile() {
+		avatar.setImageDrawable(drawable);
 		progessDialog.dismiss();
 	}
-
+	
 	private URL getAvatarURL(String email) {
 		try {
 			String emailHash = MD5Util.md5Hex(email.toLowerCase().trim());
