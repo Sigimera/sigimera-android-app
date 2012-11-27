@@ -31,6 +31,7 @@ import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,6 +62,7 @@ public class CrisesListFragment extends Fragment {
 	private int page = 1;
 //	private boolean showMore = true;
 	private SimpleAdapter adapterMainList;
+	private ProgressDialog progessDialog;
 	
 	private final Handler guiHandler = new Handler();
 	private final Runnable updateGUI = new Runnable() {		
@@ -87,10 +89,12 @@ public class CrisesListFragment extends Fragment {
 		
 		if ( getArguments() != null ) {
 			Object object = getArguments().getSerializable("crises");
-//			if ( object != null )
-//				crises = (ArrayList<Crisis>) object;	
+			if ( object != null )
+				crises = (ArrayList<Crisis>) object;	
 		}		
 		
+		progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
+        		"Please be patient until the information are ready...");
 		Thread worker = new Thread() {
 			@Override
 			public void run() {
@@ -133,7 +137,8 @@ public class CrisesListFragment extends Fragment {
 				new String[] { "type_icon", "short_title", "dc_date" },
 				new int[] { R.id.icon, R.id.topText, R.id.bottomText });
 
-		this.list.setAdapter(adapterMainList);	
+		this.list.setAdapter(adapterMainList);
+		this.progessDialog.dismiss();
 	}	
 	
 	@Override

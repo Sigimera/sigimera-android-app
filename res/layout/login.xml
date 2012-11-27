@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:focusable="true"
-            android:text="johndoe@example.org"
             android:focusableInTouchMode="true"
             android:hint="@string/email_text"
             android:inputType="textEmailAddress"
@@ -35,7 +34,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:focusable="true"
-            android:text="testing"
             android:focusableInTouchMode="true"
             android:hint="@string/password_text"
             android:inputType="textPassword">

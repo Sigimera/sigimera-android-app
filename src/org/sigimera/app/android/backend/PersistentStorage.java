@@ -15,6 +15,7 @@ import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
+import org.sigimera.app.android.model.UsersStats;
 import org.sigimera.app.android.util.Common;
 
 import android.content.ContentValues;
@@ -110,6 +111,31 @@ public class PersistentStorage extends SQLiteOpenHelper {
         db.close();
 
         return true;
+    }
+    
+    public synchronized boolean addUsersStats(JSONObject _usersStats) throws JSONException {
+    	if ( _usersStats == null ) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        
+        values.put("uploaded_images", _usersStats.getInt("uploaded_images"));
+        values.put("posted_comments", _usersStats.getInt("posted_comments"));
+        values.put("reported_locations", _usersStats.getInt("reported_locations"));
+        values.put("reported_missing_people", _usersStats.getInt("reported_missing_people"));
+        
+        db.insert(TABLE_USER, null, values);        
+        db.close();
+
+        return true;
+    }
+    
+    public synchronized UsersStats getUsersStats() {
+    	UsersStats stats = null;
+    	SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER + " LIMIT 1", null);
+        stats = _extractUsersStats(c);
+        db.close();
+    	return stats;
     }
     
     public synchronized CrisesStats getCrisesStats() {
@@ -332,6 +358,20 @@ public class PersistentStorage extends SQLiteOpenHelper {
         	stats.setNumberOfFloods(_c.getInt(_c.getColumnIndex("number_of_floods")));
         	stats.setNumberOfEarthquakes(_c.getInt(_c.getColumnIndex("number_of_earthquakes")));
         	stats.setNumberOfVolcanoes(_c.getInt(_c.getColumnIndex("number_of_volcanoes")));
+        	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
+        	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
+        	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
+        	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));
+        }
+        return stats;
+    }
+    
+    private UsersStats _extractUsersStats(Cursor _c) {
+    	UsersStats stats = null;
+        boolean hasEntry = _c.moveToFirst();
+        if ( hasEntry ) {
+        	stats = new UsersStats();
+        	stats.setId(_c.getString(_c.getColumnIndex("_id")));
         	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
         	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
         	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));

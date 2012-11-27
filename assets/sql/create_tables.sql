@@ -27,6 +27,10 @@ CREATE TABLE countries (
 
 CREATE TABLE user_info (
 	_id TEXT PRIMARY KEY,
+	uploaded_images INTEGER,
+	posted_comments INTEGER,
+	reported_locations INTEGER,
+	reported_missing_people INTEGER,
 	near_crisis_id TEXT,
 	latitude REAL,
 	longitude REAL

@@ -6,6 +6,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.sigimera.app.android.controller.ApplicationController;
+import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.exception.AuthenticationErrorException;
+import org.sigimera.app.android.model.UsersStats;
 import org.sigimera.app.android.util.MD5Util;
 
 import android.app.ProgressDialog;
@@ -26,7 +30,10 @@ public class ProfileFragment extends Fragment {
 
 	private View view;
 	private ImageView avatar;
-	Drawable drawable;
+	private Drawable drawable;
+	
+	private UsersStats stats;
+	
 	private ProgressDialog progessDialog = null;
 
 	private final Handler guiHandler = new Handler();
@@ -48,26 +55,29 @@ public class ProfileFragment extends Fragment {
 		view = inflater.inflate(R.layout.profile_fragment, container, false);
 		avatar = (ImageView) view.findViewById(R.id.avatar);
 
-		TextView title = (TextView) view.findViewById(R.id.title);
-		title.setText(Html.fromHtml("<p><b>29</b><br/>API Calls</p>"));
-
 		progessDialog = ProgressDialog.show(getActivity(),
-				"Preparing crises information!",
+				"Preparing profile information!",
 				"Please be patient until the information are ready...");
 		Thread worker = new Thread() {
 			@Override
 			public void run() {
 				Looper.prepare();
 				try {
+					String auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+					
 					InputStream is = (InputStream) getAvatarURL(
 							"corneliu.stanciu@sigimera.org").getContent();
-					drawable = Drawable.createFromStream(is, "src name");
+					drawable = Drawable.createFromStream(is, "src name");					
+					stats = CrisesController.getInstance().getUsersStats(auth_token);
 
+					guiHandler.post(updateGUI);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				guiHandler.post(updateGUI);
+				} catch (AuthenticationErrorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
 			}
 		};
 		worker.start();
@@ -76,6 +86,18 @@ public class ProfileFragment extends Fragment {
 	}
 	
 	private void updateProfile() {
+		TextView images = (TextView) view.findViewById(R.id.images);
+		images.setText(Html.fromHtml("<p><b>" + stats.getUploadedImages() + "</b><br/><small>Images</small></p>"));
+		
+		TextView locations = (TextView) view.findViewById(R.id.location);
+		locations.setText(Html.fromHtml("<p><b>" + stats.getReportedLocations() + "</b><br/><small>Locations</small></p>"));
+		
+		TextView missingPeople = (TextView) view.findViewById(R.id.missing_people);
+		missingPeople.setText(Html.fromHtml("<p><b>" + stats.getReportedMissingPeople() + "</b><br/><small>Missing People</small></p>"));
+		
+		TextView comments = (TextView) view.findViewById(R.id.comments);
+		comments.setText(Html.fromHtml("<p><b>" + stats.getPostedComments() + "</b><br/><small>Comments</small></p>"));
+		
 		avatar.setImageDrawable(drawable);
 		progessDialog.dismiss();
 	}

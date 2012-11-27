@@ -30,8 +30,10 @@ import org.sigimera.app.android.backend.network.CrisesHttpHelper;
 import org.sigimera.app.android.backend.network.NearCrisesHttpHelper;
 import org.sigimera.app.android.backend.network.SingleCrisisHttpHelper;
 import org.sigimera.app.android.backend.network.StatisticCrisesHttpHelper;
+import org.sigimera.app.android.backend.network.StatisticUsersHttpHelper;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
+import org.sigimera.app.android.model.UsersStats;
 import org.sigimera.app.android.util.Common;
 
 import android.location.Location;
@@ -54,7 +56,7 @@ public class CrisesController {
             instance = new CrisesController();
         return instance;
     }
-
+    
     private void storeLatestCrises(String _auth_token, int _page) {
         AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper().execute(_auth_token, _page+"");
         JSONArray crises = null;
@@ -127,8 +129,28 @@ public class CrisesController {
 			}
     		stats = this.pershandler.getCrisesStats();
     	}
-    	return stats;
-    		
+    	return stats;    	
+    }
+    
+    public UsersStats getUsersStats(String _authToken) {
+    	UsersStats stats = this.pershandler.getUsersStats();
+    	if ( null == stats && _authToken != null ) {
+    		AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticUsersHttpHelper().execute(_authToken);
+    		try {
+				this.pershandler.addUsersStats(crisesStatsHelper.get());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		stats = this.pershandler.getUsersStats();
+    	}
+    	return stats;    	
     }
 
     public Crisis getCrisis(String _authToken, String _crisisID) {
@@ -186,10 +208,13 @@ public class CrisesController {
         	try {
         		AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_authToken, 1+"", _location.getLatitude()+"", _location.getLongitude()+"");
             	JSONArray crisesArray = crisesHelper.get();
-            	JSONObject nearestCrisis = (JSONObject) crisesArray.get(0);            	
             	
-            	this.pershandler.addNearCrisisInfos(nearestCrisis);
-            	this.pershandler.addCrisis(nearestCrisis);
+            	if ( crisesArray != null  || !crisesArray.isNull(0) ) {            	
+	            	JSONObject nearestCrisis = (JSONObject) crisesArray.get(0);            	
+	            	
+	            	this.pershandler.addNearCrisisInfos(nearestCrisis);
+	            	this.pershandler.addCrisis(nearestCrisis);
+            	}
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
