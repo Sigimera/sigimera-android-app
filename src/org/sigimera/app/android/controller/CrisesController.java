@@ -209,7 +209,7 @@ public class CrisesController {
         		AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_authToken, 1+"", _location.getLatitude()+"", _location.getLongitude()+"");
             	JSONArray crisesArray = crisesHelper.get();
             	
-            	if ( crisesArray != null  || !crisesArray.isNull(0) ) {            	
+            	if ( crisesArray != null  && !crisesArray.isNull(0) ) {            	
 	            	JSONObject nearestCrisis = (JSONObject) crisesArray.get(0);            	
 	            	
 	            	this.pershandler.addNearCrisisInfos(nearestCrisis);
