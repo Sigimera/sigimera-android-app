@@ -140,6 +140,7 @@ public class MainActivity extends FragmentActivity {
 					mTabHost.newTabSpec("Profile").setIndicator("Profile"),
 					ProfileFragment.class, null);
 			initGCM();
+			closeProgressDialog();
 		} catch (AuthenticationErrorException e) {
 			mTabsAdapter.addTab(
 					mTabHost.newTabSpec("login").setIndicator("Login"),

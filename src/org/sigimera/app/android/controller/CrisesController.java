@@ -38,6 +38,7 @@ import org.sigimera.app.android.util.Common;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * @author Corneliu-Valentin Stanciu, Alex Oberhauser
@@ -134,10 +135,11 @@ public class CrisesController {
     
     public UsersStats getUsersStats(String _authToken) {
     	UsersStats stats = this.pershandler.getUsersStats();
-    	if ( null == stats && _authToken != null ) {
+    	if ( (null == stats && _authToken != null) || (stats != null && stats.getUsername() == null ) ) {
     		AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticUsersHttpHelper().execute(_authToken);
-    		try {
-				this.pershandler.addUsersStats(crisesStatsHelper.get());
+    		try {    			
+    			Log.d("[CRISES CONTROLLER]", "Response from API: " + crisesStatsHelper.get());
+				this.pershandler.addUsersStats(crisesStatsHelper.get());				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -209,7 +211,7 @@ public class CrisesController {
         		AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_authToken, 1+"", _location.getLatitude()+"", _location.getLongitude()+"");
             	JSONArray crisesArray = crisesHelper.get();
             	
-            	if ( crisesArray != null  && !crisesArray.isNull(0) ) {            	
+            	if ( crisesArray != null  && crisesArray.length() > 0 ) {            	
 	            	JSONObject nearestCrisis = (JSONObject) crisesArray.get(0);            	
 	            	
 	            	this.pershandler.addNearCrisisInfos(nearestCrisis);

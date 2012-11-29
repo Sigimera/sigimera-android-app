@@ -33,7 +33,9 @@ CREATE TABLE user_info (
 	reported_missing_people INTEGER,
 	near_crisis_id TEXT,
 	latitude REAL,
-	longitude REAL
+	longitude REAL,
+	name TEXT,
+	username TEXT
 );
 
 CREATE TABLE crises_stats (

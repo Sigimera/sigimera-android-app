@@ -122,9 +122,17 @@ public class PersistentStorage extends SQLiteOpenHelper {
         values.put("posted_comments", _usersStats.getInt("posted_comments"));
         values.put("reported_locations", _usersStats.getInt("reported_locations"));
         values.put("reported_missing_people", _usersStats.getInt("reported_missing_people"));
+        values.put("name", _usersStats.getString("name"));
+        values.put("username", _usersStats.getString("username"));
         
-        db.insert(TABLE_USER, null, values);        
+        long status = db.insert(TABLE_USER, null, values);
+        if ( status == -1 )
+        	Log.d("[PERSISTANT STORAGE]", "ERROR inserting the values " + values + " into the table " + TABLE_USER);
+        else 
+        	Log.d("[PERSISTANT STORAGE]", "AFFECTED ROWS " + status);
         db.close();
+                        
+        Log.d("[PERSISTANT STORAGE]", "Adding users stats: " + values);
 
         return true;
     }
@@ -134,7 +142,9 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER + " LIMIT 1", null);
         stats = _extractUsersStats(c);
+        c.close();
         db.close();
+        
     	return stats;
     }
     
@@ -269,6 +279,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         if ( c.moveToFirst() ) {
         	crisis = getCrisis(c.getString(0));
         }
+        c.close();
         db.close();
 
         return crisis;
@@ -287,7 +298,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
 
     public synchronized ArrayList<String> getCountries(String _crisisID) {
         SQLiteDatabase db = getReadableDatabase();
-
+        
         Cursor c = db.rawQuery("SELECT country_name FROM "+TABLE_COUNTRIES+" WHERE crisis_id='" + _crisisID + "'", null);
         ArrayList<String> countries = new ArrayList<String>();
 
@@ -376,6 +387,16 @@ public class PersistentStorage extends SQLiteOpenHelper {
         	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
         	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
         	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));
+        	stats.setName(_c.getString(_c.getColumnIndex("name")));
+        	stats.setUsername(_c.getString(_c.getColumnIndex("username")));
+        	
+        	Log.d("[PERSISTANT STORAGE]", "Extracting users stats: " + 
+        			_c.getString(_c.getColumnIndex("_id")) + " - " + 
+        			_c.getString(_c.getColumnIndex("name")) + " - " +
+        			stats.getPostedComments() + " - " +
+        			stats.getReportedLocations() + " - " +
+        			stats.getReportedMissingPeople() + " - " +
+        			stats.getUploadedImages());
         }
         return stats;
     }

@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -43,7 +44,8 @@ public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected Boolean doInBackground(String... params) {
         HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
-		HttpPost request = new HttpPost(HOST);
+		HttpPost request = new HttpPost(HOST);						
+		request.addHeader("Host", "api.sigimera.org:443");
 		
 		/**
 		 * Basic Authentication for the auth_token fetching:
@@ -53,10 +55,11 @@ public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 		StringBuffer authString = new StringBuffer();
 		authString.append(params[0]); authString.append(":"); authString.append(params[1]);
 		String basicAuthentication = "Basic " + Base64.encodeToString(authString.toString().getBytes(), Base64.DEFAULT);
-		request.addHeader("Authorization", basicAuthentication);
+		request.addHeader("Authorization", basicAuthentication);		
         		
 		try {
 			HttpResponse result = httpclient.execute(request);
+			
 			JSONObject json_response = new JSONObject(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
 			if ( json_response.has("auth_token") ) {
 				SharedPreferences.Editor editor = ApplicationController.getInstance().getSharedPreferences().edit();

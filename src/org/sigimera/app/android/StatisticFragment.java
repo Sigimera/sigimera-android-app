@@ -60,7 +60,8 @@ public class StatisticFragment extends Fragment {
 		view = inflater.inflate(R.layout.statistic, container, false);
 		
 		progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
-        		"Please be patient until the information are ready...");
+        		"Please be patient until the information are ready...", true);
+		progessDialog.setCancelable(true);
         Thread worker = new Thread() {
             @Override
             public void run() {
@@ -74,7 +75,7 @@ public class StatisticFragment extends Fragment {
 
                     guiHandler.post(updateGUI);
                 } catch (AuthenticationErrorException e) {
-                    // SHOULD NEVER OCCUR: Check before calling this window.
+                    // SHOULD NEVER OCCUR: Check before calling this window
                     Log.e(Constants.LOG_TAG_SIGIMERA_APP, "Error on authentification" + e.getLocalizedMessage());
                 }
             }
@@ -136,16 +137,18 @@ public class StatisticFragment extends Fragment {
         bundle.putSerializable("crisis", this.nearCrisis);
         bundle.putSerializable("style", Constants.NEAR_CRISIS);
         nearCrisisFrament.setArguments(bundle);        
-        showFragment(nearCrisisFrament);     			
+        showFragment(nearCrisisFrament);
+        closingProgressDialog();
 	}
 	
 	private void showFragment(Fragment _newFragment) {
 		FragmentManager fragManager = getFragmentManager();
-		FragmentTransaction fragTransaction = fragManager.beginTransaction();
-		fragTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragTransaction.replace(R.id.main_frag_container, _newFragment);
-        fragTransaction.commit();
-        closingProgressDialog();
+		if ( fragManager != null ) {
+			FragmentTransaction fragTransaction = fragManager.beginTransaction();
+			fragTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+	        fragTransaction.replace(R.id.main_frag_container, _newFragment);
+	        fragTransaction.commit();	        
+		}
 	}
 	
 	public void closingProgressDialog() {
