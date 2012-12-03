@@ -8,7 +8,6 @@ public class UsersStats implements Serializable {
 	 */
 	private static final long serialVersionUID = -2526641247855691670L;
 	
-	private String id;
 	private String name;
 	private String username;
 	private int postedComments;
@@ -16,9 +15,6 @@ public class UsersStats implements Serializable {
 	private int reportedLocations;
 	private int reportedMissingPeople;
 	
-	public String getId() {
-		return id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -36,9 +32,6 @@ public class UsersStats implements Serializable {
 	}
 	public int getReportedMissingPeople() {
 		return reportedMissingPeople;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 	public void setName(String name) {
 		this.name = name;

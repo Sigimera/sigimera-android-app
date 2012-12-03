@@ -26,17 +26,21 @@ CREATE TABLE countries (
 );
 
 CREATE TABLE user_info (
-	_id TEXT PRIMARY KEY,
+	_id TEXT PRIMARY KEY,	
+	near_crisis_id TEXT,
+	latitude REAL,
+	longitude REAL
+);
+
+CREATE TABLE user_stats (
+	username TEXT PRIMARY KEY,
+	name TEXT,
 	uploaded_images INTEGER,
 	posted_comments INTEGER,
 	reported_locations INTEGER,
-	reported_missing_people INTEGER,
-	near_crisis_id TEXT,
-	latitude REAL,
-	longitude REAL,
-	name TEXT,
-	username TEXT
+	reported_missing_people INTEGER
 );
+
 
 CREATE TABLE crises_stats (
 	_id TEXT PRIMARY KEY,

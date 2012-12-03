@@ -31,11 +31,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
     private static PersistentStorage instance = null;
 
     private final static int DB_VERSION = 1;
-    private final static String DB_NAME = "sigimera.s3db";
+    private final static String DB_NAME = "sigimera.db";
     private final static String TABLE_CRISES = "crises";
     private final static String TABLE_COUNTRIES = "countries";
     private final static String TABLE_USER = "user_info";
     private final static String TABLE_CRISES_STATS = "crises_stats";
+    private final static String TABLE_USERS_STATS = "user_stats";
 
     private final Context context;
 
@@ -80,6 +81,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	int number_of_rows = db.update(TABLE_USER, values, "_id == 'current_user'", null);
     	if ( number_of_rows == 0 )
     		db.insert(TABLE_USER, null, values);
+    	
     	db.close();
     	
     	return true;
@@ -125,7 +127,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         values.put("name", _usersStats.getString("name"));
         values.put("username", _usersStats.getString("username"));
         
-        long status = db.insert(TABLE_USER, null, values);
+        long status = db.insert(TABLE_USERS_STATS, null, values);
         if ( status == -1 )
         	Log.d("[PERSISTANT STORAGE]", "ERROR inserting the values " + values + " into the table " + TABLE_USER);
         else 
@@ -140,7 +142,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     public synchronized UsersStats getUsersStats() {
     	UsersStats stats = null;
     	SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER + " LIMIT 1", null);
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USERS_STATS + " LIMIT 1", null);
         stats = _extractUsersStats(c);
         c.close();
         db.close();
@@ -382,17 +384,17 @@ public class PersistentStorage extends SQLiteOpenHelper {
         boolean hasEntry = _c.moveToFirst();
         if ( hasEntry ) {
         	stats = new UsersStats();
-        	stats.setId(_c.getString(_c.getColumnIndex("_id")));
+        	stats.setName(_c.getString(_c.getColumnIndex("name")));
+        	stats.setUsername(_c.getString(_c.getColumnIndex("username")));
         	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
         	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
         	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
         	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));
-        	stats.setName(_c.getString(_c.getColumnIndex("name")));
-        	stats.setUsername(_c.getString(_c.getColumnIndex("username")));
         	
-        	Log.d("[PERSISTANT STORAGE]", "Extracting users stats: " + 
-        			_c.getString(_c.getColumnIndex("_id")) + " - " + 
-        			_c.getString(_c.getColumnIndex("name")) + " - " +
+        	
+        	Log.d("[PERSISTANT STORAGE]", "Extracting users stats: " +  
+        			stats.getName() + " - " +
+        			stats.getUsername() + " - " +
         			stats.getPostedComments() + " - " +
         			stats.getReportedLocations() + " - " +
         			stats.getReportedMissingPeople() + " - " +
