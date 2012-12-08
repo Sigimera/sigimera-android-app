@@ -67,6 +67,8 @@ public class ApplicationController {
 	public PersistentStorage getPersistentStorageHandler() { return this.pershandler; }
 	public ActionBar getActionbar() { return this.actionBar; }
 	
+	public long getCacheSize() { return this.pershandler.getCacheSize(); }
+	
 	public SessionHandler getSessionHandler() { return this.sessionHandler; }
 	
 	public SharedPreferences getSharedPreferences() { return this.settings; }
