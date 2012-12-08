@@ -37,7 +37,7 @@ public abstract class Constants {
 	/**
 	 * Location radius in kilometres
 	 */
-	public static final String LOCATION_RADIUS = "200";
+	public static final int LOCATION_RADIUS = 200;
 	
 	public static final double MAX_DISTANCE_NEAR_CRISIS = 5000;
 	public static final double MIN_DISTANCE_NEAR_CRISIS = 50;
