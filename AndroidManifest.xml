@@ -38,7 +38,9 @@
         
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:windowSoftInputMode="adjustPan|adjustResize" >
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -68,7 +70,7 @@
 
         <activity
             android:name=".FullMapActivity"
-            android:label="@string/title_activity_crisis" />
+            android:label="@string/title_activity_crisis" />        
 
         <!-- service android:name=".backend.auth.AuthenticationService"
             android:exported="true">
