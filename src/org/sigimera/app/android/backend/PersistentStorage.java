@@ -1,6 +1,7 @@
 package org.sigimera.app.android.backend;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -50,6 +51,15 @@ public class PersistentStorage extends SQLiteOpenHelper {
         super(_context, DB_NAME, null, DB_VERSION);
         this.context = _context;
     }
+    
+    public long getCacheSize() {    	
+    	SQLiteDatabase db = getReadableDatabase();
+    	File db_file = this.context.getDatabasePath(db.getPath());
+    	long db_size = db_file.getTotalSpace();
+    	db.close();
+    	
+    	return db_size;
+    }    
 
     /**
      * Use this method to determine if the application was started the first time.
@@ -129,7 +139,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         
         long status = db.insert(TABLE_USERS_STATS, null, values);
         if ( status == -1 )
-        	Log.d("[PERSISTANT STORAGE]", "ERROR inserting the values " + values + " into the table " + TABLE_USER);
+        	Log.d("[PERSISTANT STORAGE]", "ERROR inserting the values " + values + " into the table " + TABLE_USERS_STATS);
         else 
         	Log.d("[PERSISTANT STORAGE]", "AFFECTED ROWS " + status);
         db.close();
