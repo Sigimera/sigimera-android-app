@@ -257,4 +257,12 @@ public class CrisesController {
         }
         return null;
     }
+    
+    public int getNearCrisesRadius() {
+    	return this.pershandler.getNearCrisesRadius();
+    }
+    
+    public void setNearCrisesRadius(int _radius) {
+    	this.pershandler.setNearCrisesRadius(_radius);
+    }
 }
