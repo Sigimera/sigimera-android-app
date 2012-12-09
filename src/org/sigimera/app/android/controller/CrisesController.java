@@ -216,7 +216,9 @@ public class CrisesController {
 	            	
 	            	this.pershandler.addNearCrisisInfos(nearestCrisis);
 	            	this.pershandler.addCrisis(nearestCrisis);
-            	}
+            	}else
+            		return null;
+            	
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -263,6 +265,8 @@ public class CrisesController {
     }
     
     public void setNearCrisesRadius(int _radius) {
+    	System.out.println("DEBUG: " + _radius);
     	this.pershandler.setNearCrisesRadius(_radius);
+    	this.pershandler.deleteNearCrisis();
     }
 }
