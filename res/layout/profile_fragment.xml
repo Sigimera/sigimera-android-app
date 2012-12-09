@@ -70,7 +70,7 @@
             android:id="@+id/enable_near_crises"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enable crises near you?" />
+            android:gravity="top" />
 
         <TextView
             android:id="@+id/near_crisis_radius_value"

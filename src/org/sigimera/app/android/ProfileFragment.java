@@ -38,11 +38,13 @@ public class ProfileFragment extends Fragment {
 	private Drawable drawable;
 	private String auth_token;
 	
+	private CheckBox enableNearCrises;
 	private SeekBar nearCrisisRadius;
 	private TextView nearCrisisRadiusValue;
 	private TextView overwriteLocation;
 	
 	private UsersStats stats;
+	private int radius;
 	
 	private ProgressDialog progessDialog = null;
 
@@ -76,6 +78,7 @@ public class ProfileFragment extends Fragment {
 					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
 										
 					stats = CrisesController.getInstance().getUsersStats(auth_token);
+					radius = CrisesController.getInstance().getNearCrisesRadius();
 					
 					if (stats == null) Log.d("[PROFILE FRAGMENT]", "User stats are empty."); 
 					
@@ -130,21 +133,32 @@ public class ProfileFragment extends Fragment {
 		ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
 		avatar.setImageDrawable(drawable);
 		
-		CheckBox enableNearCrises = (CheckBox) view.findViewById(R.id.enable_near_crises);
-		enableNearCrises.setOnCheckedChangeListener(checkedChangeListener);
+		content = new StringBuffer();
+		content.append("Enable crises near you");
+		content.append("<br />");
+		content.append("<small><small>CRISES window will list only crises in the selected radius</small></small>");
 		
-		nearCrisisRadiusValue = (TextView) view.findViewById(R.id.near_crisis_radius_value);
-		nearCrisisRadiusValue.setText("Near crisis radius: " + Constants.LOCATION_RADIUS + " km");
+		enableNearCrises = (CheckBox) view.findViewById(R.id.enable_near_crises);
+		enableNearCrises.setOnCheckedChangeListener(checkedChangeListener);	
+		enableNearCrises.setText(Html.fromHtml(content.toString()));
+		
+		nearCrisisRadiusValue = (TextView) view.findViewById(R.id.near_crisis_radius_value);		
 		
 		nearCrisisRadius = (SeekBar) view.findViewById(R.id.near_crisis_radius);
-		nearCrisisRadius.setOnSeekBarChangeListener(seekBarChangeListener);
-		nearCrisisRadius.setProgress(Constants.LOCATION_RADIUS);
+		nearCrisisRadius.setOnSeekBarChangeListener(seekBarChangeListener);		
 		
-		overwriteLocation = (TextView) view.findViewById(R.id.overwrite_location);
+		overwriteLocation = (TextView) view.findViewById(R.id.overwrite_location);		
 		
-		// set the near crises view as "disabled"
-		disableNearCrisesView();
-		
+		if ( radius == 0 ){
+			disableNearCrisesView();
+			nearCrisisRadiusValue.setText("Near crisis radius: " + Constants.LOCATION_RADIUS + " km");
+			nearCrisisRadius.setProgress(Constants.LOCATION_RADIUS);
+		}else { 
+			enableNearCrisesView();
+			nearCrisisRadiusValue.setText("Near crisis radius: " + radius + " km");
+			nearCrisisRadius.setProgress(radius);
+		}
+
 		progessDialog.dismiss();
 	}
 	
@@ -172,14 +186,18 @@ public class ProfileFragment extends Fragment {
 	};
 	
 	private OnSeekBarChangeListener seekBarChangeListener = new OnSeekBarChangeListener() {
+		int radiusProgress = 0;
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 			nearCrisisRadiusValue.setText("Near crisis radius: " + progress + " km");
+			radiusProgress = progress;
 		}
 		
 		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {}
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			CrisesController.getInstance().setNearCrisesRadius(radiusProgress);
+		}
 		
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -188,12 +206,15 @@ public class ProfileFragment extends Fragment {
 	private void enableNearCrisesView() {
 		this.nearCrisisRadius.setEnabled(true);
 		this.nearCrisisRadiusValue.setEnabled(true);
+		this.enableNearCrises.setChecked(true);	
 		this.overwriteLocation.setEnabled(true);
 	}
 	
 	private void disableNearCrisesView() {
 		this.nearCrisisRadius.setEnabled(false);
 		this.nearCrisisRadiusValue.setEnabled(false);
+		this.enableNearCrises.setChecked(false);
 		this.overwriteLocation.setEnabled(false);
+		CrisesController.getInstance().setNearCrisesRadius(0);
 	}
 }
