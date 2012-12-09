@@ -57,3 +57,9 @@ CREATE TABLE crises_stats (
 	reported_locations INTEGER,
 	reported_missing_people INTEGER
 );
+
+CREATE TABLE settings (
+	username TEXT PRIMARY KEY,
+	radius INTEGER,
+	location TEXT
+);
