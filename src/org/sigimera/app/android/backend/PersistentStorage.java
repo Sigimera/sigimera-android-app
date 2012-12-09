@@ -38,6 +38,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     private final static String TABLE_USER = "user_info";
     private final static String TABLE_CRISES_STATS = "crises_stats";
     private final static String TABLE_USERS_STATS = "user_stats";
+    private final static String TABLE_SETTINGS = "settings";
 
     private final Context context;
 
@@ -61,6 +62,35 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	return db_size;
     }    
 
+    public int getNearCrisesRadius() {
+    	SQLiteDatabase db = getReadableDatabase();
+    	
+        Cursor c = db.rawQuery("SELECT radius FROM " + TABLE_SETTINGS , null);
+        int radius = 0;
+        if ( c.moveToFirst() )
+        	radius = c.getInt(0);
+        
+        db.close();
+
+        return radius;
+    }
+    
+    public synchronized boolean setNearCrisesRadius(int _radius) {
+    	
+    	SQLiteDatabase db = getWritableDatabase();
+    	ContentValues values = new ContentValues();  
+    	
+    	values.put("username", "current_user");
+    	values.put("radius", _radius);
+    	
+    	int number_of_rows = db.update(TABLE_SETTINGS, values, "username == 'current_user'", null);
+    	if ( number_of_rows == 0 )
+    		db.insert(TABLE_SETTINGS, null, values);
+    	db.close();
+    	
+    	return true;
+    }
+    
     /**
      * Use this method to determine if the application was started the first time.
      */
