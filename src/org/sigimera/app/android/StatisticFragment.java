@@ -60,7 +60,7 @@ public class StatisticFragment extends Fragment {
 		view = inflater.inflate(R.layout.statistic, container, false);
 		
 		progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
-        		"Please be patient until the information are ready...", true);
+        		"Please be patient until the information are ready...", false);
 		progessDialog.setCancelable(true);
         Thread worker = new Thread() {
             @Override
