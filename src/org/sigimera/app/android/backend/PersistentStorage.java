@@ -53,7 +53,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         this.context = _context;
     }
     
-    public long getCacheSize() {    	
+    public synchronized long getCacheSize() {    	
     	SQLiteDatabase db = getReadableDatabase();
     	File db_file = this.context.getDatabasePath(db.getPath());
     	long db_size = db_file.getTotalSpace();
@@ -62,21 +62,20 @@ public class PersistentStorage extends SQLiteOpenHelper {
     	return db_size;
     }    
 
-    public int getNearCrisesRadius() {
+    public synchronized int getNearCrisesRadius() {
     	SQLiteDatabase db = getReadableDatabase();
     	
         Cursor c = db.rawQuery("SELECT radius FROM " + TABLE_SETTINGS , null);
         int radius = 0;
         if ( c.moveToFirst() )
         	radius = c.getInt(0);
-        
+        c.close();
         db.close();
 
         return radius;
     }
     
-    public synchronized boolean setNearCrisesRadius(int _radius) {
-    	
+    public synchronized boolean setNearCrisesRadius(int _radius) {    	
     	SQLiteDatabase db = getWritableDatabase();
     	ContentValues values = new ContentValues();  
     	
@@ -95,12 +94,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
      * Use this method to determine if the application was started the first time.
      */
     @Override
-    public void onCreate(SQLiteDatabase _db) {
+    public synchronized void onCreate(SQLiteDatabase _db) {
         this.executeSQLScript(_db, "sql/create_tables.sql");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase _db, int _oldVersion, int _newVersion) {
+    public synchronized void onUpgrade(SQLiteDatabase _db, int _oldVersion, int _newVersion) {
         /**
          * TODO: If schema version is changed. Not before first release...
          */
@@ -326,6 +325,16 @@ public class PersistentStorage extends SQLiteOpenHelper {
 
         return crisis;
     }
+    
+    public synchronized boolean deleteNearCrisis() {
+    	SQLiteDatabase db = getWritableDatabase();
+    	int affectedRows = db.delete(TABLE_USER, "_id == 'current_user'", null);
+    	if (affectedRows == 0)
+    		return false;
+    	db.close();
+    	
+    	return true;
+	}
 
     public synchronized Crisis getLatestCrisis() {
         SQLiteDatabase db = getReadableDatabase();
@@ -494,5 +503,4 @@ public class PersistentStorage extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
 }
