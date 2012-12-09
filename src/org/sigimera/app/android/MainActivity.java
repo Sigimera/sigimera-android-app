@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
+import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -62,7 +63,7 @@ public class MainActivity extends FragmentActivity {
 	private final Runnable successfulLogin = new Runnable() {
 		@Override
 		public void run() {
-			updateAfterLogin();
+			setTabsAfterLogin();
 		}
 	};
 
@@ -123,31 +124,15 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private void initTabs() {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		mTabHost.setup();
-		mTabHost.clearAllTabs();
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+		mTabHost.setup();
 
 		try {
 			ApplicationController.getInstance().getSessionHandler()
 					.getAuthenticationToken();
-			mTabsAdapter.addTab(mTabHost.newTabSpec("Home")
-					.setIndicator("Home"), StatisticFragment.class, null);
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("Crises").setIndicator("Crises"),
-					CrisesListFragment.class, null);
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("Profile").setIndicator("Profile"),
-					ProfileFragment.class, null);
-			initGCM();
-			closeProgressDialog();
+			setTabsAfterLogin();
 		} catch (AuthenticationErrorException e) {
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("login").setIndicator("Login"),
-					LoginFragment.class, null);
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("Crises").setIndicator("Crises"),
-					CrisesListFragment.class, null);
+			setTabsBeforeLogin();
 		}
 	}
 
@@ -241,14 +226,7 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		case R.id.menu_logout:
 			ApplicationController.getInstance().getSessionHandler().logout();
-			mTabHost.clearAllTabs();
-			mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("login").setIndicator("Login"),
-					LoginFragment.class, null);
-			mTabsAdapter.addTab(
-					mTabHost.newTabSpec("Crises").setIndicator("Crises"),
-					CrisesListFragment.class, null);
+			setTabsBeforeLogin();
 			return true;
 		case R.id.menu_unregister:
 			GCMRegistrar.unregister(getApplicationContext());
@@ -307,16 +285,25 @@ public class MainActivity extends FragmentActivity {
 		dialog.show();
 	}
 
-	public void updateAfterLogin() {
+	public void showLoginErrorToast() {
+		new ToastNotification(getApplicationContext(),
+				"Email or password are incorrect!", Toast.LENGTH_SHORT);
+		closeProgressDialog();
+	}
+
+	private void setTabsAfterLogin() {
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
 				this.mViewPager);
 
 		this.mTabsAdapter.addTab(
-				this.mTabHost.newTabSpec("home").setIndicator("Home"),
+				this.mTabHost.newTabSpec("Home").setIndicator("Home"),
 				StatisticFragment.class, null);
-		this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("crises")
+		this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("Crises")
 				.setIndicator("Crises"), CrisesListFragment.class, null);
+		if (CrisesController.getInstance().getNearCrisesRadius() != 0)
+			this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("Near you")
+					.setIndicator("Near you"), CrisesListFragment.class, null);
 		this.mTabsAdapter.addTab(
 				mTabHost.newTabSpec("Profile").setIndicator("Profile"),
 				ProfileFragment.class, null);
@@ -324,9 +311,14 @@ public class MainActivity extends FragmentActivity {
 		closeProgressDialog();
 	}
 
-	public void showLoginErrorToast() {
-		new ToastNotification(getApplicationContext(),
-				"Email or password are incorrect!", Toast.LENGTH_SHORT);
+	private void setTabsBeforeLogin() {
+		this.mTabHost.clearAllTabs();
+		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
+				this.mViewPager);
+		mTabsAdapter.addTab(mTabHost.newTabSpec("login").setIndicator("Login"),
+				LoginFragment.class, null);
+		mTabsAdapter.addTab(mTabHost.newTabSpec("Crises")
+				.setIndicator("Crises"), CrisesListFragment.class, null);
 		closeProgressDialog();
 	}
 
