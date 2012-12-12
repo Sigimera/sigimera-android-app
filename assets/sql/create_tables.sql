@@ -41,7 +41,6 @@ CREATE TABLE user_stats (
 	reported_missing_people INTEGER
 );
 
-
 CREATE TABLE crises_stats (
 	_id TEXT PRIMARY KEY,
 	first_crisis_at TEXT,
@@ -62,4 +61,8 @@ CREATE TABLE settings (
 	username TEXT PRIMARY KEY,
 	radius INTEGER,
 	location TEXT
+);
+
+CREATE TABLE near_crises (
+	_id TEXT PRIMARY KEY
 );
