@@ -19,9 +19,15 @@
  */
 package org.sigimera.app.android.controller;
 
+import org.sigimera.app.android.exception.AuthenticationErrorException;
+import org.sigimera.app.android.model.Constants;
+
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Handle the location found via network or GPS. 
@@ -42,34 +48,42 @@ public class LocationController {
 		if ( instance == null ) instance = new LocationController();
 		return instance;
 	}	
+	
 	private LocationController() {
 		// Acquire a reference to the system Location Manager
 		Context context = ApplicationController.getInstance().getApplicationContext();
 		if ( context != null )
 			locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		else
+			Log.e(Constants.LOG_TAG_LOCATION_CONTROLLER, "The context is null! We cannot update the location");
 		
-		/**
-		 *  TODO: Maybe in a future step we will react on location updates.
-		 */		
 		// Define a listener that responds to location updates
-//		LocationListener locationListener = new LocationListener() {
-//		    public void onLocationChanged(Location location) {
-//		      // Called when a new location is found by the network location provider.
-//		    	Log.i(SigimeraConstants.LOG_TAG_LOCATION_CONTROLLER, "Found new location: " + location);
-//		    }
-//
-//		    public void onProviderEnabled(String provider) {}
-//
-//		    public void onProviderDisabled(String provider) {}
-//
-//			@Override
-//			public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-//				// TODO Auto-generated method stub			
-//			}
-//		  };
-//
-//		// Register the listener with the Location Manager to receive location updates
-//		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, locationListener);
+		LocationListener locationListener = new LocationListener() {
+		    public void onLocationChanged(Location location) {
+		    	// Called when a new location is found by the network location provider.
+		    	Log.i(Constants.LOG_TAG_LOCATION_CONTROLLER, "Found new location: " + location);
+		    	
+				try {
+					final String auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+					PersistanceController.getInstance().updateNearCrises(auth_token, 1, location);
+				} catch (AuthenticationErrorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}		    	
+		    }
+
+		    public void onProviderEnabled(String provider) {}
+
+		    public void onProviderDisabled(String provider) {}
+
+			@Override
+			public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+				// TODO Auto-generated method stub			
+			}
+		  };
+
+		// Register the listener with the Location Manager to receive location updates
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 5000, locationListener);
 	}
 	
 	/**

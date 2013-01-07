@@ -22,9 +22,9 @@ package org.sigimera.app.android;
 import java.util.List;
 
 import org.sigimera.app.android.R;
-import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.DistanceController;
 import org.sigimera.app.android.controller.LocationController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.model.map.CollectionOverlay;
@@ -88,9 +88,10 @@ public class CrisisActivity extends MapActivity {
                     String authToken = getSharedPreferences(Constants.PREFS_NAME, 0).getString("auth_token", null);
 
                     if ( null != crisisID )
-                        crisis = CrisesController.getInstance().getCrisis(authToken, crisisID);
-                    else
-                        crisis = CrisesController.getInstance().getLatestCrisis(authToken);
+                        crisis = PersistanceController.getInstance().getCrisis(authToken, crisisID);
+//TODO:
+//                    else
+//                        crisis = PersistanceController.getInstance().getLatestCrisis(authToken);
 
                     final MapView mapView = (MapView) findViewById(R.id.mapview);
                     mapView.setSatellite(true);
@@ -137,7 +138,7 @@ public class CrisisActivity extends MapActivity {
         mShareActionProvider.setShareHistoryFileName("crisis_share_history.xml");
         if ( crisis == null ) {
             String authToken = getSharedPreferences(Constants.PREFS_NAME, 0).getString("auth_token", null);
-            crisis = CrisesController.getInstance().getLatestCrisis(authToken);
+//            crisis = CrisesController.getInstance().getLatestCrisis(authToken);
         }
         mShareActionProvider.setShareIntent(Common.shareCrisis(crisis.getID(), crisis.getShortTitle()));
 

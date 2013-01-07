@@ -19,12 +19,12 @@
       <data key="d5"><![CDATA[UMLClass]]></data>
       <data key="d6">
         <y:UMLClassNode>
-          <y:Geometry height="53.0" width="1322.0" x="79.0" y="880.0"/>
+          <y:Geometry height="53.0" width="1360.5" x="79.0" y="880.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="3.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" underlinedText="true" visible="true" width="131.15625" x="595.421875" y="25.962890625">PersistanceStorage</y:NodeLabel>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.4765625" x="641.76171875" y="17.5185546875">adasd</y:NodeLabel>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="122.822265625" x="599.5888671875" y="17.5185546875">- database_version: </y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" underlinedText="true" visible="true" width="131.15625" x="614.671875" y="25.962890625">PersistanceStorage</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.4765625" x="661.01171875" y="17.5185546875">adasd</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="122.822265625" x="618.8388671875" y="17.5185546875">- database_version: </y:NodeLabel>
           <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="class" use3DEffect="true">
             <y:AttributeLabel/>
             <y:MethodLabel/>
@@ -37,19 +37,26 @@
       <data key="d5"><![CDATA[UMLClass]]></data>
       <data key="d6">
         <y:UMLClassNode>
-          <y:Geometry height="176.0" width="346.0" x="79.0" y="434.75"/>
+          <y:Geometry height="318.5" width="359.75" x="79.0" y="434.75"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" underlinedText="true" visible="true" width="147.9775390625" x="99.01123046875" y="25.962890625">PersistanceController</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" underlinedText="true" visible="true" width="147.9775390625" x="105.88623046875" y="25.962890625">PersistanceController</y:NodeLabel>
           <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="class" use3DEffect="true">
             <y:AttributeLabel>	</y:AttributeLabel>
             <y:MethodLabel>+ storeLatestCrises ( auth_token: String, page: int )
+
 + addCrisis ( crisis: JsonObject )
 + getCrisis ( id: String )
 + updateCrisis ( crisis: JsonObject )
 
 + getNearCrises(): Array&lt;Crisis&gt;
 + getCrisesList(): Array&lt;Crisis&gt;
+
++ setUserStats(stats: JsonObject)
++ getUserStats(): UserStatistic
+
++ setCrisesStats(stats: JsonObject)
++ getCrisesStatistic(): CrisesStatistic
 </y:MethodLabel>
           </y:UML>
         </y:UMLClassNode>
@@ -60,7 +67,7 @@
       <data key="d5"><![CDATA[UMLClass]]></data>
       <data key="d6">
         <y:UMLClassNode>
-          <y:Geometry height="382.0" width="300.0" x="649.0" y="434.75"/>
+          <y:Geometry height="382.0" width="300.0" x="468.75" y="434.75"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="46.61181640625" x="126.694091796875" y="25.962890625">Crisis </y:NodeLabel>
@@ -96,7 +103,7 @@
       <data key="d5"><![CDATA[UMLClass]]></data>
       <data key="d6">
         <y:UMLClassNode>
-          <y:Geometry height="382.0" width="300.0" x="984.375" y="434.75"/>
+          <y:Geometry height="328.25" width="300.0" x="804.125" y="434.75"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="99.31640625" x="100.341796875" y="25.962890625">CrisesStatistic</y:NodeLabel>
@@ -113,7 +120,10 @@
 - uploadedImages: int
 - reportedLocations: int
 - postedComments: int
-- reportedMissingPeople: int</y:AttributeLabel>
+- reportedMissingPeople: int
+- nearCrisis: Crisis
+- latestCrisis: Crisis
+- todayCrises: Array&lt;Crisis&gt;</y:AttributeLabel>
             <y:MethodLabel>+ set* ()
 + get* ()</y:MethodLabel>
           </y:UML>
@@ -125,7 +135,7 @@
       <data key="d5"><![CDATA[UMLClass]]></data>
       <data key="d6">
         <y:UMLClassNode>
-          <y:Geometry height="382.0" width="300.0" x="1319.75" y="434.75"/>
+          <y:Geometry height="267.0" width="300.0" x="1139.5" y="434.75"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="88.04931640625" x="105.975341796875" y="25.962890625">UserStatistic</y:NodeLabel>
@@ -148,14 +158,147 @@
       </data>
     </node>
     <node id="n5">
+      <data key="d4"/>
+      <data key="d5"><![CDATA[UMLClass]]></data>
       <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="1463.0625" y="857.9375"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
+        <y:UMLClassNode>
+          <y:Geometry height="309.0" width="217.0" x="102.0" y="996.25"/>
+          <y:Fill color="#99CCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="12.22021484375" x="8.889892578125" y="5.436767578125">6</y:NodeLabel>
-          <y:Shape type="rectangle"/>
-        </y:ShapeNode>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="43.37451171875" x="86.812744140625" y="25.962890625">crises</y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="table" use3DEffect="true">
+            <y:AttributeLabel>- id: TEXT PRIMARY KEY
+- title: TEXT
+- description: TEXT
+- subject: TEXT
+- alertLevel: TEXT
+- severity: TEXT
+- severityHashValue: TEXT
+- severityHashUnit: TEXT
+- population: TEXT
+- populationHashValue: TEXT
+- populationHashUnit: TEXT
+- vulnerability: TEXT
+- vulnerabilityHashValue: TEXT
+- date: TEXT
+- startDate: TEXT
+- endDate: TEXT
+- shortTitle: TEXT
+- iconType: TEXT
+</y:AttributeLabel>
+            <y:MethodLabel/>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n6">
+      <data key="d4"/>
+      <data key="d5"><![CDATA[UMLClass]]></data>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="73.0" width="217.0" x="1018.0" y="996.25"/>
+          <y:Fill color="#99CCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="79.58154296875" x="68.709228515625" y="25.962890625">near_crises</y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="table" use3DEffect="true">
+            <y:AttributeLabel>- crisis_id: TEXT PRIMARY KEY</y:AttributeLabel>
+            <y:MethodLabel/>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n7">
+      <data key="d4"/>
+      <data key="d5"><![CDATA[UMLClass]]></data>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="237.0" width="300.0" x="371.75" y="996.25"/>
+          <y:Fill color="#99CCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="82.75537109375" x="108.622314453125" y="25.962890625">crises_stats</y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="table" use3DEffect="true">
+            <y:AttributeLabel>- id: TEXT PRIMARY KEY
+- firstCrisisAt: TEXT
+- latestCrisisAt: TEXT
+- totalCrises: TEXT
+- todayCrises: TEXT
+- numberOfEarthquakes: INTEGER
+- numberOfFloods: INTEGER
+- numberOfCyclones: INTEGER
+- numberOfVolcanoes: INTEGER
+- uploadedImages: INTEGER
+- reportedLocations: INTEGER
+- postedComments: INTEGER
+- reportedMissingPeople: INTEGER</y:AttributeLabel>
+            <y:MethodLabel/>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n8">
+      <data key="d4"/>
+      <data key="d5"><![CDATA[UMLClass]]></data>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="267.0" width="300.0" x="701.75" y="996.25"/>
+          <y:Fill color="#99CCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="72.7958984375" x="113.60205078125" y="25.962890625">user_stats</y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="class" use3DEffect="true">
+            <y:AttributeLabel>- id: TEXT PRIMARY KEY
+- usernamet: TEXT
+- name: TEXT
+- location: TEXT
+- lastSignInAt: TEXT
+- registeredDevices: INTEGER
+- uploadedImages: INTEGER
+- reportedLocations: INTEGER
+- postedComments: INTEGER
+- reportedMissingPeople: INTEGER
+- numberOfApiCalls: INTEGER
+
+- latitude: REAL
+- longitude: REAL
+- radius: INTEGER
+</y:AttributeLabel>
+            <y:MethodLabel/>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n9">
+      <data key="d4"/>
+      <data key="d5"><![CDATA[UMLClass]]></data>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="41.75" width="1360.5" x="79.0" y="337.5"/>
+          <y:Fill color="#FF99CC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="3.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" underlinedText="true" visible="true" width="64.251953125" x="648.1240234375" y="3.0">Frontend</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.4765625" x="661.01171875" y="11.8935546875">adasd</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="122.822265625" x="618.8388671875" y="11.8935546875">- database_version: </y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="true">
+            <y:AttributeLabel/>
+            <y:MethodLabel/>
+          </y:UML>
+        </y:UMLClassNode>
+      </data>
+    </node>
+    <node id="n10">
+      <data key="d4"/>
+      <data key="d5"><![CDATA[UMLClass]]></data>
+      <data key="d6">
+        <y:UMLClassNode>
+          <y:Geometry height="88.0" width="217.0" x="1018.0" y="1093.25"/>
+          <y:Fill color="#99CCFF" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.12646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="66.67041015625" x="75.164794921875" y="25.962890625">countries</y:NodeLabel>
+          <y:UML clipContent="true" constraint="" omitDetails="false" stereotype="table" use3DEffect="true">
+            <y:AttributeLabel>- crisis_id TEXT
+- country_name TEXT</y:AttributeLabel>
+            <y:MethodLabel/>
+          </y:UML>
+        </y:UMLClassNode>
       </data>
     </node>
   </graph>

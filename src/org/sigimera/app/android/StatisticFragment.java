@@ -6,9 +6,9 @@ import java.util.Date;
 
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.DistanceController;
 import org.sigimera.app.android.controller.LocationController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.CrisesStats;
@@ -32,11 +32,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class StatisticFragment extends Fragment {
-
-	private Crisis latestCrisis = null;
-	private Crisis nearCrisis = null;
-	private ArrayList<Crisis> todayCrises = null;
+		
 	private String auth_token = null;
+	private CrisesStats crisesStats = null;
 	
 	private View view;
     private Location userLocation;
@@ -70,9 +68,8 @@ public class StatisticFragment extends Fragment {
                     userLocation = LocationController.getInstance().getLastKnownLocation();
 
                     auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
-                    latestCrisis = CrisesController.getInstance().getLatestCrisis(auth_token);
-                    nearCrisis = CrisesController.getInstance().getNearCrisis(auth_token, userLocation);
-
+                    crisesStats = PersistanceController.getInstance().getCrisesStats(auth_token, userLocation);
+                                        
                     guiHandler.post(updateGUI);
                 } catch (AuthenticationErrorException e) {
                     // SHOULD NEVER OCCUR: Check before calling this window
@@ -86,39 +83,39 @@ public class StatisticFragment extends Fragment {
 	}
 	
 	private void updateStatistics() {
-        if ( auth_token != null ) {
-
-        	// Set distance in km until the near crisis 
-        	Button nearCrisisButton = (Button) view.findViewById(R.id.button0);			
-			double nearDistance = DistanceController.getNearCrisisDistance(this.auth_token, this.nearCrisis, userLocation);
-			if ( nearDistance != -1.0 )
-				nearCrisisButton.setText(Html.fromHtml(nearDistance + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
-			else
-				nearCrisisButton.setText(Html.fromHtml("unknown<br/><small><i>" + "No near crisis" + "</i></small>"));
-			nearCrisisButton.setOnClickListener(this.nearCrisisListenter);
         	
-			// Set the number of crises today
-			ArrayList<Crisis> crises = CrisesController.getInstance().getTodayCrises(this.auth_token);			
-			Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
-			if ( crises.size() == 0 ) {
-				todayCrisesButton.setEnabled(false);
-				todayCrisesButton.setText(Html.fromHtml("No crises<br/><small><i>" + "Today" + "</i></small>"));
-			} else 
-				todayCrisesButton.setText(Html.fromHtml(crises.size() + " crises<br/><small><i>" + "Today" + "</i></small>"));
-			this.todayCrises = crises;
-			todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
-        }
+		Crisis latestCrisis = this.crisesStats.getLatestCrisis();
+        Crisis nearCrisis= this.crisesStats.getNearestCrisis();
+        ArrayList<Crisis> todayCrises = this.crisesStats.getTodayCrises();
+
+        // Set distance in km until the near crisis 
+        Button nearCrisisButton = (Button) this.view.findViewById(R.id.button0);			
+        double nearDistance = DistanceController.getNearCrisisDistance(nearCrisis, this.userLocation);
+        if ( nearDistance != -1.0 )
+        	nearCrisisButton.setText(Html.fromHtml(nearDistance + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
+        else
+        	nearCrisisButton.setText(Html.fromHtml("No<br/><small><i>" + "Near crisis" + "</i></small>"));
+        nearCrisisButton.setOnClickListener(this.nearCrisisListenter);
+        	
+		// Set the number of crises today					
+		Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
+		if ( todayCrises.size() == 0 ) {
+			todayCrisesButton.setEnabled(false);
+			todayCrisesButton.setText(Html.fromHtml("No crises<br/><small><i>" + "Today" + "</i></small>"));
+		} else 
+			todayCrisesButton.setText(Html.fromHtml(todayCrises.size() + " crises<br/><small><i>" + "Today" + "</i></small>"));
+		todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
         
         // Set the time ago since latest crisis
-        if ( this.latestCrisis != null ) {
+        if ( latestCrisis != null ) {
         	Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
-        	latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(this.latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
+        	latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
         	latestCrisisButton.setOnClickListener(this.latestCrisisListenter);
         }
         
         // Set total number of crises
         Button totalCrisesButton = (Button) view.findViewById(R.id.button3);		
-        CrisesStats stats = CrisesController.getInstance().getCrisesStats(this.auth_token);
+        CrisesStats stats = PersistanceController.getInstance().getCrisesStats(this.auth_token, this.userLocation);
         if ( stats != null ) {
         	SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         	SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
@@ -134,7 +131,7 @@ public class StatisticFragment extends Fragment {
         //Show one view at start
         Fragment nearCrisisFrament = new StatsFragment();	
         Bundle bundle = new Bundle();
-        bundle.putSerializable("crisis", this.nearCrisis);
+        bundle.putSerializable("crisis", nearCrisis);
         bundle.putSerializable("style", Constants.NEAR_CRISIS);
         nearCrisisFrament.setArguments(bundle);        
         showFragment(nearCrisisFrament);
@@ -164,9 +161,9 @@ public class StatisticFragment extends Fragment {
 		@Override
 		public void onClick(View v) {
 			Fragment nearCrisisFrament = new StatsFragment();
-			
+
 			Bundle bundle = new Bundle();
-	        bundle.putSerializable("crisis", nearCrisis);
+	        bundle.putSerializable("crisis", crisesStats.getNearestCrisis());
 	        bundle.putSerializable("style", Constants.NEAR_CRISIS);
 	        nearCrisisFrament.setArguments(bundle);
 	        
@@ -181,7 +178,7 @@ public class StatisticFragment extends Fragment {
 			Fragment todayCrisesFrament = new CrisesListFragment();	
 			
 			Bundle bundle = new Bundle();
-	        bundle.putSerializable("crises", todayCrises);	        
+	        bundle.putSerializable("crises", crisesStats.getTodayCrises());	        
 	        todayCrisesFrament.setArguments(bundle);
 	        
 			showFragment(todayCrisesFrament);
@@ -195,7 +192,7 @@ public class StatisticFragment extends Fragment {
 			Fragment latestCrisisFrament = new StatsFragment();	
 			
 			Bundle bundle = new Bundle();
-	        bundle.putSerializable("crisis", latestCrisis);
+	        bundle.putSerializable("crisis", crisesStats.getLatestCrisis());
 	        bundle.putSerializable("style", Constants.LATEST_CRISIS);
 	        latestCrisisFrament.setArguments(bundle);
 	        

@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.UsersStats;
@@ -29,12 +29,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TabHost;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class ProfileFragment extends Fragment {
-
 	private View view;
 	private Drawable drawable;
 	private String auth_token;
@@ -79,10 +77,10 @@ public class ProfileFragment extends Fragment {
 					auth_token = ApplicationController.getInstance()
 							.getSessionHandler().getAuthenticationToken();
 
-					stats = CrisesController.getInstance().getUsersStats(
+					stats = PersistanceController.getInstance().getUsersStats(
 							auth_token);
-					radius = CrisesController.getInstance()
-							.getNearCrisesRadius();
+//					radius = PersistanceController.getInstance()
+//							.getNearCrisesRadius();
 
 					if (stats == null)
 						Log.d("[PROFILE FRAGMENT]", "User stats are empty.");
@@ -109,8 +107,6 @@ public class ProfileFragment extends Fragment {
 	}
 
 	private void updateProfile() {
-		long size = ApplicationController.getInstance().getCacheSize();
-
 		StringBuffer content;
 
 		if (stats != null) {
@@ -123,7 +119,7 @@ public class ProfileFragment extends Fragment {
 			content.append("<br/>");
 			content.append("<small>"
 					+ "Used space: "
-					+ Common.transformTwoDecimalDoubleNumber(size
+					+ Common.transformTwoDecimalDoubleNumber(PersistanceController.getInstance().getCacheSize()
 							/ (1000.0 * 1000.0 * 1000.0)) + " Mb" + "</small>");
 			content.append("</p>");
 
@@ -221,7 +217,7 @@ public class ProfileFragment extends Fragment {
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			CrisesController.getInstance().setNearCrisesRadius(radiusProgress);
+//			CrisesController.getInstance().setNearCrisesRadius(radiusProgress);
 		}
 
 		@Override
@@ -234,7 +230,7 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadiusValue.setEnabled(true);
 		this.enableNearCrises.setChecked(true);
 		this.overwriteLocation.setEnabled(true);
-		CrisesController.getInstance().setNearCrisesRadius(radius);
+//		CrisesController.getInstance().setNearCrisesRadius(radius);
 		
 	}
 
@@ -243,6 +239,6 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadiusValue.setEnabled(false);
 		this.enableNearCrises.setChecked(false);
 		this.overwriteLocation.setEnabled(false);
-		CrisesController.getInstance().setNearCrisesRadius(0);
+//		CrisesController.getInstance().setNearCrisesRadius(0);
 	}
 }

@@ -35,8 +35,8 @@ import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.backend.network.MyHttpClient;
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.LocationController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.controller.SessionHandler;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -90,7 +90,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             		/**
             		 * XXX: Blocks UI: Shift this code into a separate background thread
             		 */
-            		Crisis crisis = CrisesController.getInstance().getCrisis(authToken, msg.getStringExtra("crisis_id"));
+            		Crisis crisis = PersistanceController.getInstance().getCrisis(authToken, msg.getStringExtra("crisis_id"));
 
         			StringBuffer message = new StringBuffer();
             		if ( crisis != null ) {

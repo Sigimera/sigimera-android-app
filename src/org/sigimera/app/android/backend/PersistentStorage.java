@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
@@ -35,13 +35,12 @@ public class PersistentStorage extends SQLiteOpenHelper {
     private final static String DB_NAME = "sigimera.db";
     private final static String TABLE_CRISES = "crises";
     private final static String TABLE_COUNTRIES = "countries";
-    private final static String TABLE_USER = "user_info";
     private final static String TABLE_CRISES_STATS = "crises_stats";
     private final static String TABLE_USERS_STATS = "user_stats";
-    private final static String TABLE_SETTINGS = "settings";
+    private final static String TABLE_NEAR_CRISES = "near_crises";
 
     private final Context context;
-
+    
     public static PersistentStorage getInstance() {
         if ( null == instance )
             instance = new PersistentStorage(ApplicationController.getInstance().getApplicationContext());
@@ -65,7 +64,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     public synchronized int getNearCrisesRadius() {
     	SQLiteDatabase db = getReadableDatabase();
     	
-        Cursor c = db.rawQuery("SELECT radius FROM " + TABLE_SETTINGS , null);
+        Cursor c = db.rawQuery("SELECT radius FROM " + TABLE_USERS_STATS , null);
         int radius = 0;
         if ( c.moveToFirst() )
         	radius = c.getInt(0);
@@ -75,16 +74,15 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return radius;
     }
     
-    public synchronized boolean setNearCrisesRadius(int _radius) {    	
+    public synchronized boolean setNearCrisesRadius(int _radius, String _userID) {    	
     	SQLiteDatabase db = getWritableDatabase();
     	ContentValues values = new ContentValues();  
     	
-    	values.put("username", "current_user");
     	values.put("radius", _radius);
     	
-    	int number_of_rows = db.update(TABLE_SETTINGS, values, "username == 'current_user'", null);
+    	int number_of_rows = db.update(TABLE_USERS_STATS, values, "_id == '" + _userID  + "'", null);
     	if ( number_of_rows == 0 )
-    		db.insert(TABLE_SETTINGS, null, values);
+    		db.insert(TABLE_USERS_STATS, null, values);
     	db.close();
     	
     	return true;
@@ -105,24 +103,40 @@ public class PersistentStorage extends SQLiteOpenHelper {
          */
     }
     
-    public synchronized boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
-    	if ( _crisis == null  ) return false;
-    	SQLiteDatabase db = getWritableDatabase();
-    	ContentValues values = new ContentValues();  
+//    public synchronized boolean addNearCrisisInfos(JSONObject _crisis) throws JSONException {
+//    	if ( _crisis == null  ) return false;
+//    	SQLiteDatabase db = getWritableDatabase();
+//    	ContentValues values = new ContentValues();  
+//    	
+//    	values.put("_id", );
+//    	values.put("near_crisis_id", _crisis.getString("_id"));
+//    	if ( _crisis.has("foaf_based_near") ) {
+//        	values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(0));
+//        	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
+//        }
+//    	
+//    	int number_of_rows = db.update(TABLE_USER, values, "_id == 'current_user'", null);
+//    	if ( number_of_rows == 0 )
+//    		db.insert(TABLE_USER, null, values);
+//    	
+//    	db.close();
+//    	
+//    	return true;
+//    }
+    
+    public synchronized boolean addNearCrises(JSONArray _crises) throws JSONException {
+    	if ( _crises == null ) return false;
     	
-    	values.put("_id", "current_user");
-    	values.put("near_crisis_id", _crisis.getString("_id"));
-    	if ( _crisis.has("foaf_based_near") ) {
-        	values.put("longitude", (Double)_crisis.getJSONArray("foaf_based_near").get(0));
-        	values.put("latitude", (Double)_crisis.getJSONArray("foaf_based_near").get(1));
-        }
-    	
-    	int number_of_rows = db.update(TABLE_USER, values, "_id == 'current_user'", null);
-    	if ( number_of_rows == 0 )
-    		db.insert(TABLE_USER, null, values);
-    	
-    	db.close();
-    	
+    	 SQLiteDatabase db = getWritableDatabase();
+         ContentValues values = new ContentValues();
+         for ( int count=0; count < _crises.length(); count++ ) {
+        	 values.put("_id", _crises.getString(count));
+         }
+         if ( values.size() > 0 )
+         	db.insert(TABLE_NEAR_CRISES, null, values);
+         
+         db.close();
+         
     	return true;
     }
     
@@ -211,7 +225,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put("_id", _crisis.getString("_id"));
             
-            values.put("short_title", CrisesController.getInstance().getShortTitle(_crisis));
+            values.put("short_title", PersistanceController.getInstance().getShortTitle(_crisis));
 //            if ( _crisis.has("subject") )
 //            	values.put("type_icon", Common.getCrisisIcon(_crisis.getString("subject")) + "");
             
@@ -315,7 +329,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
     public synchronized Crisis getNearestCrisis() {
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.rawQuery("SELECT near_crisis_id FROM "+TABLE_USER, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES , null);
         Crisis crisis = null;
         if ( c.moveToFirst() ) {
         	crisis = getCrisis(c.getString(0));
@@ -326,15 +340,24 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return crisis;
     }
     
-    public synchronized boolean deleteNearCrisis() {
-    	SQLiteDatabase db = getWritableDatabase();
-    	int affectedRows = db.delete(TABLE_USER, "_id == 'current_user'", null);
-    	if (affectedRows == 0)
-    		return false;
-    	db.close();
-    	
-    	return true;
-	}
+//    public synchronized boolean deleteNearCrisis() {
+//    	SQLiteDatabase db = getWritableDatabase();
+//    	int affectedRows = db.delete(TABLE_USER, "_id == 'current_user'", null);
+//    	if (affectedRows == 0)
+//    		return false;
+//    	db.close();
+//    	
+//    	return true;
+//	}
+    
+    public synchronized ArrayList<Crisis> getNearCrisesList() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES, null);
+        ArrayList<Crisis> crises = _extractCrises(c);
+        c.close();
+
+        return crises;
+    }
 
     public synchronized Crisis getLatestCrisis() {
         SQLiteDatabase db = getReadableDatabase();
@@ -407,23 +430,37 @@ public class PersistentStorage extends SQLiteOpenHelper {
         return crisis;
     }
     
-    private CrisesStats _extractCrisesStats(Cursor _c) {
+    private CrisesStats _extractCrisesStats(Cursor crisesStatsCursor) {
         CrisesStats stats = null;
-        boolean hasEntry = _c.moveToFirst();
+        boolean hasEntry = crisesStatsCursor.moveToFirst();
         if ( hasEntry ) {
         	stats = new CrisesStats();
-        	stats.setId(_c.getString(_c.getColumnIndex("_id")));
-        	stats.setLatestCrisisAt(_c.getString(_c.getColumnIndex("latest_crisis_at")));
-        	stats.setTotalCrises(_c.getInt(_c.getColumnIndex("total_crises")));
-        	stats.setFirstCrisisAt(_c.getString(_c.getColumnIndex("first_crisis_at")));
-        	stats.setNumberOfCyclones(_c.getInt(_c.getColumnIndex("number_of_cyclones")));
-        	stats.setNumberOfFloods(_c.getInt(_c.getColumnIndex("number_of_floods")));
-        	stats.setNumberOfEarthquakes(_c.getInt(_c.getColumnIndex("number_of_earthquakes")));
-        	stats.setNumberOfVolcanoes(_c.getInt(_c.getColumnIndex("number_of_volcanoes")));
-        	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
-        	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
-        	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
-        	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));
+        	stats.setId(crisesStatsCursor.getString(crisesStatsCursor.getColumnIndex("_id")));
+        	stats.setLatestCrisisAt(crisesStatsCursor.getString(crisesStatsCursor.getColumnIndex("latest_crisis_at")));
+        	stats.setTotalCrises(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("total_crises")));
+        	stats.setFirstCrisisAt(crisesStatsCursor.getString(crisesStatsCursor.getColumnIndex("first_crisis_at")));
+        	stats.setNumberOfCyclones(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("number_of_cyclones")));
+        	stats.setNumberOfFloods(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("number_of_floods")));
+        	stats.setNumberOfEarthquakes(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("number_of_earthquakes")));
+        	stats.setNumberOfVolcanoes(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("number_of_volcanoes")));
+        	stats.setUploadedImages(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("uploaded_images")));
+        	stats.setPostedComments(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("posted_comments")));
+        	stats.setReportedLocations(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("reported_locations")));
+        	stats.setReportedMissingPeople(crisesStatsCursor.getInt(crisesStatsCursor.getColumnIndex("reported_missing_people")));
+        	
+        	Log.d("[PERSISTANT STORAGE]", "Extracting crises stats: " +  
+        			stats.getId() + " - " +
+        			stats.getLatestCrisisAt() + " - " +
+        			stats.getTotalCrises() + " - " +
+        			stats.getFirstCrisisAt() + " - " +
+        			stats.getNumberOfCyclones() + " - " +
+        			stats.getNumberOfFloods() + " - " +
+        			stats.getNumberOfEarthquakes() + " - " +
+        			stats.getNumberOfVolcanoes() + " - " +
+        			stats.getUploadedImages() + " - " +
+        			stats.getPostedComments() + " - " +
+        			stats.getReportedLocations() + " - " +
+        			stats.getReportedMissingPeople());
         }
         return stats;
     }
@@ -438,8 +475,7 @@ public class PersistentStorage extends SQLiteOpenHelper {
         	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
         	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
         	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
-        	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));
-        	
+        	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people")));        	
         	
         	Log.d("[PERSISTANT STORAGE]", "Extracting users stats: " +  
         			stats.getName() + " - " +

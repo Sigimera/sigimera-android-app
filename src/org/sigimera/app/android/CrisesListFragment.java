@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
@@ -101,13 +101,14 @@ public class CrisesListFragment extends Fragment {
 				Looper.prepare();
 				String auth_token = null;
 				try {
-					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();															
 				} catch (AuthenticationErrorException e) {
 					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
 				}
-				
+								
 				if ( crises.isEmpty() )
-					crises = CrisesController.getInstance().getCrises(auth_token, page);				
+					crises = PersistanceController.getInstance().getCrises(auth_token, page);
+				
 				guiHandler.post(updateGUI);
 			}
 		};

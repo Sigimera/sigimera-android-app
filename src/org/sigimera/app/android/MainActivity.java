@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
-import org.sigimera.app.android.controller.CrisesController;
 import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -301,12 +300,12 @@ public class MainActivity extends FragmentActivity {
 				StatisticFragment.class, null);
 		this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("Crises")
 				.setIndicator("Crises"), CrisesListFragment.class, null);
-		if (CrisesController.getInstance().getNearCrisesRadius() != 0)
-			this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("Near you")
-					.setIndicator("Near you"), CrisesListFragment.class, null);
-		this.mTabsAdapter.addTab(
-				mTabHost.newTabSpec("Profile").setIndicator("Profile"),
-				ProfileFragment.class, null);
+//		if (CrisesController.getInstance().getNearCrisesRadius() != 0)
+//			this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("Near you")
+//					.setIndicator("Near you"), CrisesListFragment.class, null);
+//		this.mTabsAdapter.addTab(
+//				mTabHost.newTabSpec("Profile").setIndicator("Profile"),
+//				ProfileFragment.class, null);
 		initGCM();
 		closeProgressDialog();
 	}

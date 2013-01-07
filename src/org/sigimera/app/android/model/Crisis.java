@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Crisis implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5271696827884512361L;
 	
 	private String id;
