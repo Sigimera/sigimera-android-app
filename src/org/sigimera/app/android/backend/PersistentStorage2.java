@@ -184,31 +184,25 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	
     	CrisesStats stats = null;
     	SQLiteDatabase db = getReadableDatabase();
-    	db.beginTransaction();
-
+    	
     	// Get the crises statistics
-    	Cursor statsCursor = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
-        
+    	Cursor statsCursor = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);      
+    	
     	// Get today crises
-        Cursor todayCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
-
-//        // Get the latest crisis
-//        Cursor latestCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
-//        Crisis latestCrisis = null;
-//        if ( latestCrisisCursor.getCount() != 0) latestCrisis = this._extractCrisis(latestCrisisCursor);
-//        
-//        if ( !db.isOpen() ) db = getReadableDatabase();         	
-//        // Get the nearest crisis 
-//        Cursor nearCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES + " LIMIT 1", null);
-//        Crisis nearCrisis = null;
-//        
-//      	if ( nearCrisisCursor.getCount() != 0 )  nearCrisis = this._extractCrisis(nearCrisisCursor);          	
+        Cursor todayCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);                
         
-//        stats = this._extractCrisesStats(statsCursor, latestCrisis, nearCrisis, todayCursor);
-        stats = this._extractCrisesStats(statsCursor, null, null, todayCursor);
+        // Get the latest crisis if today wasn't any crises
+        Cursor latestCrisisCursor = null;
+        if ( todayCursor == null || todayCursor.moveToFirst() ) {
+        	latestCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
+        }
+         	
+        // Get the nearest crisis
+        Cursor nearCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES + " LIMIT 1", null);
         
-        db.endTransaction();
+        stats = this._extractCrisesStats(statsCursor, latestCrisisCursor, nearCrisisCursor, todayCursor);        
         db.close();
+        
     	return stats;
     }
     
@@ -493,8 +487,8 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         return crisis;
     }
 	
-	private CrisesStats _extractCrisesStats(Cursor statsCrisesCursor, Crisis latestCrisis, Crisis nearCrisis, Cursor todayCrisesCursor) {
-        CrisesStats stats = null;
+	private CrisesStats _extractCrisesStats(Cursor statsCrisesCursor, Cursor latestCrisisCursor, Cursor nearCrisisCursor, Cursor todayCrisesCursor) {
+        CrisesStats stats = null;        
         boolean hasEntry = statsCrisesCursor.moveToFirst();
         if ( hasEntry ) {
         	stats = new CrisesStats();
@@ -526,19 +520,22 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         			stats.getReportedMissingPeople());
         }
         
-        if ( latestCrisis != null ) {
+        if ( nearCrisisCursor != null ) {
+        	Crisis crisis = this._extractCrisis(nearCrisisCursor);
         	if (stats == null) stats = new CrisesStats();
-        	stats.setLatestCrisis(latestCrisis);
-        }
-        
-        if ( nearCrisis != null ) {
-        	if (stats == null) stats = new CrisesStats();
-        	stats.setNearCrisis(nearCrisis);
+        	stats.setNearCrisis(crisis);
         }
                        
         if ( todayCrisesCursor != null ) {        	
         	if (stats == null) stats = new CrisesStats();
         	stats.setTodayCrises(_extractCrises(todayCrisesCursor));
+        	if ( latestCrisisCursor == null ) 
+        		stats.setLatestCrisis(_extractCrisis(todayCrisesCursor));
+        }
+        
+        if ( latestCrisisCursor != null ) {
+        	if (stats == null) stats = new CrisesStats();
+        	stats.setLatestCrisis(_extractCrisis(latestCrisisCursor));
         }
         
         return stats;

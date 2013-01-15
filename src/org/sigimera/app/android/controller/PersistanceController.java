@@ -52,10 +52,10 @@ public class PersistanceController {
     	CrisesStats stats = this.pershandler.getCrisesStats();
     	if ( null == stats && _authToken != null ) {
     		AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticCrisesHttpHelper().execute(_authToken);
-    		AsyncTask<String, Void, JSONArray> crisesNearHelper = new NearCrisesHttpHelper().execute(_authToken, 1 +"", _location.getLatitude()+"", _location.getLongitude()+"");
+//    		AsyncTask<String, Void, JSONArray> crisesNearHelper = new NearCrisesHttpHelper().execute(_authToken, 1 +"", _location.getLatitude()+"", _location.getLongitude()+"");
     		try {
 				this.pershandler.addCrisesStats(crisesStatsHelper.get());						
-				this.pershandler.addNearCrises(crisesNearHelper.get());
+//				this.pershandler.addNearCrises(crisesNearHelper.get());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -67,7 +67,8 @@ public class PersistanceController {
 				e.printStackTrace();
 			}
     		stats = this.pershandler.getCrisesStats();
-    	} else if (stats.getNearestCrisis() == null && _authToken != null ) {
+    	} 
+    	else if (stats.getNearestCrisis() == null && _authToken != null ) {
     		AsyncTask<String, Void, JSONArray> crisesNearHelper = new NearCrisesHttpHelper().execute(_authToken, 1 +"", _location.getLatitude()+"", _location.getLongitude()+"");
     		try {
 				this.pershandler.addNearCrises(crisesNearHelper.get());

@@ -66,8 +66,8 @@ public class StatisticFragment extends Fragment {
                 try {
                 	Looper.prepare();
                     userLocation = LocationController.getInstance().getLastKnownLocation();
-
                     auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+                    
                     crisesStats = PersistanceController.getInstance().getCrisesStats(auth_token, userLocation);
                                         
                     guiHandler.post(updateGUI);
@@ -83,7 +83,6 @@ public class StatisticFragment extends Fragment {
 	}
 	
 	private void updateStatistics() {
-        	
 		Crisis latestCrisis = this.crisesStats.getLatestCrisis();
         Crisis nearCrisis= this.crisesStats.getNearestCrisis();
         ArrayList<Crisis> todayCrises = this.crisesStats.getTodayCrises();
@@ -99,7 +98,7 @@ public class StatisticFragment extends Fragment {
         	
 		// Set the number of crises today					
 		Button todayCrisesButton = (Button) view.findViewById(R.id.button1);
-		if ( todayCrises.size() == 0 ) {
+		if ( todayCrises == null || todayCrises.size() == 0 ) {
 			todayCrisesButton.setEnabled(false);
 			todayCrisesButton.setText(Html.fromHtml("No crises<br/><small><i>" + "Today" + "</i></small>"));
 		} else 
@@ -107,25 +106,25 @@ public class StatisticFragment extends Fragment {
 		todayCrisesButton.setOnClickListener(this.todayCrisesListenter);
         
         // Set the time ago since latest crisis
-        if ( latestCrisis != null ) {
-        	Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
+		Button latestCrisisButton = (Button) view.findViewById(R.id.button2);
+        if ( latestCrisis == null )        	
+        	latestCrisisButton.setText(Html.fromHtml("No infos<br/>about"  + "<br/><small><i>" + "Latest crisis" + "</i></small>"));        	
+        else
         	latestCrisisButton.setText(Html.fromHtml(Common.getTimeAgoInWordsSplitted(Common.getMiliseconds(latestCrisis.getDate())) + "<br/><small><i>" + "Latest crisis" + "</i></small>"));
-        	latestCrisisButton.setOnClickListener(this.latestCrisisListenter);
-        }
+        latestCrisisButton.setOnClickListener(this.latestCrisisListenter);
         
         // Set total number of crises
-        Button totalCrisesButton = (Button) view.findViewById(R.id.button3);		
-        CrisesStats stats = PersistanceController.getInstance().getCrisesStats(this.auth_token, this.userLocation);
-        if ( stats != null ) {
+        Button totalCrisesButton = (Button) view.findViewById(R.id.button3);		        
+        if ( crisesStats != null ) {
         	SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         	SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
         	Date date = new Date();
         	try {
-        		date = inputFormatter.parse(stats.getFirstCrisisAt());
+        		date = inputFormatter.parse(crisesStats.getFirstCrisisAt());
         	} catch ( Exception e) {
         		e.printStackTrace();
         	}
-        	totalCrisesButton.setText(Html.fromHtml(stats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
+        	totalCrisesButton.setText(Html.fromHtml(crisesStats.getTotalCrises() + " crises since<br/><small><i>" + outputFormatter.format(date) + "</i></small>"));
         }
      			
         //Show one view at start
