@@ -26,7 +26,6 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 import android.util.Log;
 
 public class PersistentStorage2 extends SQLiteOpenHelper{
@@ -186,21 +185,24 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	SQLiteDatabase db = getReadableDatabase();
     	
     	// Get the crises statistics
-    	Cursor statsCursor = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);      
+    	Cursor statsCursor = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
     	
-    	// Get today crises
-        Cursor todayCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);                
-        
-        // Get the latest crisis if today wasn't any crises
-        Cursor latestCrisisCursor = null;
-        if ( todayCursor == null || todayCursor.moveToFirst() ) {
-        	latestCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
-        }
-         	
-        // Get the nearest crisis
-        Cursor nearCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES + " LIMIT 1", null);
-        
-        stats = this._extractCrisesStats(statsCursor, latestCrisisCursor, nearCrisisCursor, todayCursor);        
+    	if ( statsCursor != null ) {
+	    	// Get the nearest crisis
+	        Cursor nearCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES , null);
+	    	
+	    	// Get today crises
+	        Cursor todayCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);                
+	        
+	        // Get the latest crisis if today wasn't any crises
+	        Cursor latestCrisisCursor = null;
+	        if ( todayCursor == null || todayCursor.moveToFirst() ) {
+	        	latestCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
+	        }       	        
+	        
+	        stats = this._extractCrisesStats(statsCursor, latestCrisisCursor, nearCrisisCursor, todayCursor);
+    	}
+    	
         db.close();
         
     	return stats;
@@ -241,8 +243,10 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
 	 * From here on are methods for saving 
 	 ****************************************************************/
     
-    public synchronized boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {
+    public synchronized boolean addCrisesStats(JSONObject _crisesStats) throws JSONException {        	
     	if ( _crisesStats == null ) return false;
+    	
+    	Log.i("[PERSISTANCE STORAGE]", "Updating crises statistics");
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         
@@ -264,7 +268,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         values.put("reported_missing_people", _crisesStats.getInt("reported_missing_people"));
 
         db.insert(TABLE_CRISES_STATS, null, values);
-        db.close();
+        db.close();        
 
         return true;
     }
@@ -363,18 +367,20 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         
         long status = db.insert(TABLE_USERS_STATS, null, values);
         if ( status == -1 )
-        	Log.d("[PERSISTANT STORAGE]", "ERROR inserting the values " + values + " into the table " + TABLE_USERS_STATS);
+        	Log.i("[PERSISTANT STORAGE]", "ERROR inserting the values " + values + " into the table " + TABLE_USERS_STATS);
         else 
-        	Log.d("[PERSISTANT STORAGE]", "AFFECTED ROWS " + status);
+        	Log.i("[PERSISTANT STORAGE]", "AFFECTED ROWS " + status);
         db.close();
                         
-        Log.d("[PERSISTANT STORAGE]", "Adding users stats: " + values);
+        Log.i("[PERSISTANT STORAGE]", "Adding users stats: " + values);
 
         return true;
     }
     
     public synchronized boolean addNearCrises(JSONArray _crises) {
     	if ( _crises == null ) return false;
+    	
+    	Log.i("[PERSISTANT STORAGE]", "Adding near crises: " + _crises);
     	SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         
@@ -395,9 +401,10 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	return true;
     }
 	
-    public synchronized boolean updateNearCrisesAndLocation(JSONArray crises, Location location){
+    public synchronized boolean updateNearCrises(JSONArray crises){
     	if ( crises == null ) return false;
     	
+    	Log.i("[PERSISTENT STORAGE]", "Updating near crises");
     	SQLiteDatabase db = getWritableDatabase();
     	ContentValues values = new ContentValues();    	
     	
@@ -405,6 +412,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
 	    	for ( int i=0; i < crises.length(); i++ ) {
 	    		JSONObject crisis = crises.getJSONObject(i);
 	    		values.put("_id", crisis.getString("_id"));
+	    		Log.i("[PERSISTENT STORAGE]", "Updating near crisis: " + crisis.getString("_id"));
 	    	}	    	
 	    	db.update(TABLE_NEAR_CRISES, values, null, null);
     	} catch(JSONException e) {
@@ -462,7 +470,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
             crisis.setVulnerability(_c.getString(_c.getColumnIndex("crisis_vulnerability")));
             crisis.setCountries(getCountries(crisis.getID()));
             
-            Log.d("[PERSISTANT STORAGE]", "Extracting crisis: " +  
+            Log.i("[PERSISTANT STORAGE]", "Extracting crisis: " +  
             		crisis.getID() + " - " +
             		crisis.getAlertLevel() + " - " +
             		crisis.getDate() + " - " +
@@ -505,7 +513,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         	stats.setReportedLocations(statsCrisesCursor.getInt(statsCrisesCursor.getColumnIndex("reported_locations")));
         	stats.setReportedMissingPeople(statsCrisesCursor.getInt(statsCrisesCursor.getColumnIndex("reported_missing_people")));
         	
-        	Log.d("[PERSISTANT STORAGE]", "Extracting crises stats: " +  
+        	Log.i("[PERSISTANT STORAGE]", "Extracting crises stats: " +  
         			stats.getId() + " - " +
         			stats.getLatestCrisisAt() + " - " +
         			stats.getTotalCrises() + " - " +

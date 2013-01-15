@@ -29,7 +29,6 @@ import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.model.map.CollectionOverlay;
 import org.sigimera.app.android.util.Common;
-import org.sigimera.app.android.util.Config;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;

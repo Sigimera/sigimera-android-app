@@ -6,6 +6,7 @@ import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.LocationController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Common;
@@ -46,6 +47,8 @@ import android.widget.TabWidget;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
+	private String authToken;
+	
 	private TabHost mTabHost;
 	private ViewPager mViewPager;
 	private TabsAdapter mTabsAdapter;
@@ -127,8 +130,8 @@ public class MainActivity extends FragmentActivity {
 		mTabHost.setup();
 
 		try {
-			ApplicationController.getInstance().getSessionHandler()
-					.getAuthenticationToken();
+			authToken = ApplicationController.getInstance().getSessionHandler()
+					.getAuthenticationToken();			
 			setTabsAfterLogin();
 		} catch (AuthenticationErrorException e) {
 			setTabsBeforeLogin();
@@ -209,7 +212,7 @@ public class MainActivity extends FragmentActivity {
 				toast.show();
 				String latitude = loc.getLatitude() + "";
 				String longitude = loc.getLongitude() + "";
-				String authToken = ApplicationController.getInstance()
+				authToken = ApplicationController.getInstance()
 						.getSharedPreferences().getString("auth_token", null);
 				if (authToken != null)
 					locUpdater.execute(authToken, latitude, longitude);
@@ -291,6 +294,12 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void setTabsAfterLogin() {
+		try {
+			PersistanceController.getInstance().updateEverything(authToken);			
+		} catch (InterruptedException e) {
+			Log.e("[MAIN ACTIVITY]", "The thread coudn't sleep betheen api calls.");
+		}
+		
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
 				this.mViewPager);

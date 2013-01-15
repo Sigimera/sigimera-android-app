@@ -1,6 +1,7 @@
 package org.sigimera.app.android.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -48,14 +49,13 @@ public class PersistanceController {
 	 * @param _authToken
 	 * @return
 	 */
-	public CrisesStats getCrisesStats(String _authToken, Location _location) {
+	public CrisesStats getCrisesStats(String _authToken) {
     	CrisesStats stats = this.pershandler.getCrisesStats();
+    	
     	if ( null == stats && _authToken != null ) {
     		AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticCrisesHttpHelper().execute(_authToken);
-//    		AsyncTask<String, Void, JSONArray> crisesNearHelper = new NearCrisesHttpHelper().execute(_authToken, 1 +"", _location.getLatitude()+"", _location.getLongitude()+"");
-    		try {
+    		try {    			
 				this.pershandler.addCrisesStats(crisesStatsHelper.get());						
-//				this.pershandler.addNearCrises(crisesNearHelper.get());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -67,20 +67,7 @@ public class PersistanceController {
 				e.printStackTrace();
 			}
     		stats = this.pershandler.getCrisesStats();
-    	} 
-    	else if (stats.getNearestCrisis() == null && _authToken != null ) {
-    		AsyncTask<String, Void, JSONArray> crisesNearHelper = new NearCrisesHttpHelper().execute(_authToken, 1 +"", _location.getLatitude()+"", _location.getLongitude()+"");
-    		try {
-				this.pershandler.addNearCrises(crisesNearHelper.get());
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		stats = this.pershandler.getCrisesStats();
-    	}    	    	
+    	}  	
     	
     	return stats;
     }
@@ -138,7 +125,7 @@ public class PersistanceController {
     	JSONArray retArray = null;
         try {
             retArray = crisesHelper.get();
-            this.pershandler.updateNearCrisesAndLocation(retArray, _location);
+            this.pershandler.updateNearCrises(retArray);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -229,5 +216,60 @@ public class PersistanceController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Update crises statistics
+	 * 
+	 * @param _auth_token
+	 * @param _location
+	 */
+	private void updateCrisesStats(String _auth_token, Location _location) {
+		Log.i("[PERSISTENT CONTROLLER]", "Check if there are new statistics");
+		CrisesStats crisesStats = getCrisesStats(_auth_token);
+				
+		if ( crisesStats != null && crisesStats.getLatestCrisisAt() != null) {
+			Date date = Common.getDate(crisesStats.getLatestCrisisAt());			
+			
+			AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticCrisesHttpHelper().execute(_auth_token);				
+    		try {
+    			JSONObject tmpStats = crisesStatsHelper.get();
+    			String latestCrisisAt = tmpStats.getString("latest_crisis_at");
+    			if ( latestCrisisAt != null && Common.getDate(latestCrisisAt).after(date) ) {    
+    				Log.i("[PERSISTENT CONTROLLER]", "There are new statistics available. Update the existing ones");
+    				this.pershandler.addCrisesStats(crisesStatsHelper.get());	
+    			}else
+    				Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are up to date.");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else
+			Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are empty.");
+	}
+	
+	/**
+	 * Method that synchronise everything.
+	 * 
+	 * @throws InterruptedException 
+	 */
+	public void updateEverything(String _auth_token) throws InterruptedException {
+		Log.i("[PERSISTENT CONTROLLER]", "Updation everything");
+		Location lastLocation = LocationController.getInstance().getLastKnownLocation();
+		
+		this.storeLatestCrises(_auth_token, 1);
+		Thread.sleep(1000);
+		
+		this.updateCrisesStats(_auth_token, lastLocation);
+		Thread.sleep(1000);
+		
+		this.updateNearCrises(_auth_token, 1, lastLocation);
+		Thread.sleep(1000);
 	}
 }

@@ -7,7 +7,6 @@ import java.util.Date;
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.DistanceController;
-import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -65,10 +64,9 @@ public class StatisticFragment extends Fragment {
             public void run() {
                 try {
                 	Looper.prepare();
-                    userLocation = LocationController.getInstance().getLastKnownLocation();
                     auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
                     
-                    crisesStats = PersistanceController.getInstance().getCrisesStats(auth_token, userLocation);
+                    crisesStats = PersistanceController.getInstance().getCrisesStats(auth_token);
                                         
                     guiHandler.post(updateGUI);
                 } catch (AuthenticationErrorException e) {
@@ -83,6 +81,7 @@ public class StatisticFragment extends Fragment {
 	}
 	
 	private void updateStatistics() {
+		
 		Crisis latestCrisis = this.crisesStats.getLatestCrisis();
         Crisis nearCrisis= this.crisesStats.getNearestCrisis();
         ArrayList<Crisis> todayCrises = this.crisesStats.getTodayCrises();
@@ -120,7 +119,8 @@ public class StatisticFragment extends Fragment {
         	SimpleDateFormat outputFormatter = new SimpleDateFormat("d. MMMM yyyy");
         	Date date = new Date();
         	try {
-        		date = inputFormatter.parse(crisesStats.getFirstCrisisAt());
+        		if ( crisesStats.getFirstCrisisAt() != null )
+        			date = inputFormatter.parse(crisesStats.getFirstCrisisAt());
         	} catch ( Exception e) {
         		e.printStackTrace();
         	}
