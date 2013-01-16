@@ -35,6 +35,8 @@ public class ApplicationController {
 	private PersistentStorage2 pershandler;
 	private ActionBar actionBar;
 	
+	private boolean API_CALL_BUSY = false;
+	
 	private ApplicationController() {}
 	
 	public static ApplicationController getInstance() {
@@ -73,4 +75,11 @@ public class ApplicationController {
 	public SharedPreferences getSharedPreferences(String preferenceName) {
     	return context.getSharedPreferences(preferenceName, 0);    	
     }
+		
+	public synchronized boolean getAPICallBusy() {
+		return API_CALL_BUSY;
+	}	
+	public synchronized void setAPICallBusy(boolean apiCallStatus) {
+		API_CALL_BUSY = apiCallStatus;
+	}
 }
