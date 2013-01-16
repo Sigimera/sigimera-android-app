@@ -226,6 +226,13 @@ public class MainActivity extends FragmentActivity {
 				toast.show();
 			}
 			return true;
+		case R.id.menu_update_everything:
+			try {
+				PersistanceController.getInstance().updateEverything(authToken);
+			} catch (InterruptedException e) {
+				Log.e("[MAIN ACTIVITY]", "The thread coudn't sleep betheen api calls.");
+			}
+			return true;
 		case R.id.menu_logout:
 			ApplicationController.getInstance().getSessionHandler().logout();
 			setTabsBeforeLogin();
@@ -294,12 +301,6 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void setTabsAfterLogin() {
-		try {
-			PersistanceController.getInstance().updateEverything(authToken);			
-		} catch (InterruptedException e) {
-			Log.e("[MAIN ACTIVITY]", "The thread coudn't sleep betheen api calls.");
-		}
-		
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
 				this.mViewPager);
@@ -312,9 +313,9 @@ public class MainActivity extends FragmentActivity {
 //		if (CrisesController.getInstance().getNearCrisesRadius() != 0)
 //			this.mTabsAdapter.addTab(this.mTabHost.newTabSpec("Near you")
 //					.setIndicator("Near you"), CrisesListFragment.class, null);
-//		this.mTabsAdapter.addTab(
-//				mTabHost.newTabSpec("Profile").setIndicator("Profile"),
-//				ProfileFragment.class, null);
+		this.mTabsAdapter.addTab(
+				mTabHost.newTabSpec("Profile").setIndicator("Profile"),
+				ProfileFragment.class, null);
 		initGCM();
 		closeProgressDialog();
 	}
