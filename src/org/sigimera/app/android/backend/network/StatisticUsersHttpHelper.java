@@ -20,18 +20,6 @@ import android.util.Log;
 public class StatisticUsersHttpHelper extends AsyncTask<String, Void, JSONObject>{
 	
 	private final String HOST = Config.getInstance().getAPIHost()+"/stats/users.json?auth_token=";
-	
-	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
-		ApplicationController.getInstance().setAPICallBusy(true);
-	}
-	
-	@Override
-	protected void onPostExecute(JSONObject result) {
-		super.onPostExecute(result);
-		ApplicationController.getInstance().setAPICallBusy(false);
-	}
 
 	@Override
 	protected JSONObject doInBackground(String... _params) {

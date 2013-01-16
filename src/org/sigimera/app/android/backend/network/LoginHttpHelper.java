@@ -42,18 +42,6 @@ public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 			+ "/tokens.json";
 
 	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
-		ApplicationController.getInstance().setAPICallBusy(true);
-	}
-
-	@Override
-	protected void onPostExecute(Boolean result) {
-		super.onPostExecute(result);
-		ApplicationController.getInstance().setAPICallBusy(false);
-	}
-
-	@Override
 	protected Boolean doInBackground(String... params) {
 		HttpClient httpclient = new MyHttpClient(ApplicationController
 				.getInstance().getApplicationContext());

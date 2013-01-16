@@ -26,18 +26,6 @@ import android.util.Log;
 public class LocationUpdaterHttpHelper extends AsyncTask<String, Void, Boolean> {
 
     private final String HOST = Config.getInstance().getAPIHost()+"/gcm/location/";
-    
-    @Override
-    protected void onPreExecute() {    	
-    	super.onPreExecute();
-    	ApplicationController.getInstance().setAPICallBusy(true);    	
-    }
-
-    @Override
-    protected void onPostExecute(Boolean result) {    
-    	super.onPostExecute(result);
-    	ApplicationController.getInstance().setAPICallBusy(false);
-    }
 
     @Override
     protected Boolean doInBackground(String... _params) {
