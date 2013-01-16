@@ -44,6 +44,32 @@ public class PersistanceController {
 		return instance;
 	}
 	
+	private void storeLatestCrises(String _auth_token, int _page) {
+		AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper()
+				.execute(_auth_token, _page + "");
+		JSONArray crises = null;
+		try {
+			crises = crisesHelper.get();
+			if (crises != null) {
+				for (int count = 0; count < crises.length(); count++) {
+					try {
+						JSONObject crisis = (JSONObject) crises.get(count);
+						this.pershandler.addCrisis(crisis);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * 
 	 * @param _authToken
@@ -119,22 +145,7 @@ public class PersistanceController {
     	}
     	return crisis;
     }
-    
-    public boolean updateNearCrises(String _auth_token, int _page, Location _location) {
-    	AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
-    	JSONArray retArray = null;
-        try {
-            retArray = crisesHelper.get();
-            this.pershandler.updateNearCrises(retArray);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    	return true;
-	}
+        
 
 	/**
 	 * Retrieve a crisis page with X crisis.
@@ -176,47 +187,40 @@ public class PersistanceController {
 	         e.printStackTrace();
 	     }
 	     return null;
-	 }
+	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public long getCacheSize() { 
 		return this.pershandler.getCacheSize(); 
 	}
-
 	
-
-	/****************************************************************
-	 * 
-	 ****************************************************************/
-
-	private void storeLatestCrises(String _auth_token, int _page) {
-		AsyncTask<String, Void, JSONArray> crisesHelper = new CrisesHttpHelper()
-				.execute(_auth_token, _page + "");
-		JSONArray crises = null;
-		try {
-			crises = crisesHelper.get();
-			if (crises != null) {
-				for (int count = 0; count < crises.length(); count++) {
-					try {
-						JSONObject crisis = (JSONObject) crises.get(count);
-						this.pershandler.addCrisis(crisis);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public Crisis getNearCrisis(String _auth_token, Location _location) {
+		String crisisID = this.pershandler.getNearCrisis();
+		if ( crisisID == null ) {
+			updateNearCrises(_auth_token, 1, _location);
+			crisisID = this.pershandler.getNearCrisis();
 		}
+		Log.i("[PERSISTANCE CONTROLLER]", "Retrieve near crisis id: " + crisisID);
+		
+		return getCrisis(_auth_token, crisisID);
 	}
+	
+	public Crisis getLatestCrisis(String _auth_token) {
+		String crisisID = this.pershandler.getLatestCrisis();
+		Log.i("[PERSISTANCE CONTROLLER]", "Retrieve latest crisis id: " + crisisID);
+		
+		return getCrisis(_auth_token, crisisID);
+	}
+	
+	public ArrayList<Crisis> getTodayCrises() {
+		ArrayList<Crisis> crisesList = this.pershandler.getTodayCrises();
+		
+		return crisesList;
+	}
+	
+	
+	/**************************************************************
+	 *  Methods for update functionality
+	 **************************************************************/
 	
 	/**
 	 * Update crises statistics
@@ -227,19 +231,21 @@ public class PersistanceController {
 	private void updateCrisesStats(String _auth_token, Location _location) {
 		Log.i("[PERSISTENT CONTROLLER]", "Check if there are new statistics");
 		CrisesStats crisesStats = getCrisesStats(_auth_token);
-				
+		
 		if ( crisesStats != null && crisesStats.getLatestCrisisAt() != null) {
 			Date date = Common.getDate(crisesStats.getLatestCrisisAt());			
 			
 			AsyncTask<String, Void, JSONObject> crisesStatsHelper = new StatisticCrisesHttpHelper().execute(_auth_token);				
     		try {
     			JSONObject tmpStats = crisesStatsHelper.get();
-    			String latestCrisisAt = tmpStats.getString("latest_crisis_at");
-    			if ( latestCrisisAt != null && Common.getDate(latestCrisisAt).after(date) ) {    
-    				Log.i("[PERSISTENT CONTROLLER]", "There are new statistics available. Update the existing ones");
-    				this.pershandler.addCrisesStats(crisesStatsHelper.get());	
-    			}else
-    				Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are up to date.");
+    			if ( tmpStats != null ) {
+	    			String latestCrisisAt = tmpStats.getString("latest_crisis_at");
+	    			if ( latestCrisisAt != null && Common.getDate(latestCrisisAt).after(date) ) {    
+	    				Log.i("[PERSISTENT CONTROLLER]", "There are new statistics available. Update the existing ones");
+	    				this.pershandler.addCrisesStats(crisesStatsHelper.get());	
+	    			}else
+	    				Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are up to date.");
+    			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -251,7 +257,23 @@ public class PersistanceController {
 				e.printStackTrace();
 			}
 		} else
-			Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are empty.");
+			Log.i("[PERSISTENT CONTROLLER]", "Crises statistics or latest crisis date are empty.");
+	}
+	
+	public boolean updateNearCrises(String _auth_token, int _page, Location _location) {
+    	AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
+    	JSONArray retArray = null;
+        try {
+            retArray = crisesHelper.get();
+            this.pershandler.updateNearCrises(retArray);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    	return true;
 	}
 	
 	/**
@@ -264,7 +286,7 @@ public class PersistanceController {
 		Location lastLocation = LocationController.getInstance().getLastKnownLocation();
 		
 		this.storeLatestCrises(_auth_token, 1);
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		
 		this.updateCrisesStats(_auth_token, lastLocation);
 		Thread.sleep(1000);

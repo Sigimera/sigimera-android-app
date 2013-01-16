@@ -171,38 +171,92 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         
     	return stats;
     }
+	
+	/**
+	 * Retrieve the crisis ID of the nearest crisis
+	 * 
+	 * @return
+	 */
+	public synchronized String getNearCrisis() {
+		String crisisID = null;		
+		SQLiteDatabase db = getReadableDatabase();
+		
+		// Get the nearest crisis
+        Cursor nearCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES , null);
+        if ( nearCrisisCursor != null && nearCrisisCursor.moveToFirst() ) {
+        	crisisID = nearCrisisCursor.getString(nearCrisisCursor.getColumnIndex("_id"));
+        	
+        	// If the crisis is not in cache
+        	if ( crisisID == null ) {
+        		Log.i("[PERSISTENT STORAGE]", "Retrive the near crisis: " + crisisID);
+        	}
+        }
+        db.close();
+        
+        return crisisID;
+	}
+	
+	/**
+	 * Get a list of today crises IDs
+	 * 
+	 * @return
+	 */
+	public synchronized ArrayList<Crisis> getTodayCrises() {
+		ArrayList<Crisis> crisesList = new ArrayList<Crisis>();
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();		
+		String todayDate = format.format(cal.getTime());
+		
+    	SQLiteDatabase db = getReadableDatabase();
+    	
+    	// Get today crises
+        Cursor todayCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);
+        crisesList = this._extractCrises(todayCursor);
+    	
+        db.close();
+    	
+    	return crisesList;
+	}
+	
+	/**
+	 * Get the crisis ID of the latest crisis
+	 * 
+	 * @return
+	 */
+	public synchronized String getLatestCrisis() {
+		String crisisID = null;
+		SQLiteDatabase db = getReadableDatabase();
+		
+		// Get the latest crisis
+		Cursor latestCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
+        if ( latestCrisisCursor != null && latestCrisisCursor.moveToFirst() ) {
+        	crisisID = latestCrisisCursor.getString(latestCrisisCursor.getColumnIndex("_id"));
+        	
+        	// If the crisis is not in cache
+        	if ( crisisID == null ) {
+        		Log.i("[PERSISTENT STORAGE]", "Retrive the latest crisis: " + crisisID);
+        	}
+        }
+		
+		db.close();
+		
+		return crisisID;
+	}
     
 	/**
 	 * Get statistical information about crises
+	 * 
 	 * @return
 	 */
     public synchronized CrisesStats getCrisesStats() {
-    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar cal = Calendar.getInstance();		
-		String todayDate = format.format(cal.getTime());
-    	
     	CrisesStats stats = null;
     	SQLiteDatabase db = getReadableDatabase();
     	
     	// Get the crises statistics
-    	Cursor statsCursor = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);
-    	
-    	if ( statsCursor != null ) {
-	    	// Get the nearest crisis
-	        Cursor nearCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_NEAR_CRISES , null);
-	    	
-	    	// Get today crises
-	        Cursor todayCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" WHERE date(dc_date) >= date('" + todayDate +"') ORDER BY dc_date DESC", null);                
-	        
-	        // Get the latest crisis if today wasn't any crises
-	        Cursor latestCrisisCursor = null;
-	        if ( todayCursor == null || todayCursor.moveToFirst() ) {
-	        	latestCrisisCursor = db.rawQuery("SELECT * FROM "+TABLE_CRISES+" ORDER BY dc_date DESC LIMIT 1", null);
-	        }       	        
-	        
-	        stats = this._extractCrisesStats(statsCursor, latestCrisisCursor, nearCrisisCursor, todayCursor);
-    	}
-    	
+    	Cursor statsCursor = db.rawQuery("SELECT * FROM " + TABLE_CRISES_STATS + " LIMIT 1", null);    	     	        
+	    stats = this._extractCrisesStats(statsCursor);
+    	    	
         db.close();
         
     	return stats;
@@ -377,29 +431,9 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         return true;
     }
     
-    public synchronized boolean addNearCrises(JSONArray _crises) {
-    	if ( _crises == null ) return false;
-    	
-    	Log.i("[PERSISTANT STORAGE]", "Adding near crises: " + _crises);
-    	SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        
-        for ( int i=0; i < _crises.length(); i++ ) {
-        	JSONObject crisis;
-			try {
-				crisis = _crises.getJSONObject(i);
-				values.put("_id", crisis.getString("_id"));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        if ( values.size() > 0 )
-        	db.insert(TABLE_NEAR_CRISES, null, values);
-    	db.close();
-    	
-    	return true;
-    }
+    /****************************************************************
+	 * From here on are methods for updating
+	 ****************************************************************/
 	
     public synchronized boolean updateNearCrises(JSONArray crises){
     	if ( crises == null ) return false;
@@ -412,9 +446,16 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
 	    	for ( int i=0; i < crises.length(); i++ ) {
 	    		JSONObject crisis = crises.getJSONObject(i);
 	    		values.put("_id", crisis.getString("_id"));
-	    		Log.i("[PERSISTENT STORAGE]", "Updating near crisis: " + crisis.getString("_id"));
-	    	}	    	
-	    	db.update(TABLE_NEAR_CRISES, values, null, null);
+	    		Log.i("[PERSISTENT STORAGE]", "Updating near crisis with id: " + crisis.getString("_id"));
+	    	}
+	    	
+	    	int affetedRows = db.update(TABLE_NEAR_CRISES, values, null, null);	    		    	
+	    	Log.i("[PERSISTENT STORAGE]", "Affected rows: " + affetedRows);
+	    	
+	    	if ( affetedRows == 0 ) {
+	    		db.insert(TABLE_NEAR_CRISES, null, values);
+	    		Log.i("[PERSISTENT STORAGE]", "Updating failed. Add in the table " + affetedRows);
+	    	}
     	} catch(JSONException e) {
     		e.printStackTrace();
     	}
@@ -495,7 +536,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         return crisis;
     }
 	
-	private CrisesStats _extractCrisesStats(Cursor statsCrisesCursor, Cursor latestCrisisCursor, Cursor nearCrisisCursor, Cursor todayCrisesCursor) {
+	private CrisesStats _extractCrisesStats(Cursor statsCrisesCursor) {
         CrisesStats stats = null;        
         boolean hasEntry = statsCrisesCursor.moveToFirst();
         if ( hasEntry ) {
@@ -526,24 +567,6 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         			stats.getPostedComments() + " - " +
         			stats.getReportedLocations() + " - " +
         			stats.getReportedMissingPeople());
-        }
-        
-        if ( nearCrisisCursor != null ) {
-        	Crisis crisis = this._extractCrisis(nearCrisisCursor);
-        	if (stats == null) stats = new CrisesStats();
-        	stats.setNearCrisis(crisis);
-        }
-                       
-        if ( todayCrisesCursor != null ) {        	
-        	if (stats == null) stats = new CrisesStats();
-        	stats.setTodayCrises(_extractCrises(todayCrisesCursor));
-        	if ( latestCrisisCursor == null ) 
-        		stats.setLatestCrisis(_extractCrisis(todayCrisesCursor));
-        }
-        
-        if ( latestCrisisCursor != null ) {
-        	if (stats == null) stats = new CrisesStats();
-        	stats.setLatestCrisis(_extractCrisis(latestCrisisCursor));
         }
         
         return stats;
