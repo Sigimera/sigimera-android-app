@@ -282,16 +282,23 @@ public class PersistanceController {
 	 * @throws InterruptedException 
 	 */
 	public void updateEverything(String _auth_token) throws InterruptedException {
-		Log.i("[PERSISTENT CONTROLLER]", "Updation everything");
+		Log.i("[PERSISTENT CONTROLLER]", "Begin to update everything");
+		ApplicationController.getInstance().setEverythingUpdated(false);				
 		Location lastLocation = LocationController.getInstance().getLastKnownLocation();
 		
+		Log.i("[PERSISTENT CONTROLLER]", "UPDATE CRISES");
 		this.storeLatestCrises(_auth_token, 1);
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		
+		Log.i("[PERSISTENT CONTROLLER]", "UPDATE CRISES STATISTICS");
 		this.updateCrisesStats(_auth_token, lastLocation);
 		Thread.sleep(1000);
 		
+		Log.i("[PERSISTENT CONTROLLER]", "UPDATE NEAR CRISES");
 		this.updateNearCrises(_auth_token, 1, lastLocation);
 		Thread.sleep(1000);
+		
+		ApplicationController.getInstance().setEverythingUpdated(true);
+		Log.i("[PERSISTENT CONTROLLER]", "End to update everything");
 	}
 }

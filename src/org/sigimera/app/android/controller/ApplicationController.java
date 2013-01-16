@@ -35,7 +35,7 @@ public class ApplicationController {
 	private PersistentStorage2 pershandler;
 	private ActionBar actionBar;
 	
-	private boolean API_CALL_BUSY = false;
+	private boolean updatingEverything = false;
 	
 	private ApplicationController() {}
 	
@@ -68,7 +68,7 @@ public class ApplicationController {
 	public Context getApplicationContext() { return this.context; }
 	public PersistentStorage2 getPersistentStorageHandler() { return this.pershandler; }
 	public ActionBar getActionbar() { return this.actionBar; }
-		
+	
 	public SessionHandler getSessionHandler() { return this.sessionHandler; }
 	
 	public SharedPreferences getSharedPreferences() { return this.settings; }
@@ -76,10 +76,11 @@ public class ApplicationController {
     	return context.getSharedPreferences(preferenceName, 0);    	
     }
 		
-	public synchronized boolean getAPICallBusy() {
-		return API_CALL_BUSY;
+	public synchronized boolean isEverythingUpdated() {
+		return updatingEverything;
 	}	
-	public synchronized void setAPICallBusy(boolean apiCallStatus) {
-		API_CALL_BUSY = apiCallStatus;
+	
+	public synchronized void setEverythingUpdated(boolean _updatingEverything) {
+		updatingEverything = _updatingEverything;
 	}
 }

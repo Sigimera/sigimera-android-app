@@ -63,13 +63,15 @@ public class LocationController {
 		    	// Called when a new location is found by the network location provider.
 		    	Log.i(Constants.LOG_TAG_LOCATION_CONTROLLER, "Found new location: " + location);
 		    	
-				try {
-					final String auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
-					PersistanceController.getInstance().updateNearCrises(auth_token, 1, location);
-				} catch (AuthenticationErrorException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}		    	
+		    	if ( ApplicationController.getInstance().isEverythingUpdated() ) {
+					try {
+						final String auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+						PersistanceController.getInstance().updateNearCrises(auth_token, 1, location);
+					} catch (AuthenticationErrorException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    	}
 		    }
 
 		    public void onProviderEnabled(String provider) {}
