@@ -4,14 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.util.Config;
@@ -23,6 +21,18 @@ public class NearCrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
 
 	private final String HOST = Config.getInstance().getAPIHost()
 			+ "/crises.json?output=short&auth_token=";
+	
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		ApplicationController.getInstance().setAPICallBusy(true);
+	}
+	
+	@Override
+	protected void onPostExecute(JSONArray result) {
+		super.onPostExecute(result);
+		ApplicationController.getInstance().setAPICallBusy(false);
+	}
 
 	@Override
 	protected JSONArray doInBackground(String... _params) {

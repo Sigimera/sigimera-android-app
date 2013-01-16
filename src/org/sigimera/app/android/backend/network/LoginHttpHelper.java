@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -39,33 +38,55 @@ import android.util.Base64;
 
 public class LoginHttpHelper extends AsyncTask<String, Void, Boolean> {
 
-	private final String HOST = Config.getInstance().getWWWHost()+"/tokens.json";
-	
+	private final String HOST = Config.getInstance().getWWWHost()
+			+ "/tokens.json";
+
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		ApplicationController.getInstance().setAPICallBusy(true);
+	}
+
+	@Override
+	protected void onPostExecute(Boolean result) {
+		super.onPostExecute(result);
+		ApplicationController.getInstance().setAPICallBusy(false);
+	}
+
 	@Override
 	protected Boolean doInBackground(String... params) {
-        HttpClient httpclient = new MyHttpClient(ApplicationController.getInstance().getApplicationContext());
-		HttpPost request = new HttpPost(HOST);						
+		HttpClient httpclient = new MyHttpClient(ApplicationController
+				.getInstance().getApplicationContext());
+		HttpPost request = new HttpPost(HOST);
 		request.addHeader("Host", "api.sigimera.org:443");
-		
+
 		/**
 		 * Basic Authentication for the auth_token fetching:
-		 *
-		 * 		Authorization: Basic QWxhZGluOnNlc2FtIG9wZW4=
+		 * 
+		 * Authorization: Basic QWxhZGluOnNlc2FtIG9wZW4=
 		 */
 		StringBuffer authString = new StringBuffer();
-		authString.append(params[0]); authString.append(":"); authString.append(params[1]);
-		String basicAuthentication = "Basic " + Base64.encodeToString(authString.toString().getBytes(), Base64.DEFAULT);
-		request.addHeader("Authorization", basicAuthentication);		
-        		
+		authString.append(params[0]);
+		authString.append(":");
+		authString.append(params[1]);
+		String basicAuthentication = "Basic "
+				+ Base64.encodeToString(authString.toString().getBytes(),
+						Base64.DEFAULT);
+		request.addHeader("Authorization", basicAuthentication);
+
 		try {
 			HttpResponse result = httpclient.execute(request);
-			
-			JSONObject json_response = new JSONObject(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
-			if ( json_response.has("auth_token") ) {
-				SharedPreferences.Editor editor = ApplicationController.getInstance().getSharedPreferences().edit();
-				editor.putString("auth_token", json_response.getString("auth_token"));
+
+			JSONObject json_response = new JSONObject(
+					new BufferedReader(new InputStreamReader(result.getEntity()
+							.getContent())).readLine());
+			if (json_response.has("auth_token")) {
+				SharedPreferences.Editor editor = ApplicationController
+						.getInstance().getSharedPreferences().edit();
+				editor.putString("auth_token",
+						json_response.getString("auth_token"));
 				return editor.commit();
-			} else if ( json_response.has("error") ) {
+			} else if (json_response.has("error")) {
 				return false;
 			}
 		} catch (ClientProtocolException e) {

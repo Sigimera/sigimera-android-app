@@ -21,6 +21,18 @@ public class CrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
 
     private final String HOST = Config.getInstance().getAPIHost()+"/crises.json?output=short&auth_token=";
     private final String FREE_HOST = Config.getInstance().getFreeAPIHost();
+    
+    @Override
+    protected void onPreExecute() {    	
+    	super.onPreExecute();
+    	ApplicationController.getInstance().setAPICallBusy(true);    	
+    }
+    
+    @Override
+    protected void onPostExecute(JSONArray result) {
+    	super.onPostExecute(result);
+    	ApplicationController.getInstance().setAPICallBusy(false);
+    }
 
     @Override
     protected JSONArray doInBackground(String... _params) {
