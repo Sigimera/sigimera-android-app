@@ -21,28 +21,28 @@ public class CrisesStats implements Serializable {
 	private int postedComments;
 	private int reportedLocations;
 	private int reportedMissingPeople;
-	private Crisis nearCrisis;
-	private Crisis latestCrisis;
-	private ArrayList<Crisis> todayCrises;
+//	private Crisis nearCrisis;
+//	private Crisis latestCrisis;
+//	private ArrayList<Crisis> todayCrises;
 	
-	public void setTodayCrises(ArrayList<Crisis> _todayCrises) {
-		this.todayCrises = _todayCrises;
-	}
-	public ArrayList<Crisis> getTodayCrises() {
-		return this.todayCrises;
-	}
-	public void setNearCrisis(Crisis _crisis) {
-		this.nearCrisis = _crisis;
-	}
-	public Crisis getNearestCrisis(){
-		return this.nearCrisis;
-	}
-	public void setLatestCrisis(Crisis _crisis) {
-		this.latestCrisis = _crisis;
-	}
-	public Crisis getLatestCrisis(){
-		return this.latestCrisis;
-	}
+//	public void setTodayCrises(ArrayList<Crisis> _todayCrises) {
+//		this.todayCrises = _todayCrises;
+//	}
+//	public ArrayList<Crisis> getTodayCrises() {
+//		return this.todayCrises;
+//	}
+//	public void setNearCrisis(Crisis _crisis) {
+//		this.nearCrisis = _crisis;
+//	}
+//	public Crisis getNearestCrisis(){
+//		return this.nearCrisis;
+//	}
+//	public void setLatestCrisis(Crisis _crisis) {
+//		this.latestCrisis = _crisis;
+//	}
+//	public Crisis getLatestCrisis(){
+//		return this.latestCrisis;
+//	}
 	public int getReportedMissingPeople() {
 		return reportedMissingPeople;
 	}
