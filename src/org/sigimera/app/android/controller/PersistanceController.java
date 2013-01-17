@@ -93,7 +93,7 @@ public class PersistanceController {
 				e.printStackTrace();
 			}
     		stats = this.pershandler.getCrisesStats();
-    	}  	
+    	}
     	
     	return stats;
     }
@@ -201,14 +201,20 @@ public class PersistanceController {
 		}
 		Log.i("[PERSISTANCE CONTROLLER]", "Retrieve near crisis id: " + crisisID);
 		
-		return getCrisis(_auth_token, crisisID);
+		if (crisisID != null)
+			return getCrisis(_auth_token, crisisID);
+		
+		return null;
 	}
 	
 	public Crisis getLatestCrisis(String _auth_token) {
 		String crisisID = this.pershandler.getLatestCrisis();
 		Log.i("[PERSISTANCE CONTROLLER]", "Retrieve latest crisis id: " + crisisID);
 		
-		return getCrisis(_auth_token, crisisID);
+		if (crisisID != null)
+			return getCrisis(_auth_token, crisisID);
+		
+		return null;
 	}
 	
 	public ArrayList<Crisis> getTodayCrises() {
@@ -258,6 +264,10 @@ public class PersistanceController {
 			}
 		} else
 			Log.i("[PERSISTENT CONTROLLER]", "Crises statistics or latest crisis date are empty.");
+	}
+	
+	public void updateNearCrisesRadius(int _radius, String _userID) {
+		this.pershandler.updateNearCrisesRadius(_radius, _userID);
 	}
 	
 	public boolean updateNearCrises(String _auth_token, int _page, Location _location) {

@@ -16,7 +16,6 @@ import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.CrisesStats;
 import org.sigimera.app.android.model.Crisis;
-import org.sigimera.app.android.model.UserSettings;
 import org.sigimera.app.android.model.UsersStats;
 import org.sigimera.app.android.util.Common;
 
@@ -291,7 +290,22 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	db.close();
     	
     	return db_size;
-    }    
+    }
+    
+    
+//    public synchronized int getNearCrisesRadius() {
+//    	SQLiteDatabase db = getReadableDatabase();
+//    	
+//        Cursor c = db.rawQuery("SELECT radius FROM " + TABLE_USERS_STATS , null);
+//        int radius = 0;
+//        if ( c.moveToFirst() )
+//        	radius = c.getInt(0);
+//        c.close();
+//        db.close();
+//
+//        return radius;
+//    }
+    
     
     /****************************************************************
 	 * From here on are methods for saving 
@@ -411,7 +425,6 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         
-        values.put("_id", _usersStats.getString("_id"));
         values.put("name", _usersStats.getString("name"));
         values.put("username", _usersStats.getString("username"));
         values.put("uploaded_images", _usersStats.getInt("uploaded_images"));
@@ -461,6 +474,28 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	}
     	db.close();
 
+    	return true;
+    }
+    
+    public synchronized boolean updateNearCrisesRadius(int _radius, String _userID) {    	
+    	if ( _userID == null ) return false;
+    	
+    	Log.i("[PERSISTENT STORAGE]", "Updating near crises radius for user " + _userID);
+    	SQLiteDatabase db = getWritableDatabase();
+    	ContentValues values = new ContentValues();  
+    	
+    	values.put("radius", _radius);
+    	
+    	int number_of_rows = db.update(TABLE_USERS_STATS, values, "username = '" + _userID  + "'", null);
+    	Log.i("[PERSISTENT STORAGE]", "Affected rows: " + number_of_rows);
+    	
+    	if ( number_of_rows == 0 ) {
+    		Log.i("[PERSISTENT STORAGE]", "Radius is not set. Insert near crises radius in db: " + _radius + 
+    				" --- affected rows: " + db.insert(TABLE_USERS_STATS, null, values));
+    	} else
+    		Log.i("[PERSISTENT STORAGE]", "Near crises radius updated: " + _radius);
+    	db.close();
+    	
     	return true;
     }
     
@@ -577,47 +612,27 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         boolean hasEntry = _c.moveToFirst();
         if ( hasEntry ) {
         	stats = new UsersStats();
-        	stats.setId(_c.getString(_c.getColumnIndex("_id")));
         	stats.setName(_c.getString(_c.getColumnIndex("name")));
         	stats.setUsername(_c.getString(_c.getColumnIndex("username")));
         	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
         	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
         	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
         	stats.setReportedMissingPeople(_c.getInt(_c.getColumnIndex("reported_missing_people"))); 
+        	stats.setLatitude(_c.getDouble(_c.getColumnIndex("latitude")));
+        	stats.setLongitude(_c.getDouble(_c.getColumnIndex("longitude")));
+        	stats.setRadius(_c.getInt(_c.getColumnIndex("radius")));
         	
         	Log.d("[PERSISTANT STORAGE]", "Extracting users stats: " +  
-        			stats.getId() + " - " +
         			stats.getName() + " - " +
         			stats.getUsername() + " - " +
         			stats.getPostedComments() + " - " +
         			stats.getReportedLocations() + " - " +
         			stats.getReportedMissingPeople() + " - " +
-        			stats.getUploadedImages());
-        }
-        return stats;
-    }
-    
-    private UserSettings _extractUserSettings(Cursor _c) {
-    	UserSettings stats = null;
-        boolean hasEntry = _c.moveToFirst();
-        if ( hasEntry ) {
-        	stats = new UserSettings();
-        	stats.setId(_c.getString(_c.getColumnIndex("_id")));
-        	stats.setName(_c.getString(_c.getColumnIndex("name")));
-        	stats.setUsername(_c.getString(_c.getColumnIndex("username")));
-        	stats.setLatitude(_c.getDouble(_c.getColumnIndex("latitude")));
-        	stats.setLongitude(_c.getDouble(_c.getColumnIndex("longitude")));
-        	stats.setRadius(_c.getInt(_c.getColumnIndex("radius")));
-        	
-        	Log.d("[PERSISTANT STORAGE]", "Extracting user settings: " +  
-        			stats.getId() + " - " +
-        			stats.getName() + " - " +
-        			stats.getUsername() + " - " +
+        			stats.getUploadedImages() + " - " +
         			stats.getLatitude() + " - " +
         			stats.getLongitude()+ " - " + 
         			stats.getRadius());
         }
         return stats;
     }
-
 }
