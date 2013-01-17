@@ -77,10 +77,7 @@ public class ProfileFragment extends Fragment {
 					auth_token = ApplicationController.getInstance()
 							.getSessionHandler().getAuthenticationToken();
 
-					stats = PersistanceController.getInstance().getUsersStats(
-							auth_token);
-//					radius = PersistanceController.getInstance()
-//							.getNearCrisesRadius();
+					stats = PersistanceController.getInstance().getUsersStats(auth_token);
 
 					if (stats == null)
 						Log.d("[PROFILE FRAGMENT]", "User stats are empty.");
@@ -89,6 +86,7 @@ public class ProfileFragment extends Fragment {
 						InputStream is = (InputStream) getAvatarURL(
 								stats.getUsername()).getContent();
 						drawable = Drawable.createFromStream(is, "src name");
+						radius = stats.getRadius();
 					}
 
 					guiHandler.post(updateGUI);
@@ -217,7 +215,7 @@ public class ProfileFragment extends Fragment {
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-//			CrisesController.getInstance().setNearCrisesRadius(radiusProgress);
+			PersistanceController.getInstance().updateNearCrisesRadius(radiusProgress, stats.getUsername());
 		}
 
 		@Override
@@ -230,7 +228,7 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadiusValue.setEnabled(true);
 		this.enableNearCrises.setChecked(true);
 		this.overwriteLocation.setEnabled(true);
-//		CrisesController.getInstance().setNearCrisesRadius(radius);
+		PersistanceController.getInstance().updateNearCrisesRadius(radius, stats.getUsername());
 		
 	}
 
@@ -239,6 +237,6 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadiusValue.setEnabled(false);
 		this.enableNearCrises.setChecked(false);
 		this.overwriteLocation.setEnabled(false);
-//		CrisesController.getInstance().setNearCrisesRadius(0);
+		PersistanceController.getInstance().updateNearCrisesRadius(0, stats.getUsername());
 	}
 }
