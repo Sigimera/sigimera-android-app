@@ -10,9 +10,6 @@ public class User {
 	/**
 	 * Setter
 	 */	
-	public void setId(String id) {
-		this.id = id;
-	}
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -23,9 +20,6 @@ public class User {
 	/**
 	 * Getter
 	 */
-	public String getId() {
-		return id;
-	}
 	public String getName() {
 		return name;
 	}

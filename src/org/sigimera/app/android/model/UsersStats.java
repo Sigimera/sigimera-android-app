@@ -5,10 +5,13 @@ import java.io.Serializable;
 public class UsersStats extends User implements Serializable {	
 	private static final long serialVersionUID = -2526641247855691670L;
 		
-	public int postedComments;
-	public int uploadedImages;
-	public int reportedLocations;
-	public int reportedMissingPeople;	
+	private int postedComments;
+	private int uploadedImages;
+	private int reportedLocations;
+	private int reportedMissingPeople;	
+	private int radius;
+	private double latitude;
+	private double longitude;
 		
 	/**
 	 * Setter
@@ -25,6 +28,15 @@ public class UsersStats extends User implements Serializable {
 	public void setReportedMissingPeople(int reportedMissingPeople) {
 		this.reportedMissingPeople = reportedMissingPeople;
 	}
+	public void setRadius(int radius) {
+		this.radius = radius;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 	
 	/**
 	 * Getter
@@ -40,5 +52,14 @@ public class UsersStats extends User implements Serializable {
 	}
 	public int getReportedMissingPeople() {
 		return reportedMissingPeople;
+	}
+	public int getRadius() {
+		return radius;
+	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public double getLongitude() {
+		return longitude;
 	}
 }
