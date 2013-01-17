@@ -72,7 +72,7 @@ public class StatisticFragment extends Fragment {
                     auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
                     userLocation = LocationController.getInstance().getLastKnownLocation();
                     
-                    crisesStats = PersistanceController.getInstance().getCrisesStats(auth_token);
+                    crisesStats = PersistanceController.getInstance().getCrisesStats(auth_token);            		
                                         
                     guiHandler.post(updateGUI);
                 } catch (AuthenticationErrorException e) {

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -42,19 +43,16 @@ public class NearCrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
 		try {
 			Log.i("[NEAR CRISES HTTP HELPER]", "API CALL: " + request.getURI());
 			HttpResponse result = httpclient.execute(request);
-			JSONArray json_response = new JSONArray(new BufferedReader(new InputStreamReader(result.getEntity().getContent())).readLine());
-			Log.i("[NEAR CRISES HTTP HELPER]", "RESPONSE: " + json_response);
-			return json_response;
-//			HttpEntity entity = result.getEntity();
-//			if (entity != null) {
-//				BufferedReader bf = new BufferedReader(new InputStreamReader(
-//						entity.getContent()));
-//				if (bf != null) {
-//					JSONArray json_response = new JSONArray(bf.readLine());
-//					Log.i("[NEAR CRISES HTTP HELPER]", "RESPONSE: " + json_response);
-//					return json_response;
-//				}
-//			}
+			HttpEntity entity = result.getEntity();
+			if (entity != null) {
+				BufferedReader bf = new BufferedReader(new InputStreamReader(
+						entity.getContent()));
+				if (bf != null) {
+					JSONArray json_response = new JSONArray(bf.readLine());
+					Log.i("[NEAR CRISES HTTP HELPER]", "RESPONSE: " + json_response);
+					return json_response;
+				}
+			}
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
