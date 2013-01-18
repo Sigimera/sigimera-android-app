@@ -166,8 +166,8 @@ public class ProfileFragment extends Fragment {
 		nearCrisisRadius = (SeekBar) view.findViewById(R.id.near_crisis_radius);
 		nearCrisisRadius.setOnSeekBarChangeListener(seekBarChangeListener);
 
-		overwriteLocation = (TextView) view
-				.findViewById(R.id.overwrite_location);
+//		overwriteLocation = (TextView) view
+//				.findViewById(R.id.overwrite_location);
 
 		if (radius == 0) {
 			disableNearCrisesView();
@@ -235,7 +235,7 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadius.setEnabled(true);
 		this.nearCrisisRadiusValue.setEnabled(true);
 		this.enableNearCrises.setChecked(true);
-		this.overwriteLocation.setEnabled(true);
+//		this.overwriteLocation.setEnabled(true);
 		if ( !firstTimeFlag ) {
 			PersistanceController.getInstance().updateNearCrisesRadius(radius, stats.getUsername());
 			PersistanceController.getInstance().updateNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
@@ -246,7 +246,7 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadius.setEnabled(false);
 		this.nearCrisisRadiusValue.setEnabled(false);
 		this.enableNearCrises.setChecked(false);
-		this.overwriteLocation.setEnabled(false);
+//		this.overwriteLocation.setEnabled(false);
 		if ( !firstTimeFlag ) {
 			PersistanceController.getInstance().updateNearCrisesRadius(0, stats.getUsername());
 			PersistanceController.getInstance().updateNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
