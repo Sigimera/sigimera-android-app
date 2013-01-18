@@ -139,8 +139,11 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		MenuItem item = menu.findItem(R.id.menu_update_location);
-		item.setTitle("Update your location");
+		MenuItem itemUpdateLocation = menu.findItem(R.id.menu_update_location);
+		itemUpdateLocation.setTitle("Update your location");
+		
+		MenuItem itemUpdateEverything = menu.findItem(R.id.menu_update_everything);
+		itemUpdateEverything.setTitle("Update everything");
 		return super.onCreateOptionsMenu(menu);
 	}
 
