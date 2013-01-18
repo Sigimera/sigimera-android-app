@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.sigimera.app.android.controller.ApplicationController;
+import org.sigimera.app.android.controller.LocationController;
 import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
 import org.sigimera.app.android.model.Constants;
@@ -36,6 +37,8 @@ public class ProfileFragment extends Fragment {
 	private View view;
 	private Drawable drawable;
 	private String auth_token;
+	
+	private boolean firstTimeFlag = true;
 
 	private CheckBox enableNearCrises;
 	private SeekBar nearCrisisRadius;
@@ -176,6 +179,8 @@ public class ProfileFragment extends Fragment {
 		nearCrisisRadius.setProgress(radius);
 
 		progessDialog.dismiss();
+		
+		firstTimeFlag = false;
 	}
 
 	private URL getAvatarURL(String email) {
@@ -195,10 +200,12 @@ public class ProfileFragment extends Fragment {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView,
 				boolean isChecked) {
-			if (isChecked)
-				enableNearCrisesView();
-			else
-				disableNearCrisesView();
+			if ( !firstTimeFlag ) {
+				if (isChecked)
+					enableNearCrisesView();
+				else
+					disableNearCrisesView();
+			}
 		}
 	};
 
@@ -216,6 +223,7 @@ public class ProfileFragment extends Fragment {
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
 			PersistanceController.getInstance().updateNearCrisesRadius(radiusProgress, stats.getUsername());
+			PersistanceController.getInstance().updateNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
 		}
 
 		@Override
@@ -228,8 +236,10 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadiusValue.setEnabled(true);
 		this.enableNearCrises.setChecked(true);
 		this.overwriteLocation.setEnabled(true);
-		PersistanceController.getInstance().updateNearCrisesRadius(radius, stats.getUsername());
-		
+		if ( !firstTimeFlag ) {
+			PersistanceController.getInstance().updateNearCrisesRadius(radius, stats.getUsername());
+			PersistanceController.getInstance().updateNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
+		}
 	}
 
 	private void disableNearCrisesView() {
@@ -237,6 +247,9 @@ public class ProfileFragment extends Fragment {
 		this.nearCrisisRadiusValue.setEnabled(false);
 		this.enableNearCrises.setChecked(false);
 		this.overwriteLocation.setEnabled(false);
-		PersistanceController.getInstance().updateNearCrisesRadius(0, stats.getUsername());
+		if ( !firstTimeFlag ) {
+			PersistanceController.getInstance().updateNearCrisesRadius(0, stats.getUsername());
+			PersistanceController.getInstance().updateNearCrises(auth_token, 1, LocationController.getInstance().getLastKnownLocation());
+		}
 	}
 }
