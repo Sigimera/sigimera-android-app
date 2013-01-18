@@ -12,7 +12,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.sigimera.app.android.controller.ApplicationController;
+import org.sigimera.app.android.controller.PersistanceController;
 import org.sigimera.app.android.model.Constants;
+import org.sigimera.app.android.model.UsersStats;
 import org.sigimera.app.android.util.Config;
 
 import android.os.AsyncTask;
@@ -31,9 +33,10 @@ public class NearCrisesHttpHelper extends AsyncTask<String, Void, JSONArray> {
 		String longitude = _params[3];
 
 		int radius = Constants.LOCATION_RADIUS;
-		//TODO:
-//		if (CrisesController.getInstance().getNearCrisesRadius() != 0)
-//			radius = CrisesController.getInstance().getNearCrisesRadius();
+		
+		UsersStats stats = PersistanceController.getInstance().getUsersStats(auth_token);
+		if ( stats != null && stats.getRadius() != 0 )
+			radius = stats.getRadius();		
 
 		HttpClient httpclient = new MyHttpClient(ApplicationController
 				.getInstance().getApplicationContext());
