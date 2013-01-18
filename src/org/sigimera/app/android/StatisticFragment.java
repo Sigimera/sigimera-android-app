@@ -97,7 +97,7 @@ public class StatisticFragment extends Fragment {
         if ( nearDistance != -1.0 )
         	nearCrisisButton.setText(Html.fromHtml(nearDistance + " km" + "<br/><small><i>" + "Near crisis" + "</i></small>"));
         else
-        	nearCrisisButton.setText(Html.fromHtml("No<br/><small><i>" + "Near crisis" + "</i></small>"));
+        	nearCrisisButton.setText(Html.fromHtml("No<br/><small><i>" + "Nearest crisis" + "</i></small>"));
         nearCrisisButton.setOnClickListener(this.nearCrisisListenter);
         	
 		 // Set the number of crises today					
