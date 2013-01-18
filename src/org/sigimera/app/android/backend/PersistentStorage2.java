@@ -292,19 +292,17 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	return db_size;
     }
     
-    
-//    public synchronized int getNearCrisesRadius() {
-//    	SQLiteDatabase db = getReadableDatabase();
-//    	
-//        Cursor c = db.rawQuery("SELECT radius FROM " + TABLE_USERS_STATS , null);
-//        int radius = 0;
-//        if ( c.moveToFirst() )
-//        	radius = c.getInt(0);
-//        c.close();
-//        db.close();
-//
-//        return radius;
-//    }
+    public ArrayList<Crisis> getNearCrises() {
+    	ArrayList<Crisis> crises = new ArrayList<Crisis>();
+    	SQLiteDatabase db = getReadableDatabase();
+    	
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NEAR_CRISES + " near INNER JOIN " + TABLE_CRISES + " crises ON near._id=crises._id", null);
+        crises = this._extractCrises(c);
+        
+        db.close();
+
+		return crises;
+	}
     
     
     /****************************************************************
@@ -445,7 +443,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     }
     
     /****************************************************************
-	 * From here on are methods for updating
+	 * From here on are methods for UPDATING
 	 ****************************************************************/
 	
     public synchronized boolean updateNearCrises(JSONArray crises){

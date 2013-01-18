@@ -223,6 +223,10 @@ public class PersistanceController {
 		return crisesList;
 	}
 	
+	public ArrayList<Crisis> getNearCrises() {
+		return this.pershandler.getNearCrises();
+	}
+	
 	
 	/**************************************************************
 	 *  Methods for UPDATE functionality

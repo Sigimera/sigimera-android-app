@@ -56,13 +56,14 @@ import android.widget.AdapterView.OnItemClickListener;
  * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisesListFragment extends Fragment {
-	private ArrayList<Crisis> crises = new ArrayList<Crisis>();;
+	private ArrayList<Crisis> crises;
 	private ListView list;
 	
 	private int page = 1;
 //	private boolean showMore = true;
 	private SimpleAdapter adapterMainList;
 	private ProgressDialog progessDialog;
+	private Bundle arguments;
 	
 	private final Handler guiHandler = new Handler();
 	private final Runnable updateGUI = new Runnable() {		
@@ -86,14 +87,9 @@ public class CrisesListFragment extends Fragment {
 		this.list.setOnItemClickListener(this.clickListener);
 //		this.list.setOnScrollListener(this.scrollListener);
 		registerForContextMenu(this.list);
+		this.arguments = getArguments();
 		
-		if ( getArguments() != null ) {
-			Object object = getArguments().getSerializable("crises");
-			if ( object != null )
-				crises = (ArrayList<Crisis>) object;	
-		}		
-		
-		progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
+		this.progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
         		"Please be patient until the information are ready...");
 		Thread worker = new Thread() {
 			@Override
@@ -101,7 +97,19 @@ public class CrisesListFragment extends Fragment {
 				Looper.prepare();
 				String auth_token = null;
 				try {
-					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();															
+					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+					
+					// If there are crises passed as arguments -> show them
+					if ( arguments != null ) {
+						Object object = getArguments().getSerializable("crises");
+						if ( object != null )
+							crises = (ArrayList<Crisis>) object;	
+					} 
+					// otherwise check if the user wants to have near crises on crises list
+					else if (PersistanceController.getInstance().getUsersStats(auth_token).getRadius() != 0) {
+						Log.i("[CRISES LIST]", "Show the near crises into the crises list");
+						crises = PersistanceController.getInstance().getNearCrises();
+					}
 				} catch (AuthenticationErrorException e) {
 					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
 				}
