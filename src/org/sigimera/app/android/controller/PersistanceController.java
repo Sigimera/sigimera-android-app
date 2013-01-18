@@ -225,7 +225,7 @@ public class PersistanceController {
 	
 	
 	/**************************************************************
-	 *  Methods for update functionality
+	 *  Methods for UPDATE functionality
 	 **************************************************************/
 	
 	/**
@@ -235,7 +235,7 @@ public class PersistanceController {
 	 * @param _location
 	 */
 	private void updateCrisesStats(String _auth_token, Location _location) {
-		Log.i("[PERSISTENT CONTROLLER]", "Check if there are new statistics");
+		Log.i("[PERSISTENT CONTROLLER]", "Check if there are new crises statistics");
 		CrisesStats crisesStats = getCrisesStats(_auth_token);
 		
 		if ( crisesStats != null && crisesStats.getLatestCrisisAt() != null) {
@@ -247,7 +247,7 @@ public class PersistanceController {
     			if ( tmpStats != null ) {
 	    			String latestCrisisAt = tmpStats.getString("latest_crisis_at");
 	    			if ( latestCrisisAt != null && Common.getDate(latestCrisisAt).after(date) ) {    
-	    				Log.i("[PERSISTENT CONTROLLER]", "There are new statistics available. Update the existing ones");
+	    				Log.i("[PERSISTENT CONTROLLER]", "There are new crises statistics available. Update the existing ones");
 	    				this.pershandler.addCrisesStats(crisesStatsHelper.get());	
 	    			}else
 	    				Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are up to date.");
@@ -266,11 +266,25 @@ public class PersistanceController {
 			Log.i("[PERSISTENT CONTROLLER]", "Crises statistics or latest crisis date are empty.");
 	}
 	
+	/**
+	 * Update user statistics
+	 * 
+	 * @param _auth_token
+	 */
+	public void updateUserStats(String _auth_token) {
+		Log.i("[PERSISTENT CONTROLLER]", "Check if there are new user statistics");
+		UsersStats userStats = getUsersStats(_auth_token);
+		
+		if (userStats != null) {
+			//TODO: figure some update mechanism for user stats
+		}
+	}
+	
 	public void updateNearCrisesRadius(int _radius, String _userID) {
 		this.pershandler.updateNearCrisesRadius(_radius, _userID);
 	}
 	
-	public boolean updateNearCrises(String _auth_token, int _page, Location _location) {
+	public void updateNearCrises(String _auth_token, int _page, Location _location) {
     	AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
     	JSONArray retArray = null;
         try {
@@ -283,7 +297,6 @@ public class PersistanceController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    	return true;
 	}
 	
 	/**
@@ -309,9 +322,9 @@ public class PersistanceController {
 		this.updateNearCrises(_auth_token, 1, lastLocation);
 		Thread.sleep(1000);
 		
-//		Log.i("[PERSISTENT CONTROLLER]", "UPDATE USER STATISTICS");
-//		this.updateCrisesStats(_auth_token, lastLocation);
-//		Thread.sleep(1000);
+		Log.i("[PERSISTENT CONTROLLER]", "UPDATE USER STATISTICS");
+		this.updateUserStats(_auth_token);
+		Thread.sleep(1000);
 		
 		ApplicationController.getInstance().setEverythingUpdated(true);
 		Log.i("[PERSISTENT CONTROLLER]", "End to update everything");
