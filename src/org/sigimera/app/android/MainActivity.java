@@ -93,7 +93,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Initialize Google Cloud Messaging
+	 * Initialize Google Cloud Messaging.
 	 */
 	private void initGCM() {
 		if (Config.getInstance().getGcmProjectId() != null) {
@@ -113,7 +113,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Initialize of tabs
+	 * Initialize of tabs.
 	 */
 	private void initTabs() {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -123,7 +123,7 @@ public class MainActivity extends FragmentActivity {
 		try {
 			authToken = ApplicationController.getInstance().getSessionHandler()
 					.getAuthenticationToken();
-			
+
 			setTabsAfterLogin();
 		} catch (AuthenticationErrorException e) {
 			setTabsBeforeLogin();
