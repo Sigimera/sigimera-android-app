@@ -1,6 +1,24 @@
+/**
+ * Sigimera Crises Information Platform Android Client
+ * Copyright (C) 2013 by Sigimera
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.sigimera.app.android;
 
-import org.sigimera.app.android.R;
 import org.sigimera.app.android.backend.network.LocationUpdaterHttpHelper;
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.LocationController;
@@ -37,9 +55,15 @@ import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+/**
+ * Activity which initialise the tabs and starts the application.
+ * 
+ * @author Corneliu-Valentin Stanciu
+ * @e-mail corneliu.stanciu@sigimera.org
+ */
 public class MainActivity extends FragmentActivity {
 	private String authToken;
-	
+
 	private TabHost mTabHost;
 	private ViewPager mViewPager;
 	private TabsAdapter mTabsAdapter;
@@ -141,8 +165,9 @@ public class MainActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		MenuItem itemUpdateLocation = menu.findItem(R.id.menu_update_location);
 		itemUpdateLocation.setTitle("Update your location");
-		
-		MenuItem itemUpdateEverything = menu.findItem(R.id.menu_update_everything);
+
+		MenuItem itemUpdateEverything = menu
+				.findItem(R.id.menu_update_everything);
 		itemUpdateEverything.setTitle("Update everything");
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -168,7 +193,7 @@ public class MainActivity extends FragmentActivity {
 						.getSessionHandler()
 						.login(emailView.getText().toString(),
 								passwordView.getText().toString())) {
-					
+
 					guiHandler.post(successfulLogin);
 				} else {
 					guiHandler.post(errorLogin);
@@ -226,7 +251,8 @@ public class MainActivity extends FragmentActivity {
 			try {
 				PersistanceController.getInstance().updateEverything(authToken);
 			} catch (InterruptedException e) {
-				Log.e("[MAIN ACTIVITY]", "The thread coudn't sleep betheen api calls.");
+				Log.e("[MAIN ACTIVITY]",
+						"The thread coudn't sleep betheen api calls.");
 			}
 			return true;
 		case R.id.menu_logout:
@@ -297,9 +323,10 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void setTabsAfterLogin() {
-		//Before setting the tabs get all information
+		// Before setting the tabs get all information
 		try {
-			authToken = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+			authToken = ApplicationController.getInstance().getSessionHandler()
+					.getAuthenticationToken();
 			PersistanceController.getInstance().updateEverything(authToken);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -308,7 +335,7 @@ public class MainActivity extends FragmentActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
 				this.mViewPager);

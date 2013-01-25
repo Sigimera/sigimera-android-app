@@ -2,19 +2,28 @@ package org.sigimera.app.android.model;
 
 import java.io.Serializable;
 
-public class UsersStats extends User implements Serializable {	
+/**
+ * Class which models the user statistics.
+ * @author Corneliu-Valentin Stanciu
+ * @email  corneliu.stanciu@sigimera.org
+ */
+public class UsersStats extends User implements Serializable {
+
+	/**
+	 * Ready for serialisation.
+	 */
 	private static final long serialVersionUID = -2526641247855691670L;
-		
+
 	private int postedComments;
 	private int uploadedImages;
 	private int reportedLocations;
-	private int reportedMissingPeople;	
+	private int reportedMissingPeople;
 	private int radius;
 	private double latitude;
 	private double longitude;
-		
+
 	/**
-	 * Setter
+	 * Setter.
 	 */
 	public void setPostedComments(int postedComments) {
 		this.postedComments = postedComments;

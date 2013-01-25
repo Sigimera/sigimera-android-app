@@ -30,10 +30,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 /**
- * Handle the location found via network or GPS. 
- * 
+ * Handle the location found via network or GPS.
  * @author Corneliu-Valentin Stanciu
- * @email  corneliu.stanciu@sigimera.org
+ * @e-mail  corneliu.stanciu@sigimera.org
  */
 public class LocationController {	
 	
