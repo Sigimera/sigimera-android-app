@@ -136,8 +136,8 @@ public class CrisisActivity extends MapActivity {
         mShareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
         mShareActionProvider.setShareHistoryFileName("crisis_share_history.xml");
         if ( crisis == null ) {
-            String authToken = getSharedPreferences(Constants.PREFS_NAME, 0).getString("auth_token", null);
-//            crisis = CrisesController.getInstance().getLatestCrisis(authToken);
+        	String authToken = getSharedPreferences(Constants.PREFS_NAME, 0).getString("auth_token", null);
+        	crisis = PersistanceController.getInstance().getLatestCrisis(authToken);
         }
         mShareActionProvider.setShareIntent(Common.shareCrisis(crisis.getID(), crisis.getShortTitle()));
 
