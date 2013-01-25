@@ -138,6 +138,15 @@ public class StatisticFragment extends Fragment {
 							.getSessionHandler().getAuthenticationToken();
 					userLocation = LocationController.getInstance()
 							.getLastKnownLocation();
+					
+						authToken = ApplicationController.getInstance().getSessionHandler()
+								.getAuthenticationToken();
+					try {
+						if ( !ApplicationController.getInstance().isUpdatedOne() )
+							PersistanceController.getInstance().updateEverything(authToken);
+					} catch (InterruptedException e) {
+						Log.e("[StatisticFragment]", "Failed to update everything.");
+					}
 
 					crisesStats = PersistanceController.getInstance()
 							.getCrisesStats(authToken);

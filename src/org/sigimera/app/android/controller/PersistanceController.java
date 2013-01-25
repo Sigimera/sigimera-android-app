@@ -352,6 +352,7 @@ public class PersistanceController extends Observable {
 		Thread.sleep(1000);
 		
 		ApplicationController.getInstance().setEverythingUpdated(true);
+		ApplicationController.getInstance().setUpdatedOnce(true);
 		Log.i("[PERSISTENT CONTROLLER]", "END TO UPDATE EVERYTHING");
 	}
 	

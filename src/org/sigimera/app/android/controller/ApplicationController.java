@@ -36,6 +36,7 @@ public class ApplicationController {
 	private ActionBar actionBar;
 	
 	private boolean updatingEverything = false;
+	private boolean updateOnce = false;
 	
 	private ApplicationController() {}
 	
@@ -65,6 +66,14 @@ public class ApplicationController {
 		this.actionBar = _actionBar;				
 	}
 	
+	public synchronized void setEverythingUpdated(boolean _updatingEverything) {
+		updatingEverything = _updatingEverything;
+	}
+	
+	public synchronized void setUpdatedOnce(boolean _update) {
+		updateOnce = _update;
+	}
+	
 	public Context getApplicationContext() { return this.context; }
 	public PersistentStorage2 getPersistentStorageHandler() { return this.pershandler; }
 	public ActionBar getActionbar() { return this.actionBar; }
@@ -75,12 +84,12 @@ public class ApplicationController {
 	public SharedPreferences getSharedPreferences(String preferenceName) {
     	return context.getSharedPreferences(preferenceName, 0);    	
     }
-		
+	
 	public synchronized boolean isEverythingUpdated() {
 		return updatingEverything;
 	}	
 	
-	public synchronized void setEverythingUpdated(boolean _updatingEverything) {
-		updatingEverything = _updatingEverything;
+	public synchronized boolean isUpdatedOne() {
+		return updateOnce;
 	}
 }

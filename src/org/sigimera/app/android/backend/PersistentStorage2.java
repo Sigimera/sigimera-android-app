@@ -292,7 +292,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	return db_size;
     }
     
-    public ArrayList<Crisis> getNearCrises() {
+    public synchronized ArrayList<Crisis> getNearCrises() {
     	ArrayList<Crisis> crises = new ArrayList<Crisis>();
     	SQLiteDatabase db = getReadableDatabase();
     	

@@ -390,19 +390,6 @@ public class MainActivity extends FragmentActivity {
 	 * authentication token.
 	 */
 	private void setTabsAfterLogin() {
-		// Before setting the tabs get all information
-		try {
-			authToken = ApplicationController.getInstance().getSessionHandler()
-					.getAuthenticationToken();
-			PersistanceController.getInstance().updateEverything(authToken);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AuthenticationErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
 				this.mViewPager);
