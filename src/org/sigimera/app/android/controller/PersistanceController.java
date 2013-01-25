@@ -20,6 +20,7 @@ package org.sigimera.app.android.controller;
  */
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -46,7 +47,7 @@ import android.util.Log;
  * @author Corneliu-Valentin Stanciu
  * @email corneliu.stanciu@sigimera.org
  */
-public class PersistanceController {
+public class PersistanceController extends Observable {
 
 	private static PersistanceController instance = null;
 	private PersistentStorage2 pershandler;
@@ -270,7 +271,8 @@ public class PersistanceController {
 	    			String latestCrisisAt = tmpStats.getString("latest_crisis_at");
 	    			if ( latestCrisisAt != null && Common.getDate(latestCrisisAt).after(date) ) {    
 	    				Log.i("[PERSISTENT CONTROLLER]", "There are new crises statistics available. Update the existing ones");
-	    				this.pershandler.addCrisesStats(crisesStatsHelper.get());	
+	    				this.pershandler.updateCrisesStats(crisesStatsHelper.get());
+//	    				this.pershandler.addCrisesStats(crisesStatsHelper.get());	
 	    			}else
 	    				Log.i("[PERSISTENT CONTROLLER]", "Crises statistics are up to date.");
     			}
@@ -303,7 +305,8 @@ public class PersistanceController {
 	}
 	
 	public void updateNearCrisesRadius(int _radius, String _userID) {
-		this.pershandler.updateNearCrisesRadius(_radius, _userID);
+		if (this.pershandler.updateNearCrisesRadius(_radius, _userID))
+			this.changesNotifier(_radius);
 	}
 	
 	public void updateNearCrises(String _auth_token, int _page, Location _location) {
@@ -350,5 +353,10 @@ public class PersistanceController {
 		
 		ApplicationController.getInstance().setEverythingUpdated(true);
 		Log.i("[PERSISTENT CONTROLLER]", "END TO UPDATE EVERYTHING");
+	}
+	
+	private void changesNotifier(int radius) {
+		setChanged();
+		notifyObservers(radius);
 	}
 }

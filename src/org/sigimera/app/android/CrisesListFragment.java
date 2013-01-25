@@ -22,6 +22,8 @@ package org.sigimera.app.android;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.sigimera.app.android.R;
 import org.sigimera.app.android.controller.ApplicationController;
@@ -31,6 +33,7 @@ import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,11 +58,12 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author Corneliu-Valentin Stanciu, Alex Oberhauser
  * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
-public class CrisesListFragment extends Fragment {
+public class CrisesListFragment extends Fragment implements Observer {
 	private ArrayList<Crisis> crises;
 	private ListView list;
 	
 	private int page = 1;
+	private String authToken = null;
 //	private boolean showMore = true;
 	private SimpleAdapter adapterMainList;
 	private ProgressDialog progessDialog;
@@ -92,12 +96,13 @@ public class CrisesListFragment extends Fragment {
 		this.progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
         		"Please be patient until the information are ready...");
 		Thread worker = new Thread() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
 				Looper.prepare();
-				String auth_token = null;
 				try {
-					auth_token = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+					authToken = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+					PersistanceController.getInstance().addObserver(CrisesListFragment.this);
 					
 					// If there are crises passed as arguments -> show them
 					if ( arguments != null ) {
@@ -106,7 +111,7 @@ public class CrisesListFragment extends Fragment {
 							crises = (ArrayList<Crisis>) object;	
 					} 
 					// otherwise check if the user wants to have near crises on crises list
-					else if (PersistanceController.getInstance().getUsersStats(auth_token).getRadius() != 0) {
+					else if (PersistanceController.getInstance().getUsersStats(authToken).getRadius() != 0) {
 						Log.i("[CRISES LIST]", "Show the near crises into the crises list");
 						crises = PersistanceController.getInstance().getNearCrises();
 					}
@@ -114,8 +119,8 @@ public class CrisesListFragment extends Fragment {
 					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
 				}
 								
-				if ( crises.isEmpty() )
-					crises = PersistanceController.getInstance().getCrises(auth_token, page);
+				if ( crises == null || crises.isEmpty() )
+					crises = PersistanceController.getInstance().getCrises(authToken, page);
 				
 				guiHandler.post(updateGUI);
 			}
@@ -226,4 +231,18 @@ public class CrisesListFragment extends Fragment {
 //		cursor = CrisesController.getInstance().getCrises(auth_token, page);
 //		showMore = true;
 //	}	
+	
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		int radius = (Integer) arg1;
+		if ( radius != 0 ) {
+			crises = PersistanceController.getInstance().getNearCrises();
+		} else {
+			crises = PersistanceController.getInstance().getCrises(authToken, page);
+		}
+		
+		showCrises();
+		
+		System.out.println("************************* Radius: " + radius);
+	}
 }

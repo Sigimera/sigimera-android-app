@@ -296,7 +296,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     	ArrayList<Crisis> crises = new ArrayList<Crisis>();
     	SQLiteDatabase db = getReadableDatabase();
     	
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NEAR_CRISES + " near INNER JOIN " + TABLE_CRISES + " crises ON near._id=crises._id", null);
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NEAR_CRISES + " near INNER JOIN " + TABLE_CRISES + " crises ON near._id=crises._id ORDER BY dc_date DESC", null);
         crises = this._extractCrises(c);
         
         db.close();
@@ -444,33 +444,73 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
     
     /****************************************************************
 	 * From here on are methods for UPDATING
+     * @throws JSONException 
 	 ****************************************************************/
+    
+    public synchronized boolean updateCrisesStats(JSONObject _crisesStats) throws JSONException {
+    	if (_crisesStats == null) { return false; }
+    	
+    	Log.i("[PERSISTENT STORAGE]", "Updating crises statistics");
+    	SQLiteDatabase db = getWritableDatabase();
+    	ContentValues values = new ContentValues();
+    	
+    	values.put("_id", "crises_stats");
+        values.put("first_crisis_at", _crisesStats.getString("first_crisis_at"));
+        values.put("latest_crisis_at", _crisesStats.getString("latest_crisis_at"));
+        values.put("total_crises", _crisesStats.getInt("total_crises"));
+        values.put("today_crises", _crisesStats.getInt("today_crises"));
+
+        JSONObject numberOf = _crisesStats.getJSONObject("number_of");
+        values.put("number_of_earthquakes", numberOf.getInt("earthquakes"));
+        values.put("number_of_floods", numberOf.getInt("floods"));
+        values.put("number_of_cyclones", numberOf.getInt("cyclones"));
+        values.put("number_of_volcanoes", numberOf.getInt("volcanoes"));
+
+        values.put("uploaded_images", _crisesStats.getInt("uploaded_images"));
+        values.put("posted_comments", _crisesStats.getInt("posted_comments"));
+        values.put("reported_locations", _crisesStats.getInt("reported_locations"));
+        values.put("reported_missing_people", _crisesStats.getInt("reported_missing_people"));
+        
+        int affectedRows = db.update(TABLE_CRISES_STATS, values, null, null);
+        if (affectedRows == 0) {
+        	Log.i("[PERSISTENT STORAGE]", "Updating of crises statistics failed. Affected rows: " + affectedRows);
+        	
+        	Log.i("[PERSISTENT STORAGE]", "Inserting crises statistics into db");
+        	db.insert(TABLE_CRISES_STATS, null, values);
+        }
+    	
+    	return true;
+    }
 	
     public synchronized boolean updateNearCrises(JSONArray crises){
     	if ( crises == null ) return false;
     	
     	Log.i("[PERSISTENT STORAGE]", "Updating near crises");
-    	SQLiteDatabase db = getWritableDatabase();
     	ContentValues values = new ContentValues();    	
     	
     	try {
-	    	for ( int i=0; i < crises.length(); i++ ) {
-	    		JSONObject crisis = crises.getJSONObject(i);
+    		SQLiteDatabase db = getWritableDatabase();
+    		
+    		int affetedRows = db.delete(TABLE_NEAR_CRISES, null, null);
+    		if (affetedRows != 0) 
+				Log.i("[PERSISTENT STORAGE]", "Delete all entries about ");
+    		
+    		for (int i=0; i < crises.length(); i++) {
+    			JSONObject crisis = crises.getJSONObject(i);
 	    		values.put("_id", crisis.getString("_id"));
-	    		Log.i("[PERSISTENT STORAGE]", "Updating near crisis with id: " + crisis.getString("_id"));
-	    	}
-	    	
-	    	int affetedRows = db.update(TABLE_NEAR_CRISES, values, null, null);	    		    	
-	    	Log.i("[PERSISTENT STORAGE]", "Affected rows: " + affetedRows);
-	    	
-	    	if ( affetedRows == 0 ) {
-	    		db.insert(TABLE_NEAR_CRISES, null, values);
-	    		Log.i("[PERSISTENT STORAGE]", "Updating failed. Add in the table " + affetedRows);
-	    	}
+		    	db.insert(TABLE_NEAR_CRISES, null, values);
+		    	Log.i("[PERSISTENT STORAGE]", "Insert near crisis with id: " + crisis.getString("_id"));
+    		}
+    		db.close();
+    		
+    		for (int i=0; i < crises.length(); i++) {
+    			JSONObject crisis = crises.getJSONObject(i);
+    			this.addCrisis(crisis);
+    		}
+    		
     	} catch(JSONException e) {
     		e.printStackTrace();
     	}
-    	db.close();
 
     	return true;
     }

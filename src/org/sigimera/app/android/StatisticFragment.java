@@ -23,6 +23,8 @@ package org.sigimera.app.android;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.DistanceController;
