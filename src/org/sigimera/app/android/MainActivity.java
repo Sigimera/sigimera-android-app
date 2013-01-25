@@ -62,21 +62,51 @@ import android.widget.Toast;
  * @e-mail corneliu.stanciu@sigimera.org
  */
 public class MainActivity extends FragmentActivity {
+
+	/**
+	 * Authentication token.
+	 */
 	private String authToken;
 
+	/**
+	 * Hosting the tabs.
+	 */
 	private TabHost mTabHost;
+
+	/**
+	 * View pager used for scrolling to the left and right.
+	 */
 	private ViewPager mViewPager;
+
+	/**
+	 * The main container of tabs and view pager.
+	 */
 	private TabsAdapter mTabsAdapter;
 
+	/**
+	 * Progress dialog for waiting while loading.
+	 */
 	private ProgressDialog progressDialog = null;
 
+	/**
+	 * 
+	 */
 	private final Handler guiHandler = new Handler();
+
+	/**
+	 * Thread which calls the login error method.
+	 */
 	private final Runnable errorLogin = new Runnable() {
 		@Override
 		public void run() {
 			showLoginErrorToast();
 		}
 	};
+
+	/**
+	 * Thread which calls the method for setting the tabs if the login was
+	 * successfully or there exists an authentication token.
+	 */
 	private final Runnable successfulLogin = new Runnable() {
 		@Override
 		public void run() {
@@ -85,7 +115,7 @@ public class MainActivity extends FragmentActivity {
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -100,10 +130,11 @@ public class MainActivity extends FragmentActivity {
 			appController.init(getApplicationContext(),
 					getSharedPreferences(Constants.PREFS_NAME, 0),
 					getActionBar());
-			if (!Common.hasInternet())
+			if (!Common.hasInternet()) {
 				getActionBar().setIcon(
 						getResources().getDrawable(
 								R.drawable.sigimera_logo_offline));
+			}
 		} else {
 			appController.init(getApplicationContext(),
 					getSharedPreferences(Constants.PREFS_NAME, 0), null);
@@ -112,12 +143,13 @@ public class MainActivity extends FragmentActivity {
 		// Initialize the tabs
 		initTabs();
 
-		if (savedInstanceState != null)
+		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		}
 	}
 
 	/**
-	 * Initialize Google Cloud Messaging.
+	 * Initialise Google Cloud Messaging.
 	 */
 	private void initGCM() {
 		if (Config.getInstance().getGcmProjectId() != null) {
@@ -125,9 +157,10 @@ public class MainActivity extends FragmentActivity {
 				GCMRegistrar.checkDevice(this);
 				GCMRegistrar.checkManifest(this);
 				final String regId = GCMRegistrar.getRegistrationId(this);
-				if (regId.equals(""))
+				if (regId.equals("")) {
 					GCMRegistrar.register(this, Config.getInstance()
 							.getGcmProjectId());
+				}
 			} catch (Exception e) {
 				Log.v(Constants.LOG_TAG_SIGIMERA_APP,
 						"Device meets not the GCM requirements. Exception: "
@@ -137,7 +170,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Initialize of tabs.
+	 * Initialise of tabs.
 	 */
 	private void initTabs() {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -155,13 +188,13 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	protected final void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putString("tab", mTabHost.getCurrentTabTag());
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public final boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		MenuItem itemUpdateLocation = menu.findItem(R.id.menu_update_location);
 		itemUpdateLocation.setTitle("Update your location");
@@ -173,11 +206,14 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Login Listener defined in login.xml layout
+	 * Login Listener defined in login.xml layout.
 	 * 
 	 * @param view
+	 *            - Android internal needs.
+	 * @see http://developer.android.com/reference
+	 *      /android/view/View.html#attr_android:onClickandroid:onClick
 	 */
-	public void loginClicked(View view) {
+	public final void loginClicked(final View view) {
 		progressDialog = ProgressDialog.show(MainActivity.this, null,
 				"Authentication in progress...", false);
 		Thread worker = new Thread() {
@@ -203,23 +239,35 @@ public class MainActivity extends FragmentActivity {
 		worker.start();
 	}
 
-	public void allCrisesClicked(View view) {
-		if (mViewPager != null)
+	/**
+	 * The click listener defined in statistic_fragment.xml.
+	 * 
+	 * @param view
+	 *            - Android internal needs.
+	 * @see http://developer.android.com/reference
+	 *      /android/view/View.html#attr_android:onClickandroid:onClick
+	 */
+	public final void allCrisesClicked(final View view) {
+		if (mViewPager != null) {
 			mViewPager.setCurrentItem(1, true);
+		}
 	}
 
 	/**
-	 * Create account listener in login.xml layout
+	 * Create account listener in login.xml layout.
 	 * 
 	 * @param view
+	 *            - Android internal needs
+	 * @see http://developer.android.com/reference
+	 *      /android/view/View.html#attr_android:onClickandroid:onClick
 	 */
-	public void accountClicked(View view) {
+	public final void accountClicked(final View view) {
 		Uri uri = Uri.parse("https://www.sigimera.org/register");
 		startActivity(new Intent(Intent.ACTION_VIEW, uri));
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public final boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_update_location:
 			LocationUpdaterHttpHelper locUpdater = new LocationUpdaterHttpHelper();
@@ -235,14 +283,14 @@ public class MainActivity extends FragmentActivity {
 				String longitude = loc.getLongitude() + "";
 				authToken = ApplicationController.getInstance()
 						.getSharedPreferences().getString("auth_token", null);
-				if (authToken != null)
+				if (authToken != null) {
 					locUpdater.execute(authToken, latitude, longitude);
+				}
 			} else {
-				Toast toast = Toast
-						.makeText(
-								getApplicationContext(),
-								"Not able to update location! Please active location access...",
-								Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(getApplicationContext(),
+						"Not able to update location! "
+								+ "Please active location access...",
+						Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.TOP, 0, 0);
 				toast.show();
 			}
@@ -270,21 +318,28 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	public void closeProgressDialog() {
+	/**
+	 * Close the progress dialog.
+	 */
+	public final void closeProgressDialog() {
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 			progressDialog = null;
 		}
 	}
 
-	public void showAboutDialog() {
+	/**
+	 * Shows the about dialog.
+	 */
+	public final void showAboutDialog() {
 		AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
 				.create();
 		dialog.setTitle("About");
 		dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(final DialogInterface dialog,
+							final int which) {
 						dialog.cancel();
 					}
 				});
@@ -297,18 +352,23 @@ public class MainActivity extends FragmentActivity {
 		strbuffer.append("<h3 style='text-align: center'>"
 				+ this.getString(R.string.app_name) + "</h3>");
 
-		strbuffer
-				.append("<p>This is the official App of the Crises Information Platform Sigimera. It provides the following functionality:</p>");
+		strbuffer.append("<p>This is the official App of the Crises "
+				+ "Information Platform Sigimera. It provides "
+				+ "the following functionality:</p>");
 		strbuffer.append("<ul>");
-		strbuffer
-				.append("<li>Get crises (natural disaster) information. Currently floods, earthquakes, cyclones and volcanic erruptions.</li>");
+		strbuffer.append("<li>Get crises (natural disaster) information."
+				+ "Currently floods, earthquakes, cyclones "
+				+ "and volcanic erruptions.</li>");
 		strbuffer.append("<li>Get crises alerts via push notifications.</li>");
 		strbuffer.append("<li>Get new crises via push notifications.</li>");
-		strbuffer
-				.append("<li>Manage your App via <a href='http://www.sigimera.org/mobile_devices'><span style='color: #00FFFF'>mobile device management website</span></a>.");
+		strbuffer.append("<li>Manage your App via "
+				+ "<a href='http://www.sigimera.org/mobile_devices'>"
+				+ "<span style='color: #00FFFF'>mobile device management"
+				+ "website </span></a>.");
 		strbuffer.append("</ul>");
-		strbuffer
-				.append("<p>&copy; 2012 <a href='http://www.sigimera.org'><span style='color: #00FFFF'>Sigimera</span></a>. All rights reserved.</p>");
+		strbuffer.append("<p>&copy; 2012 <a href='http://www.sigimera.org'>"
+				+ "<span style='color: #00FFFF'>Sigimera</span></a>. "
+				+ "All rights reserved.</p>");
 
 		wv.loadData(strbuffer.toString(), "text/html", "utf-8");
 
@@ -316,12 +376,19 @@ public class MainActivity extends FragmentActivity {
 		dialog.show();
 	}
 
-	public void showLoginErrorToast() {
+	/**
+	 * Shows the error toast message if the login failed.
+	 */
+	public final void showLoginErrorToast() {
 		new ToastNotification(getApplicationContext(),
 				"Email or password are incorrect!", Toast.LENGTH_SHORT);
 		closeProgressDialog();
 	}
 
+	/**
+	 * Set the order of tabs if the login was successfully or there exists a
+	 * authentication token.
+	 */
 	private void setTabsAfterLogin() {
 		// Before setting the tabs get all information
 		try {
@@ -352,6 +419,9 @@ public class MainActivity extends FragmentActivity {
 		closeProgressDialog();
 	}
 
+	/**
+	 * Set the order of tabs if there is no authentication token.
+	 */
 	private void setTabsBeforeLogin() {
 		this.mTabHost.clearAllTabs();
 		this.mTabsAdapter = new TabsAdapter(this, this.mTabHost,
