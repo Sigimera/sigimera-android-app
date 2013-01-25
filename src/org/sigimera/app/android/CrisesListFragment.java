@@ -131,28 +131,30 @@ public class CrisesListFragment extends Fragment implements Observer {
 	}	
 	
 	private void showCrises() {
-		ArrayList<HashMap<String, String>> crisesList = new ArrayList<HashMap<String, String>>();
-		
-		HashMap<String, String> listEntry;
-		
-		Iterator<Crisis> iter = this.crises.iterator();
-		while ( iter.hasNext() ) {
-			Crisis entry = iter.next();
+		if (getActivity() != null) {
+			ArrayList<HashMap<String, String>> crisesList = new ArrayList<HashMap<String, String>>();
 			
-			listEntry = new HashMap<String, String>();
-			listEntry.put("type_icon", entry.getTypeIcon());
-			listEntry.put("short_title", entry.getShortTitle());
-			listEntry.put("dc_date", Common.getTimeAgoInWords(Common.getMiliseconds(entry.getDate())));
+			HashMap<String, String> listEntry;
 			
-			crisesList.add(listEntry);
+			Iterator<Crisis> iter = this.crises.iterator();
+			while ( iter.hasNext() ) {
+				Crisis entry = iter.next();
+				
+				listEntry = new HashMap<String, String>();
+				listEntry.put("type_icon", entry.getTypeIcon());
+				listEntry.put("short_title", entry.getShortTitle());
+				listEntry.put("dc_date", Common.getTimeAgoInWords(Common.getMiliseconds(entry.getDate())));
+				
+				crisesList.add(listEntry);
+			}
+			this.adapterMainList = new SimpleAdapter(getActivity(), crisesList, R.layout.list_entry, 
+					new String[] { "type_icon", "short_title", "dc_date" },
+					new int[] { R.id.icon, R.id.topText, R.id.bottomText });
+	
+			this.list.setAdapter(adapterMainList);
+			
+			this.progessDialog.dismiss();
 		}
-		
-		this.adapterMainList = new SimpleAdapter(getActivity(), crisesList, R.layout.list_entry, 
-				new String[] { "type_icon", "short_title", "dc_date" },
-				new int[] { R.id.icon, R.id.topText, R.id.bottomText });
-
-		this.list.setAdapter(adapterMainList);
-		this.progessDialog.dismiss();
 	}	
 	
 	@Override
