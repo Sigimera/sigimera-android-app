@@ -68,10 +68,6 @@
             android:name=".CrisisActivity"
             android:label="@string/title_activity_crisis" />
 
-        <activity
-            android:name=".FullMapActivity"
-            android:label="@string/title_activity_crisis" />        
-
         <!-- service android:name=".backend.auth.AuthenticationService"
             android:exported="true">
             <intent-filter>
