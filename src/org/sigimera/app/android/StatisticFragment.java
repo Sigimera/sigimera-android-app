@@ -23,8 +23,6 @@ package org.sigimera.app.android;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.sigimera.app.android.controller.ApplicationController;
 import org.sigimera.app.android.controller.DistanceController;
@@ -37,6 +35,7 @@ import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -91,6 +90,16 @@ public class StatisticFragment extends Fragment {
 	private View view = null;
 	
 	/**
+	 * The details button.
+	 */
+	private Button crisisDetailsButton = null;
+	
+	/**
+	 * Marker of the crisis which was clicked.
+	 */
+	private Crisis clickedCrisis = null;
+	
+	/**
 	 * "Last" location of user. 
 	 */
 	private Location userLocation = null;
@@ -124,6 +133,8 @@ public class StatisticFragment extends Fragment {
 	public final View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.statistic, container, false);
+		crisisDetailsButton = (Button) view.findViewById(R.id.more_info);
+		crisisDetailsButton.setOnClickListener(crisisDetailsListener);
 
 		progessDialog = ProgressDialog.show(getActivity(),
 				"Preparing crises information!",
@@ -245,7 +256,9 @@ public class StatisticFragment extends Fragment {
 		/*
 		 *  Show one view at start.
 		 */
+		clickedCrisis = nearestCrisis;
 		Fragment nearCrisisFrament = new StatsFragment();
+//		Fragment nearCrisisFrament = new MapFragment();
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("crisis", nearestCrisis);
 		bundle.putSerializable("style", Constants.NEAR_CRISIS);
@@ -287,6 +300,7 @@ public class StatisticFragment extends Fragment {
 	private OnClickListener nearCrisisListenter = new OnClickListener() {
 		@Override
 		public void onClick(final View v) {
+			clickedCrisis = nearestCrisis;
 			Fragment nearCrisisFrament = new StatsFragment();
 
 			Bundle bundle = new Bundle();
@@ -320,6 +334,7 @@ public class StatisticFragment extends Fragment {
 	private OnClickListener latestCrisisListenter = new OnClickListener() {
 		@Override
 		public void onClick(final View v) {
+			clickedCrisis = latestCrisis;
 			Fragment latestCrisisFrament = new StatsFragment();
 
 			Bundle bundle = new Bundle();
@@ -328,6 +343,18 @@ public class StatisticFragment extends Fragment {
 			latestCrisisFrament.setArguments(bundle);
 
 			showFragment(latestCrisisFrament);
+		}
+	};
+	
+	/**
+	 * Crisis details button listener.
+	 */
+	private OnClickListener crisisDetailsListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
+			crisisActivity.putExtra(Constants.CRISIS_ID, clickedCrisis.getID());
+			startActivity(crisisActivity);
 		}
 	};
 }
