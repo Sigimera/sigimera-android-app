@@ -4,6 +4,7 @@ public class User {
 	public String id;
 	public String name;
 	public String username;
+	public String email;
 
 	public User() {}
 	
@@ -16,6 +17,9 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	
 	/**
 	 * Getter
@@ -25,5 +29,8 @@ public class User {
 	}
 	public String getUsername() {
 		return username;
+	}
+	public String getEmail() {
+		return email;
 	}
 }

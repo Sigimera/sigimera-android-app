@@ -67,7 +67,6 @@ public class ProfileFragment extends Fragment {
 	private CheckBox enableNearCrises = null;
 	private SeekBar nearCrisisRadius = null;
 	private TextView nearCrisisRadiusValue = null;
-	private TextView overwriteLocation = null;
 
 	private UsersStats stats = null;
 	private int radius = 0;
@@ -113,7 +112,7 @@ public class ProfileFragment extends Fragment {
 
 					if (stats != null && stats.getUsername() != null) {
 						InputStream is = (InputStream) getAvatarURL(
-								stats.getUsername()).getContent();
+								stats.getEmail()).getContent();
 						drawable = Drawable.createFromStream(is, "src name");
 						radius = stats.getRadius();
 					}
@@ -144,7 +143,7 @@ public class ProfileFragment extends Fragment {
 			content.append("<p>");
 			content.append("<b>" + stats.getName() + "</b>");
 			content.append("<br/>");
-			content.append("<small><i>" + stats.getName() + "</i></small>");
+			content.append("<small><i>" + stats.getUsername() + "</i></small>");
 			content.append("<br/>");
 			content.append("<br/>");
 			content.append("<small>");

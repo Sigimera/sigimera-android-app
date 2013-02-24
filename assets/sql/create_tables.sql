@@ -28,6 +28,7 @@ CREATE TABLE countries (
 CREATE TABLE user_stats (
 	username TEXT PRIMARY KEY,
 	name TEXT,
+	email TEXT,
 	uploaded_images INTEGER,
 	posted_comments INTEGER,
 	reported_locations INTEGER,

@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sigimera.app.android.backend.PersistentStorage2;
+import org.sigimera.app.android.backend.PersistentStorage;
 import org.sigimera.app.android.backend.network.CrisesHttpHelper;
 import org.sigimera.app.android.backend.network.NearCrisesHttpHelper;
 import org.sigimera.app.android.backend.network.SingleCrisisHttpHelper;
@@ -50,7 +50,7 @@ import android.util.Log;
 public class PersistanceController extends Observable {
 
 	private static PersistanceController instance = null;
-	private PersistentStorage2 pershandler;
+	private PersistentStorage pershandler;
 
 	private PersistanceController() {
 		this.pershandler = ApplicationController.getInstance()

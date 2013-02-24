@@ -19,7 +19,7 @@
  */
 package org.sigimera.app.android.controller;
 
-import org.sigimera.app.android.backend.PersistentStorage2;
+import org.sigimera.app.android.backend.PersistentStorage;
 
 import android.app.ActionBar;
 import android.content.Context;
@@ -32,7 +32,7 @@ public class ApplicationController {
 	
 	private Context context;
 	private SharedPreferences settings;
-	private PersistentStorage2 pershandler;
+	private PersistentStorage pershandler;
 	private ActionBar actionBar;
 	
 	private boolean updatingEverything = false;
@@ -49,7 +49,7 @@ public class ApplicationController {
 	public void init(Context _context, SharedPreferences _settings, ActionBar _actionBar) {
 		this.context = _context;
 		this.settings = _settings;
-		this.pershandler = PersistentStorage2.getInstance();
+		this.pershandler = PersistentStorage.getInstance();
 		this.sessionHandler = SessionHandler.getInstance(this.settings);
 		this.actionBar = _actionBar;
 	}
@@ -75,7 +75,7 @@ public class ApplicationController {
 	}
 	
 	public Context getApplicationContext() { return this.context; }
-	public PersistentStorage2 getPersistentStorageHandler() { return this.pershandler; }
+	public PersistentStorage getPersistentStorageHandler() { return this.pershandler; }
 	public ActionBar getActionbar() { return this.actionBar; }
 	
 	public SessionHandler getSessionHandler() { return this.sessionHandler; }

@@ -27,11 +27,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class PersistentStorage2 extends SQLiteOpenHelper{
+public class PersistentStorage extends SQLiteOpenHelper{
 	
-	private static PersistentStorage2 instance = null;
+	private static PersistentStorage instance = null;
 
-    private final static int DB_VERSION = 1;
+    private final static int DB_VERSION = 2;
     private final static String DB_NAME = "sigimera.db";
     private final static String TABLE_CRISES = "crises";
     private final static String TABLE_COUNTRIES = "countries";
@@ -41,26 +41,28 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
 
     private final Context context;
     
-    public static PersistentStorage2 getInstance() {
+    public static PersistentStorage getInstance() {
         if ( null == instance )
-            instance = new PersistentStorage2(ApplicationController.getInstance().getApplicationContext());
+            instance = new PersistentStorage(ApplicationController.getInstance().getApplicationContext());
         return instance;
     }
 
-    private PersistentStorage2(Context _context) {
+    private PersistentStorage(Context _context) {
         super(_context, DB_NAME, null, DB_VERSION);
         this.context = _context;
     }
 
 	@Override
 	public void onCreate(SQLiteDatabase _db) {
-		 this.executeSQLScript(_db, "sql/create_tables.sql");
+		this.executeSQLScript(_db, "sql/create_tables.sql");
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-		
+		if ( oldVersion == 1 && newVersion == 2) {
+			this.executeSQLScript(db, "sql/drop_tables.sql");
+			this.executeSQLScript(db, "sql/create_tables.sql");
+		}
 	}
 
 	/*
@@ -425,6 +427,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         
         values.put("name", _usersStats.getString("name"));
         values.put("username", _usersStats.getString("username"));
+        values.put("email", _usersStats.getString("email"));
         values.put("uploaded_images", _usersStats.getInt("uploaded_images"));
         values.put("posted_comments", _usersStats.getInt("posted_comments"));
         values.put("reported_locations", _usersStats.getInt("reported_locations"));
@@ -652,6 +655,7 @@ public class PersistentStorage2 extends SQLiteOpenHelper{
         	stats = new UsersStats();
         	stats.setName(_c.getString(_c.getColumnIndex("name")));
         	stats.setUsername(_c.getString(_c.getColumnIndex("username")));
+        	stats.setEmail(_c.getString(_c.getColumnIndex("email")));
         	stats.setUploadedImages(_c.getInt(_c.getColumnIndex("uploaded_images")));
         	stats.setPostedComments(_c.getInt(_c.getColumnIndex("posted_comments")));
         	stats.setReportedLocations(_c.getInt(_c.getColumnIndex("reported_locations")));
