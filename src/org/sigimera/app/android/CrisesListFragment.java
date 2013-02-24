@@ -2,7 +2,7 @@
  * Sigimera Crises Information Platform Android Client
  * Copyright (C) 2012 by Sigimera
  * All Rights Reserved
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -59,192 +59,190 @@ import android.widget.AdapterView.OnItemClickListener;
  * @email corneliu.stanciu@sigimera.org, alex.oberhauser@sigimera.org
  */
 public class CrisesListFragment extends Fragment implements Observer {
-	private ArrayList<Crisis> crises;
-	private ListView list;
-	
-	private int page = 1;
-	private String authToken = null;
-//	private boolean showMore = true;
-	private SimpleAdapter adapterMainList;
-	private ProgressDialog progessDialog;
-	private Bundle arguments;
-	
-	private final Handler guiHandler = new Handler();
-	private final Runnable updateGUI = new Runnable() {		
-		@Override
-		public void run() {
-			showCrises();
-		}
-	};
-	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-	}
+    private ArrayList<Crisis> crises;
+    private ListView list;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.crises_list, container, false);
+    private int page = 1;
+    private String authToken = null;
+    //	private boolean showMore = true;
+    private SimpleAdapter adapterMainList;
+    private ProgressDialog progessDialog;
+    private Bundle arguments;
 
-		this.list = (ListView) view.findViewById(R.id.crisis_list);		
-		this.list.setOnItemClickListener(this.clickListener);
-//		this.list.setOnScrollListener(this.scrollListener);
-		registerForContextMenu(this.list);
-		this.arguments = getArguments();
-		
-		this.progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!", 
-        		"Please be patient until the information are ready...");
-		Thread worker = new Thread() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public void run() {
-				Looper.prepare();
-				try {
-					authToken = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
-					PersistanceController.getInstance().addObserver(CrisesListFragment.this);
-					
-					// If there are crises passed as arguments -> show them
-					if ( arguments != null ) {
-						Object object = getArguments().getSerializable("crises");
-						if ( object != null )
-							crises = (ArrayList<Crisis>) object;	
-					} 
-					// otherwise check if the user wants to have near crises on crises list
-					else if (PersistanceController.getInstance().getUsersStats(authToken).getRadius() != 0) {
-						Log.i("[CRISES LIST]", "Show the near crises into the crises list");
-						crises = PersistanceController.getInstance().getNearCrises();
-					}
-				} catch (AuthenticationErrorException e) {
-					Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
-				}
-								
-				if ( crises == null || crises.isEmpty() )
-					crises = PersistanceController.getInstance().getCrises(authToken, page);
-				
-				guiHandler.post(updateGUI);
-			}
-		};
-		worker.start();
+    private final Handler guiHandler = new Handler();
+    private final Runnable updateGUI = new Runnable() {
+        @Override
+        public void run() {
+            showCrises();
+        }
+    };
 
-		return view;
-	}	
-	
-	private void showCrises() {
-		if (getActivity() != null) {
-			ArrayList<HashMap<String, String>> crisesList = new ArrayList<HashMap<String, String>>();
-			
-			HashMap<String, String> listEntry;
-			
-			Iterator<Crisis> iter = this.crises.iterator();
-			while ( iter.hasNext() ) {
-				Crisis entry = iter.next();
-				
-				listEntry = new HashMap<String, String>();
-				listEntry.put("type_icon", entry.getTypeIcon());
-				listEntry.put("short_title", entry.getShortTitle());
-				listEntry.put("dc_date", Common.getTimeAgoInWords(Common.getMiliseconds(entry.getDate())));
-				
-				crisesList.add(listEntry);
-			}
-			this.adapterMainList = new SimpleAdapter(getActivity(), crisesList, R.layout.list_entry, 
-					new String[] { "type_icon", "short_title", "dc_date" },
-					new int[] { R.id.icon, R.id.topText, R.id.bottomText });
-	
-			this.list.setAdapter(adapterMainList);
-			
-			this.progessDialog.dismiss();
-		}
-	}	
-	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {	    
-	    menu.setHeaderTitle("Options");
-	    menu.setHeaderIcon(R.drawable.sigimera_logo);	    
-	    MenuInflater inflater = new MenuInflater(getActivity());
-	    inflater.inflate(R.menu.list_menu, menu);
-	}
-	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    switch (item.getItemId()) {
-	        case R.id.open:
-	        	Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
-				crisisActivity.putExtra(Constants.CRISIS_ID, getCrisisID(info.position));
-				startActivity(crisisActivity);
-	            return true;
-	        case R.id.share:
-	        	this.startActivity(Common.shareCrisis(getCrisisID(info.position), getCrisisShortTitle(info.position)));
-	            return true;
-	        default:
-	            return super.onContextItemSelected(item);
-	    }
-	}
-	
-	OnItemClickListener clickListener = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int _position,
-				long arg3) {
-			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
-			crisisActivity.putExtra(Constants.CRISIS_ID, crises.get(_position).getID());
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
 
-			startActivity(crisisActivity);
-		}
-	};
-	
-//	OnScrollListener scrollListener = new OnScrollListener() {		
-//		@Override
-//		public void onScrollStateChanged(AbsListView view, int scrollState) {}
-//		
-//		@Override
-//		public void onScroll(AbsListView view, int firstVisibleItem,
-//				int visibleItemCount, int totalItemCount) {
-//			
-//			if ( adapterMainList != null ) {
-//				int lastItem = firstVisibleItem + visibleItemCount;
-//				if ( lastItem == totalItemCount && showMore ) {
-//					System.out.println("DEBUG");
-//					page += 1;
-//					cursor = CrisesController.getInstance().getCrises(auth_token, page);
-////					cursor.registerDataSetObserver(new DataSetObserver() {});
-////					adapterMainList.notifyDataSetChanged();
-////					adapterMainList.bindView(arg0, arg1, arg2)
-//					showMore = false;
-//				}
-//			}
-//		}
-//	};
-	
-	/**
-	 * Get the crisis ID from cursor.
-	 * @param position The row number in crises cursor.
-	 * @return crisis ID
-	 */
-	private String getCrisisID(int position) {
-		return this.crises.get(position).getID();
-	}
-	
-	private String getCrisisShortTitle(int position) {
-		return this.crises.get(position).getShortTitle();
-	}
-	
-//	private void showMoreCrises() {
-//		cursor = CrisesController.getInstance().getCrises(auth_token, page);
-//		showMore = true;
-//	}	
-	
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		int radius = (Integer) arg1;
-		if ( radius != 0 ) {
-			crises = PersistanceController.getInstance().getNearCrises();
-		} else {
-			crises = PersistanceController.getInstance().getCrises(authToken, page);
-		}
-		
-		showCrises();
-		
-		System.out.println("************************* Radius: " + radius);
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.crises_list, container, false);
+
+        this.list = (ListView) view.findViewById(R.id.crisis_list);
+        this.list.setOnItemClickListener(this.clickListener);
+        //		this.list.setOnScrollListener(this.scrollListener);
+        registerForContextMenu(this.list);
+        this.arguments = getArguments();
+
+        this.progessDialog = ProgressDialog.show(getActivity(), "Preparing crises information!",
+                "Please be patient until the information are ready...");
+        Thread worker = new Thread() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void run() {
+                Looper.prepare();
+                try {
+                    authToken = ApplicationController.getInstance().getSessionHandler().getAuthenticationToken();
+                    PersistanceController.getInstance().addObserver(CrisesListFragment.this);
+
+                    // If there are crises passed as arguments -> show them
+                    if ( arguments != null ) {
+                        Object object = getArguments().getSerializable("crises");
+                        if ( object != null )
+                            crises = (ArrayList<Crisis>) object;
+                    }
+                    // otherwise check if the user wants to have near crises on crises list
+                    else if (PersistanceController.getInstance().getUsersStats(authToken).getRadius() != 0) {
+                        Log.i("[CRISES LIST]", "Show the near crises into the crises list");
+                        crises = PersistanceController.getInstance().getNearCrises();
+                    }
+                } catch (AuthenticationErrorException e) {
+                    Log.d(Constants.LOG_TAG_SIGIMERA_APP, "Fetching public crises list...");
+                }
+
+                if ( crises == null || crises.isEmpty() )
+                    crises = PersistanceController.getInstance().getCrises(authToken, page);
+
+                guiHandler.post(updateGUI);
+            }
+        };
+        worker.start();
+
+        return view;
+    }
+
+    private void showCrises() {
+        if (getActivity() != null) {
+            ArrayList<HashMap<String, String>> crisesList = new ArrayList<HashMap<String, String>>();
+
+            HashMap<String, String> listEntry;
+
+            Iterator<Crisis> iter = this.crises.iterator();
+            while ( iter.hasNext() ) {
+                Crisis entry = iter.next();
+
+                listEntry = new HashMap<String, String>();
+                listEntry.put("type_icon", entry.getTypeIcon());
+                listEntry.put("short_title", entry.getShortTitle());
+                listEntry.put("dc_date", Common.getTimeAgoInWords(Common.getMiliseconds(entry.getDate())));
+
+                crisesList.add(listEntry);
+            }
+            this.adapterMainList = new SimpleAdapter(getActivity(), crisesList, R.layout.list_entry,
+                    new String[] { "type_icon", "short_title", "dc_date" },
+                    new int[] { R.id.icon, R.id.topText, R.id.bottomText });
+
+            this.list.setAdapter(adapterMainList);
+
+            this.progessDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo) {
+        menu.setHeaderTitle("Options");
+        menu.setHeaderIcon(R.drawable.sigimera_logo);
+        MenuInflater inflater = new MenuInflater(getActivity());
+        inflater.inflate(R.menu.list_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.open:
+                Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
+                crisisActivity.putExtra(Constants.CRISIS_ID, getCrisisID(info.position));
+                startActivity(crisisActivity);
+                return true;
+            case R.id.share:
+                this.startActivity(Common.shareCrisis(getCrisisID(info.position), getCrisisShortTitle(info.position)));
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    OnItemClickListener clickListener = new OnItemClickListener() {
+        public void onItemClick(AdapterView<?> arg0, View arg1, int _position,
+                long arg3) {
+            Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
+            crisisActivity.putExtra(Constants.CRISIS_ID, crises.get(_position).getID());
+
+            startActivity(crisisActivity);
+        }
+    };
+
+    //	OnScrollListener scrollListener = new OnScrollListener() {
+    //		@Override
+    //		public void onScrollStateChanged(AbsListView view, int scrollState) {}
+    //
+    //		@Override
+    //		public void onScroll(AbsListView view, int firstVisibleItem,
+    //				int visibleItemCount, int totalItemCount) {
+    //
+    //			if ( adapterMainList != null ) {
+    //				int lastItem = firstVisibleItem + visibleItemCount;
+    //				if ( lastItem == totalItemCount && showMore ) {
+    //					System.out.println("DEBUG");
+    //					page += 1;
+    //					cursor = CrisesController.getInstance().getCrises(auth_token, page);
+    ////					cursor.registerDataSetObserver(new DataSetObserver() {});
+    ////					adapterMainList.notifyDataSetChanged();
+    ////					adapterMainList.bindView(arg0, arg1, arg2)
+    //					showMore = false;
+    //				}
+    //			}
+    //		}
+    //	};
+
+    /**
+     * Get the crisis ID from cursor.
+     * @param position The row number in crises cursor.
+     * @return crisis ID
+     */
+    private String getCrisisID(int position) {
+        return this.crises.get(position).getID();
+    }
+
+    private String getCrisisShortTitle(int position) {
+        return this.crises.get(position).getShortTitle();
+    }
+
+    //	private void showMoreCrises() {
+    //		cursor = CrisesController.getInstance().getCrises(auth_token, page);
+    //		showMore = true;
+    //	}
+
+    @Override
+    public void update(Observable arg0, Object arg1) {
+        int radius = (Integer) arg1;
+        if ( radius != 0 ) {
+            crises = PersistanceController.getInstance().getNearCrises();
+        } else {
+            crises = PersistanceController.getInstance().getCrises(authToken, page);
+        }
+
+        showCrises();
+    }
 }

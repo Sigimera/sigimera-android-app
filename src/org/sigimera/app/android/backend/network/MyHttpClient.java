@@ -38,7 +38,7 @@ public class MyHttpClient extends DefaultHttpClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = context.getResources().openRawResource(R.raw.mykeystore);
+            InputStream in = context.getResources().openRawResource(R.raw.my_keystore);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
