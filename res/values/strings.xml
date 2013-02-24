@@ -13,6 +13,7 @@
     <string name="email_text">Enter your e-mail</string>
     <string name="password_text">Password</string>
     <string name="login_button">Login</string>
+    <string name="crisis_details_button">Crisis details</string>
     
     <!-- Activities -->
     <string name="title_activity_main">Crises</string>

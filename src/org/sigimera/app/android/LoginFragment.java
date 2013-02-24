@@ -19,8 +19,6 @@
  */
 package org.sigimera.app.android;
 
-import org.sigimera.app.android.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,19 +26,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
+ * Login window.
+ * 
  * @author Corneliu-Valentin Stanciu
- * @email corneliu.stanciu@sigimera.org
+ * @e-mail corneliu.stanciu@sigimera.org
  */
 public class LoginFragment extends Fragment {
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
+	public final void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public final View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.login, container, false);
 	}
 }

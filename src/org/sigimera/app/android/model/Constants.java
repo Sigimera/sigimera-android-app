@@ -37,7 +37,7 @@ public abstract class Constants {
 	/**
 	 * Location radius in kilometres
 	 */
-	public static final String LOCATION_RADIUS = "200";
+	public static final int LOCATION_RADIUS = 200;
 	
 	public static final double MAX_DISTANCE_NEAR_CRISIS = 5000;
 	public static final double MIN_DISTANCE_NEAR_CRISIS = 50;
@@ -59,7 +59,7 @@ public abstract class Constants {
 	public static final String WINDOW_TYPE = "window_type"; 
 	
 	/**
-	 * Crisis types
+	 * Crisis types.
 	 */
 	public static final String EARTHQUAKE = "earthquake";
 	public static final String FLOOD = "flood";
@@ -67,24 +67,44 @@ public abstract class Constants {
 	public static final String VOLCANO = "volcano";
 	
 	/**
-	 * Style handling
+	 * Style handling.
 	 */
 	public static final String LATEST_CRISIS = "LATEST_CRISIS";
 	public static final String NEAR_CRISIS = "NEAR_CRISIS";
 	
 	/**
-	 * Window types
+	 * Window types.
 	 */
 	public static final String WINDOW_TYPE_SHARED_CRISIS = "shared_crisis";
 	
 	/**
-	 * Notification Identifier
+	 * Notification Identifier.
 	 */
 	public static final int PING_ID = 12627;
 	
 	/**
-	 * Preferences
+	 * Preferences.
 	 */
 	public static final String PREFS_NAME = "session_handler_preferences";
+	
+	
+	/**
+	 * Static codes.
+	 */
+	
+	/**
+	 * 201 - created.
+	 */
+	public static final int STATUS_CODE_CREATED = 201;
 		
+	
+	/**
+	 * Time to sleep - 1 second.
+	 */
+	public static final int TIME_TO_SLEEP_ONE_SEC = 1000;
+	
+	/**
+	 * Time to sleep - 2 seconds.
+	 */
+	public static final int TIME_TO_SLEEP_TWO_SEC = 2000;
 }

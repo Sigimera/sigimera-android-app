@@ -80,8 +80,8 @@ public class StatsFragment extends Fragment {
 			}
 		} else {
 			statWebview.loadData(this.getHTMLError(
-					"Not able to get a crises near you",  
-					"In order to see crises near you, you have to update your location (see location button on the top)"),
+					"There are no crises near you",  
+					"In order to see crises near you, you have to enable and extend the radius on PROFILE tab."),
 					"text/html", "UTF-8");
 		}
 

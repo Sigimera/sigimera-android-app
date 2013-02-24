@@ -21,8 +21,8 @@ package org.sigimera.app.android.controller;
 
 import java.util.concurrent.ExecutionException;
 
+import org.sigimera.app.android.backend.network.LoginHttpHelper;
 import org.sigimera.app.android.exception.AuthenticationErrorException;
-import org.sigimera.app.android.helper.LoginHttpHelper;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

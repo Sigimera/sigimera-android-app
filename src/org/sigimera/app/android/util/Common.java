@@ -19,6 +19,7 @@
  */
 package org.sigimera.app.android.util;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +42,8 @@ import android.net.NetworkInfo;
  * @email corneliu.stanciu@sigimera.org
  */
 public class Common {
+	
+	private static int decimalPlaces = 2;
 
 	/**
 	 * Share the crisis with your friend and/or the world.
@@ -175,5 +178,11 @@ public class Common {
 			e.printStackTrace();
 		} 		
 		return null;
+	}
+	
+	public static double transformTwoDecimalDoubleNumber(double number) {
+		BigDecimal bigD = new BigDecimal(number);
+		bigD = bigD.setScale(decimalPlaces, BigDecimal.ROUND_HALF_UP);
+		return bigD.doubleValue();
 	}
 }
