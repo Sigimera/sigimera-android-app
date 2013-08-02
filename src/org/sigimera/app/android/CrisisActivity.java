@@ -43,10 +43,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.ShareActionProvider;
+import android.widget.Toast;
 
 /**
  * @author Corneliu-Valentin Stanciu, Alex Oberhauser
@@ -84,7 +86,11 @@ public class CrisisActivity extends MapActivity {
 	 */
 	private final Runnable updateCollection = new Runnable() {
 		public void run() {
-			updateMap();
+			try {
+				updateMap();
+			} catch ( Exception e ) {
+				System.out.println("Not able to update map, through exception: " + e.toString());
+			}
 		}
 	};
 
