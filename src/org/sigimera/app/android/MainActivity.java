@@ -57,7 +57,7 @@ import android.widget.Toast;
 
 /**
  * Activity which initialise the tabs and starts the application.
- * 
+ *
  * @author Corneliu-Valentin Stanciu
  * @e-mail corneliu.stanciu@sigimera.org
  */
@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity {
 	private ProgressDialog progressDialog = null;
 
 	/**
-	 * 
+	 *
 	 */
 	private final Handler guiHandler = new Handler();
 
@@ -207,7 +207,7 @@ public class MainActivity extends FragmentActivity {
 
 	/**
 	 * Login Listener defined in login.xml layout.
-	 * 
+	 *
 	 * @param view
 	 *            - Android internal needs.
 	 * @see http://developer.android.com/reference
@@ -241,7 +241,7 @@ public class MainActivity extends FragmentActivity {
 
 	/**
 	 * The click listener defined in statistic_fragment.xml.
-	 * 
+	 *
 	 * @param view
 	 *            - Android internal needs.
 	 * @see http://developer.android.com/reference
@@ -255,7 +255,7 @@ public class MainActivity extends FragmentActivity {
 
 	/**
 	 * Create account listener in login.xml layout.
-	 * 
+	 *
 	 * @param view
 	 *            - Android internal needs
 	 * @see http://developer.android.com/reference
@@ -366,8 +366,8 @@ public class MainActivity extends FragmentActivity {
 				+ "<span style='color: #00FFFF'>mobile device management"
 				+ "website </span></a>.");
 		strbuffer.append("</ul>");
-		strbuffer.append("<p>&copy; 2012 <a href='http://www.sigimera.org'>"
-				+ "<span style='color: #00FFFF'>Sigimera</span></a>. "
+		strbuffer.append("<p>&copy; 2013 <a href='http://www.sigimera.com'>"
+				+ "<span style='color: #00FFFF'>Sigimera Ltd.</span></a>. "
 				+ "All rights reserved.</p>");
 
 		wv.loadData(strbuffer.toString(), "text/html", "utf-8");

@@ -76,15 +76,6 @@
         	android:orientation="vertical"
         	android:id="@+id/main_frag_container"
         	android:layout_width="fill_parent"
-        	android:layout_height="fill_parent"/>
-        
-        <Button
-                android:id="@+id/more_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-				android:text="@string/crisis_details_button"
-				android:layout_marginTop="-10dip"
-				android:layout_marginLeft="7dip"
-            	android:layout_marginRight="7dip" />  	            
+        	android:layout_height="fill_parent"/>            
     </LinearLayout>       
 </LinearLayout>
