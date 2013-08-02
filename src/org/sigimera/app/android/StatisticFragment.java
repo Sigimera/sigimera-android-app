@@ -133,8 +133,6 @@ public class StatisticFragment extends Fragment {
 	public final View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.statistic, container, false);
-		crisisDetailsButton = (Button) view.findViewById(R.id.more_info);
-		crisisDetailsButton.setOnClickListener(crisisDetailsListener);
 
 		progessDialog = ProgressDialog.show(getActivity(),
 				"Preparing crises information!",
@@ -343,18 +341,6 @@ public class StatisticFragment extends Fragment {
 			latestCrisisFrament.setArguments(bundle);
 
 			showFragment(latestCrisisFrament);
-		}
-	};
-	
-	/**
-	 * Crisis details button listener.
-	 */
-	private OnClickListener crisisDetailsListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			Intent crisisActivity = new Intent(getActivity(), CrisisActivity.class);
-			crisisActivity.putExtra(Constants.CRISIS_ID, clickedCrisis.getID());
-			startActivity(crisisActivity);
 		}
 	};
 }

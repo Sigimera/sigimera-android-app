@@ -33,7 +33,6 @@ import org.sigimera.app.android.model.Constants;
 import org.sigimera.app.android.model.Crisis;
 import org.sigimera.app.android.util.Common;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;

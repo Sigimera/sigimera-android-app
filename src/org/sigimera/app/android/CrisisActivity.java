@@ -70,7 +70,7 @@ public class CrisisActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 
 	/**
-	 * The collections where the items are putted.
+	 * The collections where the items are added.
 	 */
 	private CollectionOverlay collectionOverlay;
 

@@ -310,18 +310,22 @@ public class PersistanceController extends Observable {
 	}
 	
 	public void updateNearCrises(String _auth_token, int _page, Location _location) {
-    	AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
-    	JSONArray retArray = null;
-        try {
-            retArray = crisesHelper.get();
-            this.pershandler.updateNearCrises(retArray);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+		if ( _location != null && _auth_token != null ) {
+	        try {
+	        	AsyncTask<String, Void, JSONArray> crisesHelper = new NearCrisesHttpHelper().execute(_auth_token, _page+"", _location.getLatitude()+"", _location.getLongitude()+"");
+	        	JSONArray retArray = null;
+	            retArray = crisesHelper.get();
+	            this.pershandler.updateNearCrises(retArray);
+	        } catch (InterruptedException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        } catch (ExecutionException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        }
+		}
 	}
 	
 	/**
