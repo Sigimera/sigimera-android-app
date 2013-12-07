@@ -1,7 +1,7 @@
 Sigimera Android App
 ====================
 
-This is the source code of the official Android app of the [Sigimera Platform](http://www.sigimera.org).
+This is the source code of the official Android app of the [Sigimera Platform](http://crises.sigimera.org).
 It makes use of the [Sigimera REST API](http://api.sigimera.org) and provides
 the user information about current and past crises information.
 
@@ -33,14 +33,14 @@ Contact
 -------
 
 * E-Mail:     support [at] sigimera [dot] org
-* Developers: http://www.sigimera.org/about
+* Developers: http://api.sigimera.org
 
 
 License
 -------
 
-The Sigimera Android App Copyright (c) 2012  by
-[Sigimera](http://www.sigimera.org)
+The Sigimera App Copyright (c) 2012 - 2014 by
+[Sigimera Ltd.](http://www.sigimera.com)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
