@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/Sigimera/sigimera-android-app.png?label=ready)](https://waffle.io/Sigimera/sigimera-android-app)  
 Sigimera Android App
 ====================
 
